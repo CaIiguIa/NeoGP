@@ -62,3 +62,6 @@ outTmp/
 /kotlin-native/dist
 kotlin-ide/
 tinyGPDataGenerator/target/
+target/
+src/main/resources/inputs/
+tinyGPDataGenerator/src/main/resources/inputs/

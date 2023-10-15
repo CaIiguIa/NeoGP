@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="tinyGP" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="tiny_gp" />
+    <module name="tinyGPDataGenerator" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

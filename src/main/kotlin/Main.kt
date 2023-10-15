@@ -5,8 +5,6 @@
     }
 
 /* TODO:
-* wygeneruj dane (dat?)
-* uruchom program dla zestawu danych i output zapisz w pliku tekstowym
-* wyszukaj najlepszy wynik
-* narysuj wykresy wyniku i oryginału
+* uruchomić program dla zestawu danych i wyszukać najlepszy wynik w outpucie
+* narysować wykresy wyniku i oryginału
 * */

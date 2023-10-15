@@ -9,12 +9,12 @@ class Properties {
         const val tinyGPProperties = "1 100 -5 5 101 "
         const val steps: Int = 1000
 
-        private val f1 = { x: Float -> 5 * x * x * x - 2 * x * x + 3 * x - 17 }
-        private val f2 = { x: Float -> sin(x) + cos(x) }
-        private val f3 = { x: Float -> 2 * ln(x + 1) }
-        private val f4 = { x: Float, y: Float -> x + 2 * y }
-        private val f5 = { x: Float, y: Float -> sin(x / 2) + 2 * cos(x) }
-        private val f6 = { x: Float, y: Float -> x * x + 3 * x * y - 7 * y + 1 }
+        private val f1 = { x: Double -> 5 * x * x * x - 2 * x * x + 3 * x - 17 }
+        private val f2 = { x: Double -> sin(x) + cos(x) }
+        private val f3 = { x: Double -> 2 * ln(x + 1) }
+        private val f4 = { x: Double, y: Double -> x + 2 * y }
+        private val f5 = { x: Double, y: Double -> sin(x / 2) + 2 * cos(x) }
+        private val f6 = { x: Double, y: Double -> x * x + 3 * x * y - 7 * y + 1 }
 
 
         val data: List<Problem> = listOf(
@@ -82,12 +82,12 @@ abstract class Function(
 )
 
 class SingleFunction(
-    val f: (Float) -> Float,
+    val f: (Double) -> Double,
     name: String,
 ) : Function(name)
 
 class DoubleFunction(
-    val f: (Float, Float) -> Float,
+    val f: (Double, Double) -> Double,
     name: String,
 ) : Function(name)
 
@@ -97,12 +97,11 @@ class Problem(
 )
 
 class Domain(
-    val first: Float,
-    val second: Float,
+    val lower: Double,
+    val upper: Double,
     val name: String,
 ) {
-    constructor(x: Double, y: Double, name: String) : this(x.toFloat(), y.toFloat(), name)
-    constructor(x: Int, y: Int, name: String) : this(x.toFloat(), y.toFloat(), name)
+    constructor(x1: Int, x2: Int, name: String) : this(x1.toDouble(), x2.toDouble(), name)
 
-    fun length() = second-first
+    fun length() = upper - lower
 }
