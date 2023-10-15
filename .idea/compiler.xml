@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="tinyGPDataGenerator" target="1.5" />
+      <module name="tinyGPDataGenerator" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
