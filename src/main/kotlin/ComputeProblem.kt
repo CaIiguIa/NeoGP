@@ -24,7 +24,7 @@ class ComputeProblem {
 
             System.setOut(customOut)
 
-            val gp = tiny_gp("test.dat", -1)
+            val gp = tiny_gp(filePath, -1)
 
             gp.evolve()
 
