@@ -357,7 +357,7 @@ public class tiny_gp {
         for ( gen = 1; gen < GENERATIONS; gen ++ ) {
             if (  fbestpop > -1e-5 ) {
                 System.out.print("PROBLEM SOLVED\n");
-                System.exit( 0 );
+                return;
             }
             for ( indivs = 0; indivs < POPSIZE; indivs ++ ) {
                 if ( rd.nextDouble() < CROSSOVER_PROB  ) {
@@ -377,7 +377,7 @@ public class tiny_gp {
             stats( fitness, pop, gen );
         }
         System.out.print("PROBLEM *NOT* SOLVED\n");
-        System.exit( 1 );
+        return;
     }
 
     public static void main(String[] args) {
