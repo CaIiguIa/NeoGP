@@ -6,8 +6,10 @@ class Properties {
 
     companion object Properties {
 
-        const val tinyGPProperties = "1 100 -5 5 101 "
-        const val steps: Int = 1000
+        const val numberOfSteps: Int = 100
+        const val numberOfConstants: Int = 10
+        const val constantLowerBound: Int = -5
+        const val constantUpperBound: Int = 5
 
         private val f1 = { x: Double -> 5 * x * x * x - 2 * x * x + 3 * x - 17 }
         private val f2 = { x: Double -> sin(x) + cos(x) }
@@ -73,6 +75,10 @@ class Properties {
                 )
             ),
         )
+
+        fun getTinyGPProperties(numberOfVariables: Int): String =
+            "$numberOfVariables $numberOfConstants $constantLowerBound $constantUpperBound $numberOfSteps"
+
     }
 
 }

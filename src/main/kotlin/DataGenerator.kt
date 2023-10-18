@@ -12,13 +12,11 @@ class DataGenerator {
         fun generateInputs() {
             log.info("Generating input data for tinyGP")
             val data = Properties.data
-            val tinyGPProperties = Properties.tinyGPProperties
 
             data.forEach { problem ->
                 val function = problem.f
                 problem.domains.forEach { domain ->
                     val file = prepareFile("/inputs/${problem.f.name}_${domain.name}.dat")
-                    file.appendText(tinyGPProperties + "\n")
 
                     when (function) {
                         is SingleFunction ->
@@ -43,8 +41,9 @@ class DataGenerator {
         }
 
         private fun getFunctionPoints(function: SingleFunction, domain: Domain, file: File) {
+            file.appendText(Properties.getTinyGPProperties(1) + "\n")
             var currentValue = domain.lower
-            val stepSize = domain.length() / Properties.steps
+            val stepSize = domain.length() / Properties.numberOfSteps
 
             while (currentValue <= domain.upper) {
                 file.appendText("$currentValue ${function.f(currentValue)}\n")
@@ -53,15 +52,15 @@ class DataGenerator {
         }
 
         private fun getFunctionPoints(function: DoubleFunction, domain: Domain, file: File) {
+            file.appendText(Properties.getTinyGPProperties(2) + "\n")
             var xValue = domain.lower
-            val stepSize = domain.length() / sqrt(Properties.steps.toDouble())
+            val stepSize = domain.length() / sqrt(Properties.numberOfSteps.toDouble())
 
             while (xValue <= domain.upper) {
                 var yValue = domain.lower
 
                 while (yValue <= domain.upper) {
                     file.appendText("$xValue $yValue ${function.f(xValue, yValue)}\n")
-                    log.info("$xValue $yValue")
                     yValue += stepSize
                 }
 
