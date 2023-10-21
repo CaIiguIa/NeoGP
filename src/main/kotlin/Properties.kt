@@ -6,8 +6,8 @@ class Properties {
 
     companion object Properties {
 
-        const val numberOfSteps: Int = 100
-        const val numberOfConstants: Int = 10
+        const val numberOfSteps: Int = 1000
+        const val numberOfConstants: Int = 25
         const val constantLowerBound: Int = -5
         const val constantUpperBound: Int = 5
 
@@ -23,17 +23,17 @@ class Properties {
             Problem(
                 SingleFunction(f1, "f1"),
                 listOf(
-                    Domain(-10, 10, "d1"),
-                    Domain(0, 100, "d2"),
+//                    Domain(-10, 10, "d1"),
+//                    Domain(0, 100, "d2"),
                     Domain(-1, 1, "d3"),
-                    Domain(-1000, 1000, "d4"),
+//                    Domain(-1000, 1000, "d4"),
                 )
             ),
             Problem(
                 SingleFunction(f2, "f2"),
                 listOf(
-                    Domain(-3.14, 3.14, "d1"),
-                    Domain(0, 7, "d2"),
+//                    Domain(-3.14, 3.14, "d1"),
+//                    Domain(0, 7, "d2"),
                     Domain(0, 100, "d3"),
                     Domain(-100, 100, "d4"),
                 )
@@ -41,9 +41,9 @@ class Properties {
             Problem(
                 SingleFunction(f3, "f3"),
                 listOf(
-                    Domain(0, 4, "d1"),
-                    Domain(0, 9, "d2"),
-                    Domain(0, 99, "d3"),
+//                    Domain(0, 4, "d1"),
+//                    Domain(0, 9, "d2"),
+//                    Domain(0, 99, "d3"),
                     Domain(0, 999, "d4"),
                 )
             ),

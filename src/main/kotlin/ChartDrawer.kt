@@ -10,10 +10,9 @@ class ChartDrawer {
 
         val log = Logger.getLogger(this::class.java.toString())
 
-        fun drawChart(inputFile: File, problem: Problem, solution: String) {
-            val variableNumber = getVariableNumber(problem.f)
+        fun drawChart(inputFile: File, function: Function, solution: String) {
+            val variableNumber = getVariableNumber(function)
             val outCsvPath = inputFile.absolutePath.replace("input", "output").replace(".dat", ".csv")
-            val outFilePath = inputFile.absolutePath.replace("input", "output").replace(".dat", ".xlsx")
             val content = Files.readString(inputFile.toPath(), Charsets.UTF_8)
                 .replace(Properties.getTinyGPProperties(variableNumber) + "\n", "")
                 .replace(".", ",")
@@ -24,16 +23,16 @@ class ChartDrawer {
             csvFile.createNewFile()
             csvFile.writeText(content)
 
-            when (problem.f) {
-                is SingleFunction -> chartSingleFunction(csvFile, problem, solution)
-                is DoubleFunction -> chartDoubleFunction(csvFile, problem, solution)
+            when (function) {
+                is SingleFunction -> chartSingleFunction(csvFile, function, solution)
+                is DoubleFunction -> chartDoubleFunction(csvFile, function, solution)
                 else -> throw UnsupportedOperationException()
             }
 
         }
 
-        private fun chartSingleFunction(csvFile: File, problem: Problem, solution: String) {
-            val solutionCol = getSolutionExcelColumn(problem.f)
+        private fun chartSingleFunction(csvFile: File, function: Function, solution: String) {
+            val solutionCol = getSolutionExcelColumn(function)
             val cellRange = "A1:$solutionCol${Properties.numberOfSteps + 1}"
 
             //open Excel file
@@ -43,7 +42,7 @@ class ChartDrawer {
             val workbook = Workbook(csvFile.absolutePath, oTxtLoadOptions)
             val worksheet = workbook.worksheets[0]
             worksheet.cells[solutionCol + "1"].setSharedFormula(
-                getSolutionFormula(problem, solution),
+                getSolutionFormula(solution),
                 Properties.numberOfSteps,
                 1
             )
@@ -57,9 +56,8 @@ class ChartDrawer {
         }
 
 
-        private fun chartDoubleFunction(csvFile: File, problem: Problem, solution: String) {
-            val solutionCol = getSolutionExcelColumn(problem.f)
-            val cellRange = "A1:$solutionCol${Properties.numberOfSteps + 1}"
+        private fun chartDoubleFunction(csvFile: File, function: Function, solution: String) {
+            val solutionCol = getSolutionExcelColumn(function)
 
             //open Excel file
             val oTxtLoadOptions = TxtLoadOptions(LoadFormat.CSV)
@@ -70,16 +68,10 @@ class ChartDrawer {
 
             //change shared formula so it takes multiple columns as input
             worksheet.cells[solutionCol + "1"].setSharedFormula(
-                getSolutionFormula(problem, solution),
+                getSolutionFormula(solution),
                 Properties.numberOfSteps,
                 1
             )
-
-            //chart
-            val chartIndex = worksheet.charts.add(ChartType.COLUMN, 5, 5, 15, 15)
-            val chart = worksheet.charts[chartIndex]
-            chart.setChartDataRange(cellRange, true)
-
             workbook.save(csvFile.absolutePath.replace(".csv", ".xlsx"), SaveFormat.XLSX)
         }
 
@@ -95,7 +87,7 @@ class ChartDrawer {
             else -> throw UnsupportedOperationException()
         }
 
-        private fun getSolutionFormula(problem: Problem, solution: String) =
+        private fun getSolutionFormula(solution: String) =
             solution
                 .replace("X1", "A1")
                 .replace("X2", "B1")

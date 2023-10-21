@@ -26,6 +26,11 @@ class DataGenerator {
                             getFunctionPoints(function, domain, file)
 
                     }
+                    log.info("Running tinyGP for problem ${problem.f.name}_${domain.name}")
+                    val solution = ComputeProblem.fromFileNative(file.absolutePath)
+                    log.info("Drawing chart for problem ${problem.f.name}_${domain.name}")
+                    ChartDrawer.drawChart(file, function, solution)
+
                 }
             }
         }
@@ -49,6 +54,7 @@ class DataGenerator {
                 file.appendText("$currentValue ${function.f(currentValue)}\n")
                 currentValue += stepSize
             }
+
         }
 
         private fun getFunctionPoints(function: DoubleFunction, domain: Domain, file: File) {
