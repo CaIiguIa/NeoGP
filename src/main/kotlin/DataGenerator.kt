@@ -9,7 +9,7 @@ class DataGenerator {
 
         val log = Logger.getLogger(this::class.java.toString())
 
-        fun generateInputs() {
+        fun generateInputs(draw: Boolean) {
             log.info("Generating input data for tinyGP")
             val data = Properties.data
 
@@ -28,9 +28,10 @@ class DataGenerator {
                     }
                     log.info("Running tinyGP for problem ${problem.f.name}_${domain.name}")
                     val solution = ComputeProblem.fromFileNative(file.absolutePath)
-                    log.info("Drawing chart for problem ${problem.f.name}_${domain.name}")
-                    ChartDrawer.drawChart(file, function, solution)
-
+                    if (draw) {
+                        log.info("Drawing chart for problem ${problem.f.name}_${domain.name}")
+                        ChartDrawer.drawChart(file, function, solution)
+                    }
                 }
             }
         }
