@@ -376,7 +376,6 @@ public class tiny_gp {
             stats(fitness, pop, gen);
         }
         System.out.print("PROBLEM *NOT* SOLVED\n");
-        return;
     }
 
     public static void main(String[] args) {
