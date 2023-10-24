@@ -64,14 +64,10 @@ public class tiny_gp {
         if (buffer[buffercount] < FSET_START)
             return (++buffercount);
 
-        switch (buffer[buffercount]) {
-            case ADD:
-            case SUB:
-            case MUL:
-            case DIV:
-                return (traverse(buffer, traverse(buffer, ++buffercount)));
-        }
-        return (0); // should never get here
+        return switch (buffer[buffercount]) {
+            case ADD, SUB, MUL, DIV -> (traverse(buffer, traverse(buffer, ++buffercount)));
+            default -> (0);
+        };
     }
 
     void setup_fitness(String fname) {
@@ -112,11 +108,10 @@ public class tiny_gp {
     }
 
     double fitness_function(char[] Prog) {
-        int i = 0, len;
         double result, fit = 0.0;
 
-        len = traverse(Prog, 0);
-        for (i = 0; i < fitnesscases; i++) {
+        int len = traverse(Prog, 0);
+        for (int i = 0; i < fitnesscases; i++) {
             for (int j = 0; j < varnumber; j++)
                 x[j] = targets[i][j];
             program = Prog;
@@ -389,7 +384,7 @@ public class tiny_gp {
         long s = -1;
 
         if (args.length == 2) {
-            s = Integer.valueOf(args[0]).intValue();
+            s = Integer.parseInt(args[0]);
             fname = args[1];
         }
         if (args.length == 1) {
