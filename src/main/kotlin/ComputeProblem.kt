@@ -32,7 +32,21 @@ class ComputeProblem {
 
             val capturedOutput = outputCapture.toString()
 
+            val fitValues = mutableListOf<FloatArray>()
+
             val lines = capturedOutput.split("\n")
+            for (line in lines) {
+                if (line.startsWith("Generation")) {
+                    val el = line.split(" ")
+                    val avgFit = el[2].split("=")[1].toFloat()
+                    val bestFit = el[4].split("=")[1].toFloat()
+                    fitValues.add(floatArrayOf(avgFit, bestFit))
+                }
+
+            }
+
+            // TODO: można to jakoś zapisać
+
             return lines[lines.size - 3].replace("Best Individual: ", "")
         }
     }
