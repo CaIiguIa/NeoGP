@@ -64,12 +64,12 @@ public class tiny_gp {
         return (0.0); // should never get here
     }
 
-    int traverse(char[] buffer, int buffercount) {
+    int getTreeLength(char[] buffer, int buffercount) {
         if (!isOperation(buffer[buffercount]))
             return (++buffercount);
 
         return switch (buffer[buffercount]) {
-            case ADD, SUB, MUL, DIV -> (traverse(buffer, traverse(buffer, ++buffercount)));
+            case ADD, SUB, MUL, DIV -> (getTreeLength(buffer, getTreeLength(buffer, ++buffercount)));
             default -> (0);
         };
     }
@@ -158,36 +158,35 @@ public class tiny_gp {
         return (0); // should never get here
     }
 
-    int printIndividual(char[] buffer, int buffercounter) {
+    int printIndividual(char[] buffer, int bufferCounter) {
         int a1 = 0, a2;
 
-        if (!isOperation(buffer[buffercounter])) {
-            if (buffer[buffercounter] < varnumber)
-                System.out.print("X" + (buffer[buffercounter] + 1) + " ");
+        if (!isOperation(buffer[bufferCounter])) {
+            if (buffer[bufferCounter] < varnumber)
+                System.out.print("X" + (buffer[bufferCounter] + 1) + " ");
             else
-                System.out.print(x[buffer[buffercounter]]);
-            return (++buffercounter);
+                System.out.print(x[buffer[bufferCounter]]);
+            return (++bufferCounter);
         }
 
-        switch (buffer[buffercounter]) {
+        System.out.print("(");
+
+
+        switch (buffer[bufferCounter]) {
             case ADD -> {
-                System.out.print("(");
-                a1 = printIndividual(buffer, ++buffercounter);
+                a1 = printIndividual(buffer, ++bufferCounter);
                 System.out.print(" + ");
             }
             case SUB -> {
-                System.out.print("(");
-                a1 = printIndividual(buffer, ++buffercounter);
+                a1 = printIndividual(buffer, ++bufferCounter);
                 System.out.print(" - ");
             }
             case MUL -> {
-                System.out.print("(");
-                a1 = printIndividual(buffer, ++buffercounter);
+                a1 = printIndividual(buffer, ++bufferCounter);
                 System.out.print(" * ");
             }
             case DIV -> {
-                System.out.print("(");
-                a1 = printIndividual(buffer, ++buffercounter);
+                a1 = printIndividual(buffer, ++bufferCounter);
                 System.out.print(" / ");
             }
         }
@@ -236,7 +235,7 @@ public class tiny_gp {
         double favgpop = 0.0;
 
         for (i = 0; i < POPSIZE; i++) {
-            node_count += traverse(pop[i], 0);
+            node_count += getTreeLength(pop[i], 0);
             favgpop += fitness[i];
             if (fitness[i] > bestFitness) {
                 best = i;
@@ -284,42 +283,37 @@ public class tiny_gp {
     }
 
     char[] crossover(char[] parent1, char[] parent2) {
-        int xo1start, xo1end, xo2start, xo2end;
-        char[] offspring;
-        int len1 = traverse(parent1, 0);
-        int len2 = traverse(parent2, 0);
+        int subTree1Start, subTree1End, subTree2Start, subTree2End;
+        char[] child;
+        int parent1Len = getTreeLength(parent1, 0);
+        int parent2Len = getTreeLength(parent2, 0);
         int newLen;
 
-        xo1start = rd.nextInt(len1);
-        xo1end = traverse(parent1, xo1start);
+        subTree1Start = rd.nextInt(parent1Len);
+        subTree1End = getTreeLength(parent1, subTree1Start);
 
-        xo2start = rd.nextInt(len2);
-        xo2end = traverse(parent2, xo2start);
+        subTree2Start = rd.nextInt(parent2Len);
+        subTree2End = getTreeLength(parent2, subTree2Start);
 
-        newLen = xo1start + (xo2end - xo2start) + (len1 - xo1end);
+        newLen = subTree1Start + (subTree2End - subTree2Start) + (parent1Len - subTree1End);
 
-        offspring = new char[newLen];
+        child = new char[newLen];
 
-        System.arraycopy(parent1, 0, offspring, 0, xo1start);
-        System.arraycopy(parent2, xo2start, offspring, xo1start,
-                (xo2end - xo2start));
-        System.arraycopy(parent1, xo1end, offspring,
-                xo1start + (xo2end - xo2start),
-                (len1 - xo1end));
+        System.arraycopy(parent1, 0, child, 0, subTree1Start);
+        System.arraycopy(parent2, subTree2Start, child, subTree1Start, (subTree2End - subTree2Start));
+        System.arraycopy(parent1, subTree1End, child, subTree1Start + (subTree2End - subTree2Start), (parent1Len - subTree1End));
 
-        return (offspring);
+        return (child);
     }
 
     char[] mutation(char[] parent, double pmut) {
-        int len = traverse(parent, 0), i;
-        int mutsite;
+        int len = getTreeLength(parent, 0);
         char[] parentCopy = new char[len];
 
         System.arraycopy(parent, 0, parentCopy, 0, len);
 
-        for (i = 0; i < len; i++) {
+        for (int mutsite = 0; mutsite < len; mutsite++) {
             if (rd.nextDouble() < pmut) {
-                mutsite = i;
                 if (!isOperation(parentCopy[mutsite]))
                     parentCopy[mutsite] = (char) rd.nextInt(varnumber + randomnumber);
                 else
