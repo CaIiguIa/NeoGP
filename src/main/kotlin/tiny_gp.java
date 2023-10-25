@@ -17,16 +17,17 @@ public class tiny_gp {
             SUB = 111,
             MUL = 112,
             DIV = 113,
-            FSET_START = ADD,
+            FUNCTION_SET_START = ADD,
             FSET_END = DIV;
-    static double[] x = new double[FSET_START];
+    static double[] x = new double[FUNCTION_SET_START];
     static double minrandom, maxrandom;
     static char[] program;
     static int PC;
     static int varnumber, fitnesscases, randomnumber;
-    static double fbestpop = 0.0;
+    static double bestFitness = 0.0;
     static long seed;
     static double avg_len;
+    static double bestFitnessThreshold = -1e-5;
     static final int
             MAX_LEN = 10000,
             POPSIZE = 100000,
@@ -41,7 +42,7 @@ public class tiny_gp {
     double run() { /* Interpreter */
         char primitive = program[PC++];
 
-        if (primitive < FSET_START)
+        if (primitive < FUNCTION_SET_START)
             return (x[primitive]);
 
         switch (primitive) {
@@ -64,7 +65,7 @@ public class tiny_gp {
     }
 
     int traverse(char[] buffer, int buffercount) {
-        if (buffer[buffercount] < FSET_START)
+        if (!isOperation(buffer[buffercount]))
             return (++buffercount);
 
         return switch (buffer[buffercount]) {
@@ -91,7 +92,7 @@ public class tiny_gp {
             fitnesscases = Integer.parseInt(tokens.nextToken().trim());
             targets = new double[fitnesscases][varnumber + 1];
 
-            if (varnumber + randomnumber >= FSET_START)
+            if (isOperation(varnumber + randomnumber))
                 System.out.println("too many variables and constants");
 
             for (i = 0; i < fitnesscases; i++) {
@@ -112,14 +113,13 @@ public class tiny_gp {
         }
     }
 
-    double fitness_function(char[] Prog) {
+    double calculateFitness(char[] individual) {
         double result, fit = 0.0;
 
-        int len = traverse(Prog, 0); // unused?
         for (int i = 0; i < fitnesscases; i++) {
-            for (int j = 0; j < varnumber; j++)
-                x[j] = targets[i][j];
-            program = Prog;
+            if (varnumber >= 0)
+                System.arraycopy(targets[i], 0, x, 0, varnumber);
+            program = individual;
             PC = 0;
             result = run();
             fit += Math.abs(result - targets[i][varnumber]);
@@ -143,27 +143,25 @@ public class tiny_gp {
             buffer[pos] = prim;
             return (pos + 1);
         } else {
-            prim = (char) (rd.nextInt(FSET_END - FSET_START + 1) + FSET_START);
+            prim = (char) (rd.nextInt(FSET_END - FUNCTION_SET_START + 1) + FUNCTION_SET_START);
             switch (prim) {
-                case ADD:
-                case SUB:
-                case MUL:
-                case DIV:
+                case ADD, SUB, MUL, DIV -> {
                     buffer[pos] = prim;
                     one_child = grow(buffer, pos + 1, max, depth - 1);
                     if (one_child < 0)
                         return (-1);
                     return (grow(buffer, one_child, max, depth - 1));
+                }
             }
         }
 
         return (0); // should never get here
     }
 
-    int print_indiv(char[] buffer, int buffercounter) {
+    int printIndividual(char[] buffer, int buffercounter) {
         int a1 = 0, a2;
 
-        if (buffer[buffercounter] < FSET_START) {
+        if (!isOperation(buffer[buffercounter])) {
             if (buffer[buffercounter] < varnumber)
                 System.out.print("X" + (buffer[buffercounter] + 1) + " ");
             else
@@ -172,28 +170,28 @@ public class tiny_gp {
         }
 
         switch (buffer[buffercounter]) {
-            case ADD:
+            case ADD -> {
                 System.out.print("(");
-                a1 = print_indiv(buffer, ++buffercounter);
+                a1 = printIndividual(buffer, ++buffercounter);
                 System.out.print(" + ");
-                break;
-            case SUB:
+            }
+            case SUB -> {
                 System.out.print("(");
-                a1 = print_indiv(buffer, ++buffercounter);
+                a1 = printIndividual(buffer, ++buffercounter);
                 System.out.print(" - ");
-                break;
-            case MUL:
+            }
+            case MUL -> {
                 System.out.print("(");
-                a1 = print_indiv(buffer, ++buffercounter);
+                a1 = printIndividual(buffer, ++buffercounter);
                 System.out.print(" * ");
-                break;
-            case DIV:
+            }
+            case DIV -> {
                 System.out.print("(");
-                a1 = print_indiv(buffer, ++buffercounter);
+                a1 = printIndividual(buffer, ++buffercounter);
                 System.out.print(" / ");
-                break;
+            }
         }
-        a2 = print_indiv(buffer, a1);
+        a2 = printIndividual(buffer, a1);
         System.out.print(")");
 
         return (a2);
@@ -202,14 +200,14 @@ public class tiny_gp {
 
     static char[] buffer = new char[MAX_LEN];
 
-    char[] create_random_indiv(int depth) {
+    char[] createRandomIndividual() {
         char[] ind;
         int len;
 
-        len = grow(buffer, 0, MAX_LEN, depth);
+        len = grow(buffer, 0, MAX_LEN, tiny_gp.DEPTH);
 
         while (len < 0)
-            len = grow(buffer, 0, MAX_LEN, depth);
+            len = grow(buffer, 0, MAX_LEN, tiny_gp.DEPTH);
 
         ind = new char[len];
 
@@ -218,13 +216,13 @@ public class tiny_gp {
         return (ind);
     }
 
-    char[][] create_random_pop(int n, int depth, double[] fitness) {
-        char[][] pop = new char[n][];
+    char[][] create_random_pop(double[] fitness) {
+        char[][] pop = new char[tiny_gp.POPSIZE][];
         int i;
 
-        for (i = 0; i < n; i++) {
-            pop[i] = create_random_indiv(depth);
-            fitness[i] = fitness_function(pop[i]);
+        for (i = 0; i < tiny_gp.POPSIZE; i++) {
+            pop[i] = createRandomIndividual();
+            fitness[i] = calculateFitness(pop[i]);
         }
 
         return (pop);
@@ -234,33 +232,33 @@ public class tiny_gp {
     void stats(double[] fitness, char[][] pop, int gen) {
         int i, best = rd.nextInt(POPSIZE);
         int node_count = 0;
-        fbestpop = fitness[best];
+        bestFitness = fitness[best];
         double favgpop = 0.0;
 
         for (i = 0; i < POPSIZE; i++) {
             node_count += traverse(pop[i], 0);
             favgpop += fitness[i];
-            if (fitness[i] > fbestpop) {
+            if (fitness[i] > bestFitness) {
                 best = i;
-                fbestpop = fitness[i];
+                bestFitness = fitness[i];
             }
         }
 
         avg_len = (double) node_count / POPSIZE;
         favgpop /= POPSIZE;
         System.out.print("Generation=" + gen + " Avg Fitness=" + (-favgpop) +
-                " Best Fitness=" + (-fbestpop) + " Avg Size=" + avg_len +
+                " Best Fitness=" + (-bestFitness) + " Avg Size=" + avg_len +
                 "\nBest Individual: ");
-        print_indiv(pop[best], 0);
+        printIndividual(pop[best], 0);
         System.out.print("\n");
         System.out.flush();
     }
 
-    int tournament(double[] fitness, int tsize) {
+    int findBest(double[] fitness) {
         int best = rd.nextInt(POPSIZE), i, competitor;
         double fbest = -1.0e34;
 
-        for (i = 0; i < tsize; i++) {
+        for (i = 0; i < tiny_gp.TSIZE; i++) {
             competitor = rd.nextInt(POPSIZE);
             if (fitness[competitor] > fbest) {
                 fbest = fitness[competitor];
@@ -271,11 +269,11 @@ public class tiny_gp {
         return (best);
     }
 
-    int negative_tournament(double[] fitness, int tsize) {
+    int findWorst(double[] fitness) {
         int worst = rd.nextInt(POPSIZE), i, competitor;
         double fworst = 1e34;
 
-        for (i = 0; i < tsize; i++) {
+        for (i = 0; i < tiny_gp.TSIZE; i++) {
             competitor = rd.nextInt(POPSIZE);
             if (fitness[competitor] < fworst) {
                 fworst = fitness[competitor];
@@ -290,7 +288,7 @@ public class tiny_gp {
         char[] offspring;
         int len1 = traverse(parent1, 0);
         int len2 = traverse(parent2, 0);
-        int lenoff;
+        int newLen;
 
         xo1start = rd.nextInt(len1);
         xo1end = traverse(parent1, xo1start);
@@ -298,9 +296,9 @@ public class tiny_gp {
         xo2start = rd.nextInt(len2);
         xo2end = traverse(parent2, xo2start);
 
-        lenoff = xo1start + (xo2end - xo2start) + (len1 - xo1end);
+        newLen = xo1start + (xo2end - xo2start) + (len1 - xo1end);
 
-        offspring = new char[lenoff];
+        offspring = new char[newLen];
 
         System.arraycopy(parent1, 0, offspring, 0, xo1start);
         System.arraycopy(parent2, xo2start, offspring, xo1start,
@@ -315,28 +313,23 @@ public class tiny_gp {
     char[] mutation(char[] parent, double pmut) {
         int len = traverse(parent, 0), i;
         int mutsite;
-        char[] parentcopy = new char[len];
+        char[] parentCopy = new char[len];
 
-        System.arraycopy(parent, 0, parentcopy, 0, len);
+        System.arraycopy(parent, 0, parentCopy, 0, len);
 
         for (i = 0; i < len; i++) {
             if (rd.nextDouble() < pmut) {
                 mutsite = i;
-                if (parentcopy[mutsite] < FSET_START)
-                    parentcopy[mutsite] = (char) rd.nextInt(varnumber + randomnumber);
+                if (!isOperation(parentCopy[mutsite]))
+                    parentCopy[mutsite] = (char) rd.nextInt(varnumber + randomnumber);
                 else
-                    switch (parentcopy[mutsite]) {
-                        case ADD:
-                        case SUB:
-                        case MUL:
-                        case DIV:
-                            parentcopy[mutsite] =
-                                    (char) (rd.nextInt(FSET_END - FSET_START + 1)
-                                            + FSET_START);
+                    switch (parentCopy[mutsite]) {
+                        case ADD, SUB, MUL, DIV -> parentCopy[mutsite] = (char) (rd.nextInt(FSET_END - FUNCTION_SET_START + 1)
+                                + FUNCTION_SET_START);
                     }
             }
         }
-        return (parentcopy);
+        return (parentCopy);
     }
 
     void print_parms() {
@@ -361,44 +354,53 @@ public class tiny_gp {
 
         setup_fitness(fname);
 
-        for (int i = 0; i < FSET_START; i++)
+        for (int i = 0; i < FUNCTION_SET_START; i++)
             x[i] = (maxrandom - minrandom) * rd.nextDouble() + minrandom;
 
-        pop = create_random_pop(POPSIZE, DEPTH, fitness);
+        pop = create_random_pop(fitness);
     }
 
     void evolve() {
-        int gen = 0, indivs, offspring, parent1, parent2, parent;
-        double newfit;
+        int individual;
         char[] newind;
 
         print_parms();
         stats(fitness, pop, 0);
 
-        for (gen = 1; gen < GENERATIONS; gen++) {
-            if (fbestpop > -1e-5) {
+        for (int gen = 1; gen < GENERATIONS; gen++) {
+            if (bestFitness > bestFitnessThreshold) {
                 System.out.print("PROBLEM SOLVED\n");
                 return;
             }
 
-            for (indivs = 0; indivs < POPSIZE; indivs++) {
-                if (rd.nextDouble() < CROSSOVER_PROB) {
-                    parent1 = tournament(fitness, TSIZE);
-                    parent2 = tournament(fitness, TSIZE);
-                    newind = crossover(pop[parent1], pop[parent2]);
-                } else {
-                    parent = tournament(fitness, TSIZE);
-                    newind = mutation(pop[parent], PMUT_PER_NODE);
-                }
+            for (individual = 0; individual < POPSIZE; individual++) {
+                newind = createNewIndividual();
 
-                newfit = fitness_function(newind);
-                offspring = negative_tournament(fitness, TSIZE);
-                pop[offspring] = newind;
-                fitness[offspring] = newfit;
+                replaceWorstIndividual(newind);
             }
             stats(fitness, pop, gen);
         }
         System.out.print("PROBLEM *NOT* SOLVED\n");
+    }
+
+    public void replaceWorstIndividual(char[] newIndividual) {
+        double newFitness = calculateFitness(newIndividual);
+        int worstIndividual = findWorst(fitness);
+        pop[worstIndividual] = newIndividual;
+        fitness[worstIndividual] = newFitness;
+    }
+
+    public char[] createNewIndividual() {
+        int parent1, parent2, parent;
+        boolean doCrossover = rd.nextDouble() < CROSSOVER_PROB;
+        if (doCrossover) {
+            parent1 = findBest(fitness);
+            parent2 = findBest(fitness);
+            return crossover(pop[parent1], pop[parent2]);
+        }
+        // mutate
+        parent = findBest(fitness);
+        return mutation(pop[parent], PMUT_PER_NODE);
     }
 
     public static void main(String[] args) {
@@ -416,11 +418,8 @@ public class tiny_gp {
         tiny_gp gp = new tiny_gp(fname, s);
         gp.evolve();
     }
-};
 
-/*
-[-10, 10],
-[0,100],
- [-1, 1],
-  [-1000, 1000]
- */
+    public boolean isOperation(int i) {
+        return i >= FUNCTION_SET_START;
+    }
+}
