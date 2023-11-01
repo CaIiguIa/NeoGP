@@ -7,15 +7,15 @@ class Properties {
     companion object Properties {
 
         const val numberOfSteps: Int = 1000
-        const val numberOfConstants: Int = 25
-        const val constantLowerBound: Int = -5
-        const val constantUpperBound: Int = 5
+        private const val numberOfConstants: Int = 25
+        private const val constantLowerBound: Int = -5
+        private const val constantUpperBound: Int = 5
 
         private val f1 = { x: Double -> 5 * x * x * x - 2 * x * x + 3 * x - 17 }
         private val f2 = { x: Double -> sin(x) + cos(x) }
         private val f3 = { x: Double -> 2 * ln(x + 1) }
         private val f4 = { x: Double, y: Double -> x + 2 * y }
-        private val f5 = { x: Double, y: Double -> sin(x / 2) + 2 * cos(x) }
+        private val f5 = { x: Double, _: Double -> sin(x / 2) + 2 * cos(x) }
         private val f6 = { x: Double, y: Double -> x * x + 3 * x * y - 7 * y + 1 }
 
 

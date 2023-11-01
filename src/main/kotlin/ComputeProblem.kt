@@ -1,12 +1,11 @@
+import TinyGP.GeneticProgramming
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
-import java.util.logging.Logger
 
 
 class ComputeProblem {
     companion object {
-        val log = Logger.getLogger(this::class.java.toString())
 
         fun fromFile(filePath: String): String {
             val p = Runtime.getRuntime().exec("tiny_gp.exe $filePath")
@@ -20,11 +19,11 @@ class ComputeProblem {
         fun fromFileNative(filePath: String): String {
             val outputCapture = ByteArrayOutputStream()
             val customOut = PrintStream(outputCapture)
-            val originalStdout = System.out;
+            val originalStdout = System.out
 
             System.setOut(customOut)
 
-            val gp = tiny_gp(filePath, -1)
+            val gp = GeneticProgramming(filePath, -1)
 
             gp.evolve()
 
@@ -44,8 +43,6 @@ class ComputeProblem {
                 }
 
             }
-
-            // TODO: można to jakoś zapisać
 
             return lines[lines.size - 3].replace("Best Individual: ", "")
         }
