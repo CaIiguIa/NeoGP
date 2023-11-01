@@ -9,50 +9,21 @@ import java.util.*;
 import java.io.*;
 
 public class GeneticProgramming {
-    double[] fitness;
-    Individual[] pop;
-    static Random rd = new Random();
-    static final int
-            ADD = 110,
-            SUB = 111,
-            MUL = 112,
-            DIV = 113,
-            FUNCTION_SET_START = ADD,
-            FUNCTION_SET_END = DIV;
-    static double[] x = new double[FUNCTION_SET_START];
-    static double minrandom, maxrandom;
-    static Individual program;
-    static int PC;
-    static int varnumber, fitnesscases, randomnumber;
-    static double bestFitness = 0.0;
-    static long seed;
-    static double avg_len;
-    static double bestFitnessThreshold = -1e-5;
-    static final int
-            MAX_LEN = 10000,
-            POPSIZE = 100000,
-            DEPTH = 5,
-            GENERATIONS = 25,
-            TSIZE = 2;
-    public static final double
-            PMUT_PER_NODE = 0.05,
-            CROSSOVER_PROB = 0.9;
-    static double[][] targets;
 
     double run() { /* Interpreter */
-        char primitive = program.data[PC++];
+        char primitive = Properties.program.data[Properties.PC++];
 
-        if (primitive < FUNCTION_SET_START)
-            return (x[primitive]);
+        if (primitive < Properties.FUNCTION_SET_START)
+            return (Properties.x[primitive]);
 
         switch (primitive) {
-            case ADD:
+            case Properties.ADD:
                 return (run() + run());
-            case SUB:
+            case Properties.SUB:
                 return (run() - run());
-            case MUL:
+            case Properties.MUL:
                 return (run() * run());
-            case DIV: {
+            case Properties.DIV: {
                 double num = run(), den = run();
                 if (Math.abs(den) <= 0.001)
                     return (num);
@@ -62,16 +33,6 @@ public class GeneticProgramming {
         }
 
         return (0.0); // should never get here
-    }
-
-    int getTreeLength(Individual buffer, int buffercount) {
-        if (!isOperation(buffer.data[buffercount]))
-            return (++buffercount);
-
-        return switch (buffer.data[buffercount]) {
-            case ADD, SUB, MUL, DIV -> (getTreeLength(buffer, getTreeLength(buffer, ++buffercount)));
-            default -> (0);
-        };
     }
 
     void setup_fitness(String fname) {
@@ -85,21 +46,21 @@ public class GeneticProgramming {
                                     FileReader(fname));
             line = in.readLine();
             StringTokenizer tokens = new StringTokenizer(line);
-            varnumber = Integer.parseInt(tokens.nextToken().trim());
-            randomnumber = Integer.parseInt(tokens.nextToken().trim());
-            minrandom = Double.parseDouble(tokens.nextToken().trim());
-            maxrandom = Double.parseDouble(tokens.nextToken().trim());
-            fitnesscases = Integer.parseInt(tokens.nextToken().trim());
-            targets = new double[fitnesscases][varnumber + 1];
+            Properties.varnumber = Integer.parseInt(tokens.nextToken().trim());
+            Properties.randomnumber = Integer.parseInt(tokens.nextToken().trim());
+            Properties.minrandom = Double.parseDouble(tokens.nextToken().trim());
+            Properties.maxrandom = Double.parseDouble(tokens.nextToken().trim());
+            Properties.fitnesscases = Integer.parseInt(tokens.nextToken().trim());
+            Properties.targets = new double[Properties.fitnesscases][Properties.varnumber + 1];
 
-            if (isOperation(varnumber + randomnumber))
+            if (Properties.isOperation(Properties.varnumber + Properties.randomnumber))
                 System.out.println("too many variables and constants");
 
-            for (i = 0; i < fitnesscases; i++) {
+            for (i = 0; i < Properties.fitnesscases; i++) {
                 line = in.readLine();
                 tokens = new StringTokenizer(line);
-                for (j = 0; j <= varnumber; j++) {
-                    targets[i][j] = Double.parseDouble(tokens.nextToken().trim());
+                for (j = 0; j <= Properties.varnumber; j++) {
+                    Properties.targets[i][j] = Double.parseDouble(tokens.nextToken().trim());
                 }
             }
 
@@ -116,20 +77,20 @@ public class GeneticProgramming {
     double calculateFitness(Individual individual) {
         double result, fit = 0.0;
 
-        for (int i = 0; i < fitnesscases; i++) {
-            if (varnumber >= 0)
-                System.arraycopy(targets[i], 0, x, 0, varnumber);
-            program = individual;
-            PC = 0;
+        for (int i = 0; i < Properties.fitnesscases; i++) {
+            if (Properties.varnumber >= 0)
+                System.arraycopy(Properties.targets[i], 0, Properties.x, 0, Properties.varnumber);
+            Properties.program = individual;
+            Properties.PC = 0;
             result = run();
-            fit += Math.abs(result - targets[i][varnumber]);
+            fit += Math.abs(result - Properties.targets[i][Properties.varnumber]);
         }
 
         return (-fit);
     }
 
     int grow(Individual buffer, int pos, int max, int depth) {
-        char prim = (char) rd.nextInt(2);
+        char prim = (char) Properties.rd.nextInt(2);
         int one_child;
 
         if (pos >= max)
@@ -139,13 +100,13 @@ public class GeneticProgramming {
             prim = 1;
 
         if (prim == 0 || depth == 0) {
-            prim = (char) rd.nextInt(varnumber + randomnumber);
+            prim = (char) Properties.rd.nextInt(Properties.varnumber + Properties.randomnumber);
             buffer.data[pos] = prim;
             return (pos + 1);
         } else {
-            prim = (char) (rd.nextInt(FUNCTION_SET_END - FUNCTION_SET_START + 1) + FUNCTION_SET_START);
+            prim = (char) (Properties.rd.nextInt(Properties.FUNCTION_SET_END - Properties.FUNCTION_SET_START + 1) + Properties.FUNCTION_SET_START);
             switch (prim) {
-                case ADD, SUB, MUL, DIV -> {
+                case Properties.ADD, Properties.SUB, Properties.MUL, Properties.DIV -> {
                     buffer.data[pos] = prim;
                     one_child = grow(buffer, pos + 1, max, depth - 1);
                     if (one_child < 0)
@@ -158,55 +119,16 @@ public class GeneticProgramming {
         return (0); // should never get here
     }
 
-    int printIndividual(Individual buffer, int bufferCounter) {
-        int a1 = 0, a2;
-
-        if (!isOperation(buffer.data[bufferCounter])) {
-            if (buffer.data[bufferCounter] < varnumber)
-                System.out.print("X" + (buffer.data[bufferCounter] + 1) + " ");
-            else
-                System.out.print(x[buffer.data[bufferCounter]]);
-            return (++bufferCounter);
-        }
-
-        System.out.print("(");
-
-
-        switch (buffer.data[bufferCounter]) {
-            case ADD -> {
-                a1 = printIndividual(buffer, ++bufferCounter);
-                System.out.print(" + ");
-            }
-            case SUB -> {
-                a1 = printIndividual(buffer, ++bufferCounter);
-                System.out.print(" - ");
-            }
-            case MUL -> {
-                a1 = printIndividual(buffer, ++bufferCounter);
-                System.out.print(" * ");
-            }
-            case DIV -> {
-                a1 = printIndividual(buffer, ++bufferCounter);
-                System.out.print(" / ");
-            }
-        }
-        a2 = printIndividual(buffer, a1);
-        System.out.print(")");
-
-        return (a2);
-    }
-
-
-    static Individual buffer = new Individual(new char[MAX_LEN]);
+    static Individual buffer = new Individual(new char[Properties.MAX_LEN]);
 
     Individual createRandomIndividual() {
         Individual ind;
         int len;
 
-        len = grow(buffer, 0, MAX_LEN, GeneticProgramming.DEPTH);
+        len = grow(buffer, 0, Properties.MAX_LEN, Properties.DEPTH);
 
         while (len < 0)
-            len = grow(buffer, 0, MAX_LEN, GeneticProgramming.DEPTH);
+            len = grow(buffer, 0, Properties.MAX_LEN, Properties.DEPTH);
 
         ind = new Individual(new char[len]);
 
@@ -216,10 +138,10 @@ public class GeneticProgramming {
     }
 
     Individual[] createRandomPopulation(double[] fitness) {
-        Individual[] population = new Individual[GeneticProgramming.POPSIZE];
+        Individual[] population = new Individual[Properties.POPSIZE];
         int i;
 
-        for (i = 0; i < GeneticProgramming.POPSIZE; i++) {
+        for (i = 0; i < Properties.POPSIZE; i++) {
             population[i] = createRandomIndividual();
             fitness[i] = calculateFitness(population[i]);
         }
@@ -227,38 +149,12 @@ public class GeneticProgramming {
         return (population);
     }
 
-
-    void printStats(double[] fitness, Individual[] pop, int gen) {
-        int i, best = rd.nextInt(POPSIZE);
-        int node_count = 0;
-        bestFitness = fitness[best];
-        double favgpop = 0.0;
-
-        for (i = 0; i < POPSIZE; i++) {
-            node_count += getTreeLength(pop[i], 0);
-            favgpop += fitness[i];
-            if (fitness[i] > bestFitness) {
-                best = i;
-                bestFitness = fitness[i];
-            }
-        }
-
-        avg_len = (double) node_count / POPSIZE;
-        favgpop /= POPSIZE;
-        System.out.print("Generation=" + gen + " Avg Fitness=" + (-favgpop) +
-                " Best Fitness=" + (-bestFitness) + " Avg Size=" + avg_len +
-                "\nBest Individual: ");
-        printIndividual(pop[best], 0);
-        System.out.print("\n");
-        System.out.flush();
-    }
-
     int findBest(double[] fitness) {
-        int best = rd.nextInt(POPSIZE), i, competitor;
+        int best = Properties.rd.nextInt(Properties.POPSIZE), i, competitor;
         double fbest = -1.0e34;
 
-        for (i = 0; i < GeneticProgramming.TSIZE; i++) {
-            competitor = rd.nextInt(POPSIZE);
+        for (i = 0; i < Properties.TSIZE; i++) {
+            competitor = Properties.rd.nextInt(Properties.POPSIZE);
             if (fitness[competitor] > fbest) {
                 fbest = fitness[competitor];
                 best = competitor;
@@ -269,11 +165,11 @@ public class GeneticProgramming {
     }
 
     int findWorst(double[] fitness) {
-        int worst = rd.nextInt(POPSIZE), i, competitor;
+        int worst = Properties.rd.nextInt(Properties.POPSIZE), i, competitor;
         double fworst = 1e34;
 
-        for (i = 0; i < GeneticProgramming.TSIZE; i++) {
-            competitor = rd.nextInt(POPSIZE);
+        for (i = 0; i < Properties.TSIZE; i++) {
+            competitor = Properties.rd.nextInt(Properties.POPSIZE);
             if (fitness[competitor] < fworst) {
                 fworst = fitness[competitor];
                 worst = competitor;
@@ -285,15 +181,15 @@ public class GeneticProgramming {
     Individual crossover(Individual parent1, Individual parent2) {
         int subTree1Start, subTree1End, subTree2Start, subTree2End;
         Individual child;
-        int parent1Len = getTreeLength(parent1, 0);
-        int parent2Len = getTreeLength(parent2, 0);
+        int parent1Len = parent1.getTreeLength(0);
+        int parent2Len = parent2.getTreeLength(0);
         int newLen;
 
-        subTree1Start = rd.nextInt(parent1Len);
-        subTree1End = getTreeLength(parent1, subTree1Start);
+        subTree1Start = Properties.rd.nextInt(parent1Len);
+        subTree1End = parent1.getTreeLength(subTree1Start);
 
-        subTree2Start = rd.nextInt(parent2Len);
-        subTree2End = getTreeLength(parent2, subTree2Start);
+        subTree2Start = Properties.rd.nextInt(parent2Len);
+        subTree2End = parent2.getTreeLength(subTree2Start);
 
         newLen = subTree1Start + (subTree2End - subTree2Start) + (parent1Len - subTree1End);
 
@@ -307,93 +203,81 @@ public class GeneticProgramming {
     }
 
     Individual mutation(Individual parent, double pmut) {
-        int len = getTreeLength(parent, 0);
+        int len = parent.getTreeLength(0);
         Individual parentCopy = new Individual(new char[len]);
 
         System.arraycopy(parent.data, 0, parentCopy.data, 0, len);
 
         for (int mutsite = 0; mutsite < len; mutsite++) {
-            if (rd.nextDouble() < pmut) {
-                if (!isOperation(parentCopy.data[mutsite]))
-                    parentCopy.data[mutsite] = (char) rd.nextInt(varnumber + randomnumber);
+            if (Properties.rd.nextDouble() < pmut) {
+                if (!Properties.isOperation(parentCopy.data[mutsite]))
+                    parentCopy.data[mutsite] = (char) Properties.rd.nextInt(Properties.varnumber + Properties.randomnumber);
                 else
                     switch (parentCopy.data[mutsite]) {
-                        case ADD, SUB, MUL, DIV -> parentCopy.data[mutsite] = (char) (rd.nextInt(FUNCTION_SET_END - FUNCTION_SET_START + 1)
-                                + FUNCTION_SET_START);
+                        case Properties.ADD, Properties.SUB, Properties.MUL, Properties.DIV ->
+                                parentCopy.data[mutsite] = (char) (Properties.rd.nextInt(Properties.FUNCTION_SET_END - Properties.FUNCTION_SET_START + 1)
+                                        + Properties.FUNCTION_SET_START);
                     }
             }
         }
         return (parentCopy);
     }
 
-    void printParameters() {
-        System.out.print("-- TINY GP (Java version) --\n");
-        System.out.print("SEED=" + seed + "\nMAX_LEN=" + MAX_LEN +
-                "\nPOPSIZE=" + POPSIZE + "\nDEPTH=" + DEPTH +
-                "\nCROSSOVER_PROB=" + CROSSOVER_PROB +
-                "\nPMUT_PER_NODE=" + PMUT_PER_NODE +
-                "\nMIN_RANDOM=" + minrandom +
-                "\nMAX_RANDOM=" + maxrandom +
-                "\nGENERATIONS=" + GENERATIONS +
-                "\nTSIZE=" + TSIZE +
-                "\n----------------------------------\n");
-    }
-
     public GeneticProgramming(String fname, long s) {
-        fitness = new double[POPSIZE];
-        seed = s;
+        Properties.fitness = new double[Properties.POPSIZE];
+        Properties.seed = s;
 
-        if (seed >= 0)
-            rd.setSeed(seed);
+        if (Properties.seed >= 0)
+            Properties.rd.setSeed(Properties.seed);
 
         setup_fitness(fname);
 
-        for (int i = 0; i < FUNCTION_SET_START; i++)
-            x[i] = (maxrandom - minrandom) * rd.nextDouble() + minrandom;
+        for (int i = 0; i < Properties.FUNCTION_SET_START; i++)
+            Properties.x[i] = (Properties.maxrandom - Properties.minrandom) * Properties.rd.nextDouble() + Properties.minrandom;
 
-        pop = createRandomPopulation(fitness);
+        Population.population = createRandomPopulation(Properties.fitness);
     }
 
     public void evolve() {
         int individual;
-        Individual newind;
+        Individual newInd;
 
-        printParameters();
-        printStats(fitness, pop, 0);
+        Properties.printParameters();
+        Properties.printStats(Properties.fitness, Population.population, 0);
 
-        for (int gen = 1; gen < GENERATIONS; gen++) {
-            if (bestFitness > bestFitnessThreshold) {
+        for (int gen = 1; gen < Properties.GENERATIONS; gen++) {
+            if (Properties.bestFitness > Properties.bestFitnessThreshold) {
                 System.out.print("PROBLEM SOLVED\n");
                 return;
             }
 
-            for (individual = 0; individual < POPSIZE; individual++) {
-                newind = createNewIndividual();
-                replaceWorstIndividual(newind);
+            for (individual = 0; individual < Properties.POPSIZE; individual++) {
+                newInd = createNewIndividual();
+                replaceWorstIndividual(newInd);
             }
-            printStats(fitness, pop, gen);
+            Properties.printStats(Properties.fitness, Population.population, gen);
         }
         System.out.print("PROBLEM *NOT* SOLVED\n");
     }
 
     public void replaceWorstIndividual(Individual newIndividual) {
         double newFitness = calculateFitness(newIndividual);
-        int worstIndividual = findWorst(fitness);
-        pop[worstIndividual] = newIndividual;
-        fitness[worstIndividual] = newFitness;
+        int worstIndividual = findWorst(Properties.fitness);
+        Population.population[worstIndividual] = newIndividual;
+        Properties.fitness[worstIndividual] = newFitness;
     }
 
     public Individual createNewIndividual() {
         int parent1, parent2, parent;
-        boolean doCrossover = rd.nextDouble() < CROSSOVER_PROB;
+        boolean doCrossover = Properties.rd.nextDouble() < Properties.CROSSOVER_PROB;
         if (doCrossover) {
-            parent1 = findBest(fitness);
-            parent2 = findBest(fitness);
-            return crossover(pop[parent1], pop[parent2]);
+            parent1 = findBest(Properties.fitness);
+            parent2 = findBest(Properties.fitness);
+            return crossover(Population.population[parent1], Population.population[parent2]);
         }
         // mutate
-        parent = findBest(fitness);
-        return mutation(pop[parent], PMUT_PER_NODE);
+        parent = findBest(Properties.fitness);
+        return mutation(Population.population[parent], Properties.PMUT_PER_NODE);
     }
 
     public static void main(String[] args) {
@@ -412,7 +296,4 @@ public class GeneticProgramming {
         gp.evolve();
     }
 
-    public boolean isOperation(int i) {
-        return i >= FUNCTION_SET_START;
-    }
 }
