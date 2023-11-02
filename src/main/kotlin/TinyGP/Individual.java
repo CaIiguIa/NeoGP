@@ -21,7 +21,7 @@ public class Individual {
         int a1 = 0, a2;
 
         if (!Properties.isOperation(this.data[bufferCounter])) {
-            if (this.data[bufferCounter] < Properties.varnumber)
+            if (this.data[bufferCounter] < Properties.varNumber)
                 System.out.print("X" + (this.data[bufferCounter] + 1) + " ");
             else
                 System.out.print(Properties.x[this.data[bufferCounter]]);
@@ -58,13 +58,13 @@ public class Individual {
     double calculateFitness() {
         double result, fit = 0.0;
 
-        for (int i = 0; i < Properties.fitnesscases; i++) {
-            if (Properties.varnumber >= 0)
-                System.arraycopy(Properties.targets[i], 0, Properties.x, 0, Properties.varnumber);
+        for (int i = 0; i < Properties.fitnessCases; i++) {
+            if (Properties.varNumber >= 0)
+                System.arraycopy(Properties.targets[i], 0, Properties.x, 0, Properties.varNumber);
             Properties.program = this;
             Properties.PC = 0;
             result = run();
-            fit += Math.abs(result - Properties.targets[i][Properties.varnumber]);
+            fit += Math.abs(result - Properties.targets[i][Properties.varNumber]);
         }
 
         return (-fit);

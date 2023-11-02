@@ -56,12 +56,12 @@ public class Population {
 
     static int findBest(double[] fitness) {
         int best = Properties.rd.nextInt(Properties.POPSIZE), i, competitor;
-        double fbest = -1.0e34;
+        double bestFitness = -1.0e34;
 
-        for (i = 0; i < Properties.TSIZE; i++) {
+        for (i = 0; i < Properties.TREE_ARITY; i++) {
             competitor = Properties.rd.nextInt(Properties.POPSIZE);
-            if (fitness[competitor] > fbest) {
-                fbest = fitness[competitor];
+            if (fitness[competitor] > bestFitness) {
+                bestFitness = fitness[competitor];
                 best = competitor;
             }
         }
@@ -71,12 +71,12 @@ public class Population {
 
     static int findWorst(double[] fitness) {
         int worst = Properties.rd.nextInt(Properties.POPSIZE), i, competitor;
-        double fworst = 1e34;
+        double worstFitness = 1e34;
 
-        for (i = 0; i < Properties.TSIZE; i++) {
+        for (i = 0; i < Properties.TREE_ARITY; i++) {
             competitor = Properties.rd.nextInt(Properties.POPSIZE);
-            if (fitness[competitor] < fworst) {
-                fworst = fitness[competitor];
+            if (fitness[competitor] < worstFitness) {
+                worstFitness = fitness[competitor];
                 worst = competitor;
             }
         }
@@ -116,7 +116,7 @@ public class Population {
         for (int mutsite = 0; mutsite < len; mutsite++) {
             if (Properties.rd.nextDouble() < pmut) {
                 if (!Properties.isOperation(parentCopy.data[mutsite]))
-                    parentCopy.data[mutsite] = (char) Properties.rd.nextInt(Properties.varnumber + Properties.randomnumber);
+                    parentCopy.data[mutsite] = (char) Properties.rd.nextInt(Properties.varNumber + Properties.randomNumber);
                 else
                     switch (parentCopy.data[mutsite]) {
                         case Properties.ADD, Properties.SUB, Properties.MUL, Properties.DIV ->
@@ -139,7 +139,7 @@ public class Population {
             prim = 1;
 
         if (prim == 0 || depth == 0) {
-            prim = (char) Properties.rd.nextInt(Properties.varnumber + Properties.randomnumber);
+            prim = (char) Properties.rd.nextInt(Properties.varNumber + Properties.randomNumber);
             buffer.data[pos] = prim;
             return (pos + 1);
         } else {

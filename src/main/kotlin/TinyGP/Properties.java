@@ -13,10 +13,10 @@ public class Properties {
             FUNCTION_SET_START = ADD,
             FUNCTION_SET_END = DIV;
     static double[] x = new double[FUNCTION_SET_START];
-    static double minrandom, maxrandom;
+    static double minRandom, maxRandom;
     static Individual program;
     static int PC;
-    static int varnumber, fitnesscases, randomnumber;
+    static int varNumber, fitnessCases, randomNumber;
     static double bestFitness = 0.0;
     static long seed;
     static double avg_len;
@@ -26,7 +26,7 @@ public class Properties {
             POPSIZE = 100000,
             DEPTH = 5,
             GENERATIONS = 25,
-            TSIZE = 2;
+            TREE_ARITY = 2;
     static final double
             PMUT_PER_NODE = 0.05,
             CROSSOVER_PROB = 0.9;
@@ -39,10 +39,10 @@ public class Properties {
                 "\nPOPSIZE=" + Properties.POPSIZE + "\nDEPTH=" + Properties.DEPTH +
                 "\nCROSSOVER_PROB=" + Properties.CROSSOVER_PROB +
                 "\nPMUT_PER_NODE=" + Properties.PMUT_PER_NODE +
-                "\nMIN_RANDOM=" + Properties.minrandom +
-                "\nMAX_RANDOM=" + Properties.maxrandom +
+                "\nMIN_RANDOM=" + Properties.minRandom +
+                "\nMAX_RANDOM=" + Properties.maxRandom +
                 "\nGENERATIONS=" + Properties.GENERATIONS +
-                "\nTSIZE=" + Properties.TSIZE +
+                "\nTSIZE=" + Properties.TREE_ARITY +
                 "\n----------------------------------\n");
     }
 

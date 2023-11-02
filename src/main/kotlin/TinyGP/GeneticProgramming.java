@@ -18,20 +18,20 @@ public class GeneticProgramming {
             BufferedReader in = new BufferedReader(new FileReader(fileName));
             line = in.readLine();
             StringTokenizer tokens = new StringTokenizer(line);
-            Properties.varnumber = Integer.parseInt(tokens.nextToken().trim());
-            Properties.randomnumber = Integer.parseInt(tokens.nextToken().trim());
-            Properties.minrandom = Double.parseDouble(tokens.nextToken().trim());
-            Properties.maxrandom = Double.parseDouble(tokens.nextToken().trim());
-            Properties.fitnesscases = Integer.parseInt(tokens.nextToken().trim());
-            Properties.targets = new double[Properties.fitnesscases][Properties.varnumber + 1];
+            Properties.varNumber = Integer.parseInt(tokens.nextToken().trim());
+            Properties.randomNumber = Integer.parseInt(tokens.nextToken().trim());
+            Properties.minRandom = Double.parseDouble(tokens.nextToken().trim());
+            Properties.maxRandom = Double.parseDouble(tokens.nextToken().trim());
+            Properties.fitnessCases = Integer.parseInt(tokens.nextToken().trim());
+            Properties.targets = new double[Properties.fitnessCases][Properties.varNumber + 1];
 
-            if (Properties.isOperation(Properties.varnumber + Properties.randomnumber))
+            if (Properties.isOperation(Properties.varNumber + Properties.randomNumber))
                 System.out.println("too many variables and constants");
 
-            for (i = 0; i < Properties.fitnesscases; i++) {
+            for (i = 0; i < Properties.fitnessCases; i++) {
                 line = in.readLine();
                 tokens = new StringTokenizer(line);
-                for (j = 0; j <= Properties.varnumber; j++) {
+                for (j = 0; j <= Properties.varNumber; j++) {
                     Properties.targets[i][j] = Double.parseDouble(tokens.nextToken().trim());
                 }
             }
@@ -56,7 +56,7 @@ public class GeneticProgramming {
         setupFitness(fileName);
 
         for (int i = 0; i < Properties.FUNCTION_SET_START; i++)
-            Properties.x[i] = (Properties.maxrandom - Properties.minrandom) * Properties.rd.nextDouble() + Properties.minrandom;
+            Properties.x[i] = (Properties.maxRandom - Properties.minRandom) * Properties.rd.nextDouble() + Properties.minRandom;
 
         Population.population = Population.createRandomPopulation(Properties.fitness);
     }
@@ -84,18 +84,19 @@ public class GeneticProgramming {
     }
 
     public static void main(String[] args) {
-        String fname = "problem.dat";
+        String fileName = "problem.dat";
         long s = -1;
 
         if (args.length == 2) {
             s = Integer.parseInt(args[0]);
-            fname = args[1];
-        }
-        if (args.length == 1) {
-            fname = args[0];
+            fileName = args[1];
         }
 
-        GeneticProgramming gp = new GeneticProgramming(fname, s);
+        if (args.length == 1) {
+            fileName = args[0];
+        }
+
+        GeneticProgramming gp = new GeneticProgramming(fileName, s);
         gp.evolve();
     }
 
