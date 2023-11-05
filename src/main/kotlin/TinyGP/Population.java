@@ -3,7 +3,7 @@ package TinyGP;
 public class Population {
     static Individual[] population;
 
-    private static Individual buffer = new Individual(new char[Properties.MAX_LEN]);
+    private static final Individual buffer = new Individual(new char[Properties.MAX_LEN]);
 
 
     static Individual[] createRandomPopulation(double[] fitness) {
@@ -35,7 +35,7 @@ public class Population {
         }
         // mutate
         parent = findBest(Properties.fitness);
-        return mutation(Population.population[parent], Properties.PMUT_PER_NODE);
+        return mutation(Population.population[parent]);
     }
 
     static Individual createRandomIndividual() {
@@ -107,22 +107,19 @@ public class Population {
         return (child);
     }
 
-    static Individual mutation(Individual parent, double pmut) {
+    static Individual mutation(Individual parent) {
         int len = parent.getTreeLength(0);
         Individual parentCopy = new Individual(new char[len]);
 
         System.arraycopy(parent.data, 0, parentCopy.data, 0, len);
 
         for (int mutsite = 0; mutsite < len; mutsite++) {
-            if (Properties.rd.nextDouble() < pmut) {
+            if (Properties.rd.nextDouble() < Properties.PMUT_PER_NODE) {
                 if (!Properties.isOperation(parentCopy.data[mutsite]))
                     parentCopy.data[mutsite] = (char) Properties.rd.nextInt(Properties.varNumber + Properties.randomNumber);
-                else
-                    switch (parentCopy.data[mutsite]) {
-                        case Properties.ADD, Properties.SUB, Properties.MUL, Properties.DIV ->
-                                parentCopy.data[mutsite] = (char) (Properties.rd.nextInt(Properties.FUNCTION_SET_END - Properties.FUNCTION_SET_START + 1)
-                                        + Properties.FUNCTION_SET_START);
-                    }
+                else if (Properties.isFunction(parentCopy.data[mutsite]))
+                    parentCopy.data[mutsite] = (char) (Properties.rd.nextInt(Properties.FUNCTION_SET_END - Properties.FUNCTION_SET_START + 1)
+                            + Properties.FUNCTION_SET_START);
             }
         }
         return (parentCopy);
@@ -144,14 +141,12 @@ public class Population {
             return (pos + 1);
         } else {
             prim = (char) (Properties.rd.nextInt(Properties.FUNCTION_SET_END - Properties.FUNCTION_SET_START + 1) + Properties.FUNCTION_SET_START);
-            switch (prim) {
-                case Properties.ADD, Properties.SUB, Properties.MUL, Properties.DIV -> {
-                    buffer.data[pos] = prim;
-                    one_child = grow(buffer, pos + 1, max, depth - 1);
-                    if (one_child < 0)
-                        return (-1);
-                    return (grow(buffer, one_child, max, depth - 1));
-                }
+            if (Properties.isFunction(prim)) {
+                buffer.data[pos] = prim;
+                one_child = grow(buffer, pos + 1, max, depth - 1);
+                if (one_child < 0)
+                    return (-1);
+                return (grow(buffer, one_child, max, depth - 1));
             }
         }
 

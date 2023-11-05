@@ -10,8 +10,10 @@ public class Properties {
             SUB = 111,
             MUL = 112,
             DIV = 113,
+            SIN = 114,
+            COS = 115,
             FUNCTION_SET_START = ADD,
-            FUNCTION_SET_END = DIV;
+            FUNCTION_SET_END = COS;
     static double[] x = new double[FUNCTION_SET_START];
     static double minRandom, maxRandom;
     static Individual program;
@@ -73,5 +75,9 @@ public class Properties {
 
     static boolean isOperation(int i) {
         return i >= FUNCTION_SET_START;
+    }
+
+    static boolean isFunction(int i) {
+        return i >= Properties.FUNCTION_SET_START && i <= Properties.FUNCTION_SET_END;
     }
 }

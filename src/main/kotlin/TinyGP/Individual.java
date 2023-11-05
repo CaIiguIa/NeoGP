@@ -1,5 +1,7 @@
 package TinyGP;
 
+import java.lang.Math;
+
 public class Individual {
     char[] data;
 
@@ -10,19 +12,17 @@ public class Individual {
     public int getTreeLength(int bufferCount) {
         if (!Properties.isOperation(this.data[bufferCount]))
             return (++bufferCount);
-
-        return switch (this.data[bufferCount]) {
-            case Properties.ADD, Properties.SUB, Properties.MUL, Properties.DIV -> (getTreeLength(getTreeLength(++bufferCount)));
-            default -> (0);
-        };
+        if (Properties.isFunction(this.data[bufferCount]))
+            return getTreeLength(getTreeLength(++bufferCount));
+        return 0;
     }
 
     int printIndividual(int bufferCounter) {
-        int a1 = 0, a2;
+        int a1, a2;
 
         if (!Properties.isOperation(this.data[bufferCounter])) {
             if (this.data[bufferCounter] < Properties.varNumber)
-                System.out.print("X" + (this.data[bufferCounter] + 1) + " ");
+                System.out.print("X" + (this.data[bufferCounter] + 1));
             else
                 System.out.print(Properties.x[this.data[bufferCounter]]);
             return (++bufferCounter);
@@ -30,26 +30,19 @@ public class Individual {
 
         System.out.print("(");
 
+        a1 = printIndividual(++bufferCounter);
 
-        switch (this.data[bufferCounter]) {
-            case Properties.ADD -> {
-                a1 = printIndividual(++bufferCounter);
-                System.out.print(" + ");
-            }
-            case Properties.SUB -> {
-                a1 = printIndividual(++bufferCounter);
-                System.out.print(" - ");
-            }
-            case Properties.MUL -> {
-                a1 = printIndividual(++bufferCounter);
-                System.out.print(" * ");
-            }
-            case Properties.DIV -> {
-                a1 = printIndividual(++bufferCounter);
-                System.out.print(" / ");
-            }
+        switch (this.data[bufferCounter - 1]) {
+            case Properties.ADD -> System.out.print(" + ");
+            case Properties.SUB -> System.out.print(" - ");
+            case Properties.MUL -> System.out.print(" * ");
+            case Properties.DIV -> System.out.print(" / ");
+            case Properties.SIN -> System.out.print(" + sin(");
+            case Properties.COS -> System.out.print(" + cos(");
         }
         a2 = printIndividual(a1);
+        if (this.data[bufferCounter-1] == Properties.SIN || this.data[bufferCounter-1] == Properties.COS)
+            System.out.print(")");
         System.out.print(")");
 
         return (a2);
@@ -89,6 +82,12 @@ public class Individual {
                     return (num);
                 else
                     return (num / den);
+            }
+            case Properties.SIN: {
+                return Math.sin(run() + run());
+            }
+            case Properties.COS: {
+                return Math.cos(run() + run());
             }
         }
 
