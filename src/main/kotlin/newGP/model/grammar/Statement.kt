@@ -1,14 +1,31 @@
 package newGP.model.grammar
 
+import kotlin.random.Random
+
 
 abstract class Statement(
     open val value: String,
 ) {
+    companion object {
+        fun generateRandom(): Statement = when (Random.nextInt(8)) {
+            0 -> Loop.generateRandom()
+            1 -> If.generateRandom()
+            2 -> IfElse.generateRandom()
+            3 -> In.generateRandom()
+            4 -> Print.generateRandom()
+            5 -> Var.generateRandom()
+            6 -> VarAssign.generateRandom()
+            else -> Const.generateRandom()
+        }
+    }
+
     abstract override fun toString(): String
     open fun depth(): Int = 0
     open fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
 
     abstract fun copy(): Statement
+
+
 }
 
 class Loop(
@@ -16,8 +33,12 @@ class Loop(
     val expression: Expression,
     val block: Block,
 ) : Statement(value) {
+    companion object {
+        fun generateRandom() = Loop("", Expression.generateRandom(), Block.generateRandom())
+    }
+
     override fun toString(): String =
-        "while ( $expression ) { $block )"
+        "while ( $expression ) { \n$block \n}"
 
     override fun depth(): Int =
         block.depth() + 1
@@ -41,8 +62,12 @@ class If(
     val expression: Expression,
     val block: Block,
 ) : Statement(value) {
+    companion object {
+        fun generateRandom() = If("", Expression.generateRandom(), Block.generateRandom())
+    }
+
     override fun toString(): String =
-        "if ( $expression ) { $block }"
+        "if ( $expression ) { \n$block \n}"
 
     override fun depth(): Int =
         block.depth() + 1
@@ -67,8 +92,12 @@ class IfElse(
     val block: Block,
     val elseBlock: Block,
 ) : Statement(value) {
+    companion object {
+        fun generateRandom() = IfElse("", Expression.generateRandom(), Block.generateRandom(), Block.generateRandom())
+    }
+
     override fun toString(): String =
-        "if ( $expression ) { $block } else { $elseBlock }"
+        "if ( $expression ) { \n$block \n} \nelse { \n$elseBlock \n}"
 
     override fun depth(): Int =
         maxOf(block.depth(), elseBlock.depth()) + 1
@@ -92,6 +121,10 @@ class In(
     override val value: String,
     val id: Id,
 ) : Statement(value) {
+    companion object {
+        fun generateRandom() = In("", Id.generateRandom())
+    }
+
     override fun toString(): String =
         "in $id;"
 
@@ -106,6 +139,10 @@ class Print(
     override val value: String,
     val expression: Expression,
 ) : Statement(value) {
+    companion object {
+        fun generateRandom() = Print("", Expression.generateRandom())
+    }
+
     override fun toString(): String =
         "print ( $expression );"
 
@@ -121,6 +158,10 @@ class Var(
     val id: Id,
     val expression: Expression?,
 ) : Statement(value) {
+    companion object {
+        fun generateRandom() = Var("", Id.generateRandom(), Expression.generateRandom())
+    }
+
     override fun toString(): String =
         "var $id ${expression?.let { "= $it" } ?: ""};"
 
@@ -137,6 +178,10 @@ class VarAssign(
     val id: Id,
     val expression: Expression,
 ) : Statement(value) {
+    companion object {
+        fun generateRandom() = VarAssign("", Id.generateRandom(), Expression.generateRandom())
+    }
+
     override fun toString(): String =
         "$id = $expression;"
 
@@ -153,6 +198,10 @@ class Const(
     val id: Id,
     val expression: Expression,
 ) : Statement(value) {
+    companion object {
+        fun generateRandom() = Const("", Id.generateRandom(), Expression.generateRandom())
+    }
+
     override fun toString(): String =
         "const $id = $expression;"
 

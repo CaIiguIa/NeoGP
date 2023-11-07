@@ -1,8 +1,25 @@
 package newGP.model.grammar
 
+import kotlin.random.Random
+
 abstract class Expression(
     open val value: String,
 ) {
+    companion object {
+        fun generateRandom(): Expression = when (Random.nextInt(14)) {
+            0 -> ExpressionParenthesis.generateRandom()
+            1 -> UnaryMinus.generateRandom()
+            2 -> Mathematical.generateRandom()
+            3 -> Comparison.generateRandom()
+            4 -> Negation.generateRandom()
+            5 -> Equality.generateRandom()
+            6 -> Logical.generateRandom()
+
+            else -> Primary.generateRandom() // 50% chance
+        }
+    }
+
+
     abstract override fun toString(): String
 
     abstract fun copy(): Expression
@@ -12,6 +29,10 @@ class ExpressionParenthesis(
     override val value: String,
     val expression: Expression,
 ) : Expression(value) {
+    companion object {
+        fun generateRandom() = ExpressionParenthesis("", Expression.generateRandom())
+    }
+
     override fun toString(): String =
         "( $expression )"
 
@@ -26,6 +47,10 @@ class UnaryMinus(
     override val value: String,
     val expression: Expression,
 ) : Expression(value) {
+    companion object {
+        fun generateRandom() = UnaryMinus("", Expression.generateRandom())
+    }
+
     override fun toString(): String =
         "- $expression"
 
@@ -43,15 +68,15 @@ class Mathematical(
     val operator: Operator
 ) : Expression(value) {
     init {
-        check(
-            operator in listOf(
-                Operator.ADD,
-                Operator.SUBTRACT,
-                Operator.MULTIPLY,
-                Operator.DIVIDE
-            )
-        )
+        check(operator in operands)
         { "Invalid operator type for mathematical expression: $operator" }
+    }
+
+    companion object {
+        private val operands = listOf(Operator.ADD, Operator.SUBTRACT, Operator.MULTIPLY, Operator.DIVIDE)
+
+        fun generateRandom() =
+            Mathematical("", Expression.generateRandom(), Expression.generateRandom(), operands.random())
     }
 
     override fun toString(): String =
@@ -73,15 +98,16 @@ class Comparison(
     val operator: Operator
 ) : Expression(value) {
     init {
-        check(
-            operator in listOf(
-                Operator.LOWER_THAN,
-                Operator.LOWER_EQUAL,
-                Operator.GREATER_THAN,
-                Operator.GREATER_EQUAL
-            )
-        )
+        check(operator in operands)
         { "Invalid operator type for comparison expression: $operator" }
+    }
+
+    companion object {
+        private val operands =
+            listOf(Operator.LOWER_THAN, Operator.LOWER_EQUAL, Operator.GREATER_THAN, Operator.GREATER_EQUAL)
+
+        fun generateRandom() =
+            Comparison("", Expression.generateRandom(), Expression.generateRandom(), operands.random())
     }
 
     override fun toString(): String =
@@ -100,6 +126,10 @@ class Negation(
     override val value: String,
     val expression: Expression,
 ) : Expression(value) {
+    companion object {
+        fun generateRandom() = Negation("", Expression.generateRandom())
+    }
+
     override fun toString(): String =
         "!$expression"
 
@@ -117,13 +147,15 @@ class Equality(
     val operator: Operator
 ) : Expression(value) {
     init {
-        check(
-            operator in listOf(
-                Operator.EQUAL,
-                Operator.NOT_EQUAL
-            )
-        )
+        check(operator in operands)
         { "Invalid operator type for equality expression: $operator" }
+    }
+
+    companion object {
+        private val operands = listOf(Operator.EQUAL, Operator.NOT_EQUAL)
+
+        fun generateRandom() =
+            Equality("", Expression.generateRandom(), Expression.generateRandom(), operands.random())
     }
 
     override fun toString(): String =
@@ -145,13 +177,14 @@ class Logical(
     val operator: Operator
 ) : Expression(value) {
     init {
-        check(
-            operator in listOf(
-                Operator.AND,
-                Operator.OR
-            )
-        )
+        check(operator in operands)
         { "Invalid operator type for logical expression: $operator" }
+    }
+
+    companion object {
+        private val operands = listOf(Operator.AND, Operator.OR)
+        fun generateRandom() =
+            Logical("", Expression.generateRandom(), Expression.generateRandom(), operands.random())
     }
 
     override fun toString(): String =

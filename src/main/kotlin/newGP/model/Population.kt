@@ -5,10 +5,16 @@ import newGP.model.grammar.Statement
 import kotlin.random.Random
 
 class Population(
-    val individuals: List<Individual>
+    val individuals: MutableList<Individual> = mutableListOf()
 ) {
     companion object {
-        fun generatePopulation(size: Int, maxDepth: Int? = null): Population = TODO()
+        fun generatePopulation(size: Int, maxDepth: Int? = null): Population {
+            val population = Population()
+            for (i in 1..size)
+                population.individuals.add(Individual.generateRandom(5))
+
+            return population
+        }
     }
 
     fun replaceWorstIndividual(newIndividual: Individual): Nothing = TODO()
@@ -52,7 +58,10 @@ class Population(
 
     fun mutation(parent: Individual): Individual {
         val copy = parent.copy()
+        val idxToReplace = Random.nextInt(copy.statements.size)
+        copy.statements.removeAt(idxToReplace)
+        copy.statements.add(idxToReplace, Statement.generateRandom())
 
-        TODO("losowe dziecko na losowym poziomie zamieniamy na wygenerowanego, do tego dla każdej klasy metoda generująca losowego")
+        return copy
     }
 }
