@@ -84,10 +84,10 @@ public class Individual {
                     return (num / den);
             }
             case Properties.SIN: {
-                return Math.sin(run() + run());
+                return run() + Math.sin(run());
             }
             case Properties.COS: {
-                return Math.cos(run() + run());
+                return run() + Math.cos(run());
             }
         }
 
