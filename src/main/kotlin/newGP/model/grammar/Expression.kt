@@ -4,6 +4,8 @@ abstract class Expression(
     open val value: String,
 ) {
     abstract override fun toString(): String
+
+    abstract fun copy(): Expression
 }
 
 class ExpressionParenthesis(
@@ -12,6 +14,12 @@ class ExpressionParenthesis(
 ) : Expression(value) {
     override fun toString(): String =
         "( $expression )"
+
+    override fun copy(): Expression =
+        ExpressionParenthesis(
+            value,
+            expression.copy()
+        )
 }
 
 class UnaryMinus(
@@ -20,6 +28,12 @@ class UnaryMinus(
 ) : Expression(value) {
     override fun toString(): String =
         "- $expression"
+
+    override fun copy(): Expression =
+        UnaryMinus(
+            value,
+            expression.copy()
+        )
 }
 
 class Mathematical(
@@ -42,6 +56,14 @@ class Mathematical(
 
     override fun toString(): String =
         "$expression1 ${operator.value} $expression2"
+
+    override fun copy(): Expression =
+        Mathematical(
+            value,
+            expression1.copy(),
+            expression2.copy(),
+            operator
+        )
 }
 
 class Comparison(
@@ -64,6 +86,14 @@ class Comparison(
 
     override fun toString(): String =
         "$expression1 ${operator.value} $expression2"
+
+    override fun copy(): Expression =
+        Comparison(
+            value,
+            expression1.copy(),
+            expression2.copy(),
+            operator
+        )
 }
 
 class Negation(
@@ -72,6 +102,12 @@ class Negation(
 ) : Expression(value) {
     override fun toString(): String =
         "!$expression"
+
+    override fun copy(): Expression =
+        Negation(
+            value,
+            expression.copy()
+        )
 }
 
 class Equality(
@@ -92,6 +128,14 @@ class Equality(
 
     override fun toString(): String =
         "$expression1 ${operator.value} $expression2"
+
+    override fun copy(): Expression =
+        Equality(
+            value,
+            expression1.copy(),
+            expression2.copy(),
+            operator
+        )
 }
 
 class Logical(
@@ -112,6 +156,14 @@ class Logical(
 
     override fun toString(): String =
         "$expression1 ${operator.value} $expression2"
+
+    override fun copy(): Expression =
+        Logical(
+            value,
+            expression1.copy(),
+            expression2.copy(),
+            operator
+        )
 }
 
 enum class Operator(val value: String) {
