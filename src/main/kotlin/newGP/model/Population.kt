@@ -15,17 +15,69 @@ class Population(
 
             return population
         }
+
+        const val CROSSOVER_PROBABILITY = 0.9
+        const val COMPETITOR_NUMBER = 5
     }
 
-    fun replaceWorstIndividual(newIndividual: Individual): Nothing = TODO()
+    fun replaceWorstIndividual(newIndividual: Individual) {
+        val worst = findWorst()
+        val idx = individuals.indexOf(worst)
+        individuals.removeAt(idx)
+        individuals.add(idx, newIndividual)
+    }
 
-    fun createNewIndividual(): Individual = TODO()
+    fun createNewIndividual(): Individual {
+        val crossover = Random.nextDouble() < CROSSOVER_PROBABILITY
 
-    fun createRandomIndividual(): Individual = TODO()
+        val parent1 = findBest()
+        val parent2 = findBest()
 
-    fun findBest(fitness: DoubleArray): Int = TODO()
+        val newIndividual = if (crossover)
+            crossover(parent1, parent2)
+        else
+            mutation(parent1)
 
-    fun findWorst(fitness: DoubleArray): Int = TODO()
+        return newIndividual
+    }
+
+    private fun findBest(): Individual {
+        var best = individuals.random()
+        var bestFitness = -1e34
+        var competitor: Individual
+        var competitorFitness: Double
+
+        for (i in 1 until COMPETITOR_NUMBER) {
+            competitor = individuals.random()
+            competitorFitness = competitor.fitness()
+
+            if (competitorFitness > bestFitness) { //TODO: uwaga na znak fittness
+                bestFitness = competitorFitness
+                best = competitor
+            }
+        }
+
+        return best
+    }
+
+    private fun findWorst(): Individual {
+        var worst = individuals.random()
+        var worstFitness = 1e34
+        var competitor: Individual
+        var competitorFitness: Double
+
+        for (i in 1 until COMPETITOR_NUMBER) {
+            competitor = individuals.random()
+            competitorFitness = competitor.fitness()
+
+            if (competitorFitness < worstFitness) { //TODO: uwaga na znak fittness
+                worstFitness = competitorFitness
+                worst = competitor
+            }
+        }
+
+        return worst
+    }
 
     fun getRandomChild(parent: Individual): Statement {
         val parentDepth = Random.nextInt(parent.depth())
@@ -34,7 +86,7 @@ class Population(
             ?: throw IllegalStateException("Random child implementation fault")
     }
 
-    fun crossover(parent1: Individual, parent2: Individual): Individual {
+    private fun crossover(parent1: Individual, parent2: Individual): Individual {
         val children1 = parent1.getChildrenAtDepth(0)
         val children2 = parent2.getChildrenAtDepth(0)
 
@@ -56,7 +108,7 @@ class Population(
         return newInd
     }
 
-    fun mutation(parent: Individual): Individual {
+    private fun mutation(parent: Individual): Individual {
         val copy = parent.copy()
         val idxToReplace = Random.nextInt(copy.statements.size)
         copy.statements.removeAt(idxToReplace)

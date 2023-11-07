@@ -58,7 +58,7 @@ public class Population {
         int best = Properties.rd.nextInt(Properties.POPSIZE), i, competitor;
         double bestFitness = -1.0e34;
 
-        for (i = 0; i < Properties.TREE_ARITY; i++) {
+        for (i = 0; i < Properties.COMPETITORS; i++) {
             competitor = Properties.rd.nextInt(Properties.POPSIZE);
             if (fitness[competitor] > bestFitness) {
                 bestFitness = fitness[competitor];
@@ -73,7 +73,7 @@ public class Population {
         int worst = Properties.rd.nextInt(Properties.POPSIZE), i, competitor;
         double worstFitness = 1e34;
 
-        for (i = 0; i < Properties.TREE_ARITY; i++) {
+        for (i = 0; i < Properties.COMPETITORS; i++) {
             competitor = Properties.rd.nextInt(Properties.POPSIZE);
             if (fitness[competitor] < worstFitness) {
                 worstFitness = fitness[competitor];

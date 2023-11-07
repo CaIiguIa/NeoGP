@@ -28,7 +28,7 @@ public class Properties {
             POPSIZE = 100000,
             DEPTH = 5,
             GENERATIONS = 25,
-            TREE_ARITY = 2;
+            COMPETITORS = 5;
     static final double
             PMUT_PER_NODE = 0.05,
             CROSSOVER_PROB = 0.9;
@@ -44,7 +44,7 @@ public class Properties {
                 "\nMIN_RANDOM=" + Properties.minRandom +
                 "\nMAX_RANDOM=" + Properties.maxRandom +
                 "\nGENERATIONS=" + Properties.GENERATIONS +
-                "\nTSIZE=" + Properties.TREE_ARITY +
+                "\nTSIZE=" + Properties.COMPETITORS +
                 "\n----------------------------------\n");
     }
 
