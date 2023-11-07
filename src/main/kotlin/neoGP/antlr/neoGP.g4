@@ -1,4 +1,4 @@
-grammar newgp;
+grammar neoGP;
 
 program : statement*;
 

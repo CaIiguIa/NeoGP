@@ -1,4 +1,4 @@
-package newGP.model.grammar
+package neoGP.model.grammar
 
 class Individual(
     val statements: MutableList<Statement> = mutableListOf()

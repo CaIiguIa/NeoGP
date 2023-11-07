@@ -1,4 +1,4 @@
-package newGP.model.grammar
+package neoGP.model.grammar
 
 import kotlin.random.Random
 

@@ -1,4 +1,4 @@
-package newGP.model.grammar
+package neoGP.model.grammar
 
 class Block(
     val statements: List<Statement>,

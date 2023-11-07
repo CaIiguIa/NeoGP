@@ -1,7 +1,7 @@
-package newGP.model
+package neoGP.model
 
-import newGP.model.grammar.Individual
-import newGP.model.grammar.Statement
+import neoGP.model.grammar.Individual
+import neoGP.model.grammar.Statement
 import kotlin.random.Random
 
 class Population(
@@ -51,7 +51,7 @@ class Population(
             competitor = individuals.random()
             competitorFitness = competitor.fitness()
 
-            if (competitorFitness > bestFitness) { //TODO: uwaga na znak fittness
+            if (competitorFitness > bestFitness) { //TODO: uwaga na znak fitness
                 bestFitness = competitorFitness
                 best = competitor
             }
@@ -70,7 +70,7 @@ class Population(
             competitor = individuals.random()
             competitorFitness = competitor.fitness()
 
-            if (competitorFitness < worstFitness) { //TODO: uwaga na znak fittness
+            if (competitorFitness < worstFitness) { //TODO: uwaga na znak fitness
                 worstFitness = competitorFitness
                 worst = competitor
             }
