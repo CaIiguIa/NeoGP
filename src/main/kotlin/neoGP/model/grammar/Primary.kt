@@ -63,7 +63,7 @@ class BooleanToken(override val value: String) : Primary(value) {
 
 class StringToken(override val value: String) : Primary(value) {
     companion object {
-        fun generateRandom() = StringToken("string${Random.nextInt(10)}")
+        fun generateRandom() = StringToken("\"string${Random.nextInt(10)}\"")
     }
 
     private val regex = """[^\r\n]*"""
@@ -72,9 +72,6 @@ class StringToken(override val value: String) : Primary(value) {
         check(Regex(regex).matches(value))
         { "The value does not match regex!" }
     }
-
-    override fun toString(): String =
-        "\"$value\""
 
     override fun copy(): StringToken = StringToken(value)
 }

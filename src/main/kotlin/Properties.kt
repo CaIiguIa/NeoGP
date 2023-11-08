@@ -32,15 +32,15 @@ class Properties {
 //                    Domain(-1000, 1000, "d4"),
 //                )
 //            ),
-            Problem(
-                SingleFunction(f2, "f2"),
-                listOf(
-                    Domain(-3.14, 3.14, "d1"),
+//            Problem(
+//                SingleFunction(f2, "f2"),
+//                listOf(
+//                    Domain(-3.14, 3.14, "d1"),
 //                    Domain(0, 7, "d2"),
 //                    Domain(0, 100, "d3"),
 //                    Domain(-100, 100, "d4"),
-                )
-            ),
+//                )
+//            ),
 //            Problem(
 //                SingleFunction(f3, "f3"),
 //                listOf(
@@ -59,15 +59,15 @@ class Properties {
 //                    Domain(-1000, 1000, "d4"),
 //                )
 //            ),
-            Problem(
-                DoubleFunction(f5, "f5"),
-                listOf(
+//            Problem(
+//                DoubleFunction(f5, "f5"),
+//                listOf(
 //                    Domain(-3.14, 3.14, "d1"),
 //                    Domain(0, 7, "d2"),
 //                    Domain(0, 100, "d3"),
-                    Domain(-100, 100, "d4"),
-                )
-            ),
+//                    Domain(-100, 100, "d4"),
+//                )
+//            ),
 //            Problem(
 //                DoubleFunction(f6, "f6"),
 //                listOf(
@@ -77,12 +77,12 @@ class Properties {
 //                    Domain(-1000, 1000, "d4"),
 //                )
 //            ),
-            Problem(
-                SingleFunction(f7, "f7"),
-                listOf(
-                    Domain(0.0, 2 * 3.14, "d1"),
-                )
-            ),
+//            Problem(
+//                SingleFunction(f7, "f7"),
+//                listOf(
+//                    Domain(0.0, 2 * 3.14, "d1"),
+//                )
+//            ),
             Problem(
                 SingleFunction(f8, "f8"),
                 listOf(

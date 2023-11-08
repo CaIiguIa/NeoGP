@@ -38,6 +38,16 @@ public interface neoGPListener extends ParseTreeListener {
 	 */
 	void exitBlock(neoGPParser.BlockContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link neoGPParser#ifElse}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfElse(neoGPParser.IfElseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link neoGPParser#ifElse}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfElse(neoGPParser.IfElseContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link neoGPParser#loop}.
 	 * @param ctx the parse tree
 	 */
@@ -57,16 +67,6 @@ public interface neoGPListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIf(neoGPParser.IfContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link neoGPParser#ifElse}.
-	 * @param ctx the parse tree
-	 */
-	void enterIfElse(neoGPParser.IfElseContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link neoGPParser#ifElse}.
-	 * @param ctx the parse tree
-	 */
-	void exitIfElse(neoGPParser.IfElseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link neoGPParser#in}.
 	 * @param ctx the parse tree
@@ -166,18 +166,6 @@ public interface neoGPListener extends ParseTreeListener {
 	 */
 	void exitAddition(neoGPParser.AdditionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Negation}
-	 * labeled alternative in {@link neoGPParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterNegation(neoGPParser.NegationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Negation}
-	 * labeled alternative in {@link neoGPParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitNegation(neoGPParser.NegationContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code PrimaryExpression}
 	 * labeled alternative in {@link neoGPParser#expression}.
 	 * @param ctx the parse tree
@@ -189,6 +177,18 @@ public interface neoGPListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPrimaryExpression(neoGPParser.PrimaryExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Negation}
+	 * labeled alternative in {@link neoGPParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterNegation(neoGPParser.NegationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Negation}
+	 * labeled alternative in {@link neoGPParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitNegation(neoGPParser.NegationContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Comparison}
 	 * labeled alternative in {@link neoGPParser#expression}.
@@ -238,18 +238,6 @@ public interface neoGPListener extends ParseTreeListener {
 	 */
 	void exitLogicAnd(neoGPParser.LogicAndContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Identifier}
-	 * labeled alternative in {@link neoGPParser#primary}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdentifier(neoGPParser.IdentifierContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Identifier}
-	 * labeled alternative in {@link neoGPParser#primary}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdentifier(neoGPParser.IdentifierContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code NumberLiteral}
 	 * labeled alternative in {@link neoGPParser#primary}.
 	 * @param ctx the parse tree
@@ -273,6 +261,18 @@ public interface neoGPListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBooleanLiteral(neoGPParser.BooleanLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Identifier}
+	 * labeled alternative in {@link neoGPParser#primary}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifier(neoGPParser.IdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Identifier}
+	 * labeled alternative in {@link neoGPParser#primary}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifier(neoGPParser.IdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code StringLiteral}
 	 * labeled alternative in {@link neoGPParser#primary}.

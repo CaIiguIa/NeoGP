@@ -23,12 +23,12 @@ public class neoGPParser extends Parser {
 		T__24=25, ID=26, NUMBER=27, BOOL=28, STRING=29, LEND=30, WHITESPACE=31, 
 		NEWLINE=32;
 	public static final int
-		RULE_program = 0, RULE_statement = 1, RULE_block = 2, RULE_loop = 3, RULE_if = 4, 
-		RULE_ifElse = 5, RULE_in = 6, RULE_print = 7, RULE_var = 8, RULE_varAssign = 9, 
-		RULE_const = 10, RULE_expression = 11, RULE_primary = 12;
+		RULE_program = 0, RULE_statement = 1, RULE_block = 2, RULE_ifElse = 3, 
+		RULE_loop = 4, RULE_if = 5, RULE_in = 6, RULE_print = 7, RULE_var = 8, 
+		RULE_varAssign = 9, RULE_const = 10, RULE_expression = 11, RULE_primary = 12;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"program", "statement", "block", "loop", "if", "ifElse", "in", "print", 
+			"program", "statement", "block", "ifElse", "loop", "if", "in", "print", 
 			"var", "varAssign", "const", "expression", "primary"
 		};
 	}
@@ -36,7 +36,7 @@ public class neoGPParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'while'", "'('", "')'", "'{'", "'}'", "'if'", "'else'", "'in'", 
+			null, "'if'", "'('", "')'", "'{'", "'}'", "'else'", "'while'", "'in'", 
 			"'print'", "'var'", "'='", "'const'", "'-'", "'*'", "'/'", "'+'", "'<'", 
 			"'>'", "'<='", "'>='", "'!'", "'=='", "'!='", "'&&'", "'||'", null, null, 
 			null, null, "';'"
@@ -133,7 +133,7 @@ public class neoGPParser extends Parser {
 			setState(29);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 67114818L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 67114882L) != 0)) {
 				{
 				{
 				setState(26);
@@ -159,14 +159,14 @@ public class neoGPParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class StatementContext extends ParserRuleContext {
+		public IfElseContext ifElse() {
+			return getRuleContext(IfElseContext.class,0);
+		}
 		public LoopContext loop() {
 			return getRuleContext(LoopContext.class,0);
 		}
 		public IfContext if_() {
 			return getRuleContext(IfContext.class,0);
-		}
-		public IfElseContext ifElse() {
-			return getRuleContext(IfElseContext.class,0);
 		}
 		public InContext in() {
 			return getRuleContext(InContext.class,0);
@@ -208,21 +208,21 @@ public class neoGPParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(32);
-				loop();
+				ifElse();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(33);
-				if_();
+				loop();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(34);
-				ifElse();
+				if_();
 				}
 				break;
 			case 4:
@@ -305,7 +305,7 @@ public class neoGPParser extends Parser {
 			setState(45);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 67114818L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 67114882L) != 0)) {
 				{
 				{
 				setState(42);
@@ -316,116 +316,6 @@ public class neoGPParser extends Parser {
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	@SuppressWarnings("CheckReturnValue")
-	public static class LoopContext extends ParserRuleContext {
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
-		public BlockContext block() {
-			return getRuleContext(BlockContext.class,0);
-		}
-		public LoopContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_loop; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).enterLoop(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitLoop(this);
-		}
-	}
-
-	public final LoopContext loop() throws RecognitionException {
-		LoopContext _localctx = new LoopContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_loop);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(48);
-			match(T__0);
-			setState(49);
-			match(T__1);
-			setState(50);
-			expression(0);
-			setState(51);
-			match(T__2);
-			setState(52);
-			match(T__3);
-			setState(53);
-			block();
-			setState(54);
-			match(T__4);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	@SuppressWarnings("CheckReturnValue")
-	public static class IfContext extends ParserRuleContext {
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
-		public BlockContext block() {
-			return getRuleContext(BlockContext.class,0);
-		}
-		public IfContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_if; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).enterIf(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitIf(this);
-		}
-	}
-
-	public final IfContext if_() throws RecognitionException {
-		IfContext _localctx = new IfContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_if);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(56);
-			match(T__5);
-			setState(57);
-			match(T__1);
-			setState(58);
-			expression(0);
-			setState(59);
-			match(T__2);
-			setState(60);
-			match(T__3);
-			setState(61);
-			block();
-			setState(62);
-			match(T__4);
 			}
 		}
 		catch (RecognitionException re) {
@@ -466,26 +356,136 @@ public class neoGPParser extends Parser {
 
 	public final IfElseContext ifElse() throws RecognitionException {
 		IfElseContext _localctx = new IfElseContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_ifElse);
+		enterRule(_localctx, 6, RULE_ifElse);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(64);
-			match(T__5);
-			setState(65);
+			setState(48);
+			match(T__0);
+			setState(49);
 			match(T__1);
-			setState(66);
+			setState(50);
 			expression(0);
-			setState(67);
+			setState(51);
 			match(T__2);
-			setState(68);
+			setState(52);
 			match(T__3);
-			setState(69);
+			setState(53);
 			block();
-			setState(70);
+			setState(54);
 			match(T__4);
-			setState(71);
+			setState(55);
+			match(T__5);
+			setState(56);
+			match(T__3);
+			setState(57);
+			block();
+			setState(58);
+			match(T__4);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class LoopContext extends ParserRuleContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public BlockContext block() {
+			return getRuleContext(BlockContext.class,0);
+		}
+		public LoopContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_loop; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).enterLoop(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitLoop(this);
+		}
+	}
+
+	public final LoopContext loop() throws RecognitionException {
+		LoopContext _localctx = new LoopContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_loop);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(60);
 			match(T__6);
+			setState(61);
+			match(T__1);
+			setState(62);
+			expression(0);
+			setState(63);
+			match(T__2);
+			setState(64);
+			match(T__3);
+			setState(65);
+			block();
+			setState(66);
+			match(T__4);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class IfContext extends ParserRuleContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public BlockContext block() {
+			return getRuleContext(BlockContext.class,0);
+		}
+		public IfContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_if; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).enterIf(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitIf(this);
+		}
+	}
+
+	public final IfContext if_() throws RecognitionException {
+		IfContext _localctx = new IfContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_if);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(68);
+			match(T__0);
+			setState(69);
+			match(T__1);
+			setState(70);
+			expression(0);
+			setState(71);
+			match(T__2);
 			setState(72);
 			match(T__3);
 			setState(73);
@@ -839,21 +839,6 @@ public class neoGPParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class NegationContext extends ExpressionContext {
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
-		public NegationContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).enterNegation(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitNegation(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
 	public static class PrimaryExpressionContext extends ExpressionContext {
 		public PrimaryContext primary() {
 			return getRuleContext(PrimaryContext.class,0);
@@ -866,6 +851,21 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitPrimaryExpression(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class NegationContext extends ExpressionContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public NegationContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).enterNegation(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitNegation(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -960,42 +960,6 @@ public class neoGPParser extends Parser {
 			setState(115);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case T__1:
-				{
-				_localctx = new ParenthesizedExpressionContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-
-				setState(106);
-				match(T__1);
-				setState(107);
-				expression(0);
-				setState(108);
-				match(T__2);
-				}
-				break;
-			case T__12:
-				{
-				_localctx = new UnaryMinusContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-				setState(110);
-				match(T__12);
-				setState(111);
-				expression(9);
-				}
-				break;
-			case T__20:
-				{
-				_localctx = new NegationContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-				setState(112);
-				match(T__20);
-				setState(113);
-				expression(5);
-				}
-				break;
 			case ID:
 			case NUMBER:
 			case BOOL:
@@ -1004,8 +968,44 @@ public class neoGPParser extends Parser {
 				_localctx = new PrimaryExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(114);
+
+				setState(106);
 				primary();
+				}
+				break;
+			case T__1:
+				{
+				_localctx = new ParenthesizedExpressionContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(107);
+				match(T__1);
+				setState(108);
+				expression(0);
+				setState(109);
+				match(T__2);
+				}
+				break;
+			case T__12:
+				{
+				_localctx = new UnaryMinusContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(111);
+				match(T__12);
+				setState(112);
+				expression(8);
+				}
+				break;
+			case T__20:
+				{
+				_localctx = new NegationContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(113);
+				match(T__20);
+				setState(114);
+				expression(4);
 				}
 				break;
 			default:
@@ -1028,7 +1028,7 @@ public class neoGPParser extends Parser {
 						_localctx = new MultiplicationContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(117);
-						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
+						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
 						setState(118);
 						((MultiplicationContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
@@ -1041,7 +1041,7 @@ public class neoGPParser extends Parser {
 							consume();
 						}
 						setState(119);
-						expression(9);
+						expression(8);
 						}
 						break;
 					case 2:
@@ -1049,7 +1049,7 @@ public class neoGPParser extends Parser {
 						_localctx = new AdditionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(120);
-						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
+						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
 						setState(121);
 						((AdditionContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
@@ -1062,7 +1062,7 @@ public class neoGPParser extends Parser {
 							consume();
 						}
 						setState(122);
-						expression(8);
+						expression(7);
 						}
 						break;
 					case 3:
@@ -1070,7 +1070,7 @@ public class neoGPParser extends Parser {
 						_localctx = new ComparisonContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(123);
-						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
+						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
 						setState(124);
 						((ComparisonContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
@@ -1083,7 +1083,7 @@ public class neoGPParser extends Parser {
 							consume();
 						}
 						setState(125);
-						expression(7);
+						expression(6);
 						}
 						break;
 					case 4:
@@ -1091,7 +1091,7 @@ public class neoGPParser extends Parser {
 						_localctx = new EqualityContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(126);
-						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
 						setState(127);
 						((EqualityContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
@@ -1104,7 +1104,7 @@ public class neoGPParser extends Parser {
 							consume();
 						}
 						setState(128);
-						expression(5);
+						expression(4);
 						}
 						break;
 					case 5:
@@ -1112,11 +1112,11 @@ public class neoGPParser extends Parser {
 						_localctx = new LogicAndContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(129);
-						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 						setState(130);
 						((LogicAndContext)_localctx).op = match(T__23);
 						setState(131);
-						expression(4);
+						expression(3);
 						}
 						break;
 					case 6:
@@ -1124,11 +1124,11 @@ public class neoGPParser extends Parser {
 						_localctx = new LogicOrContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(132);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
 						setState(133);
 						((LogicOrContext)_localctx).op = match(T__24);
 						setState(134);
-						expression(3);
+						expression(2);
 						}
 						break;
 					}
@@ -1223,28 +1223,28 @@ public class neoGPParser extends Parser {
 			setState(144);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case ID:
-				_localctx = new IdentifierContext(_localctx);
+			case NUMBER:
+				_localctx = new NumberLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(140);
-				match(ID);
-				}
-				break;
-			case NUMBER:
-				_localctx = new NumberLiteralContext(_localctx);
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(141);
 				match(NUMBER);
 				}
 				break;
 			case BOOL:
 				_localctx = new BooleanLiteralContext(_localctx);
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(141);
+				match(BOOL);
+				}
+				break;
+			case ID:
+				_localctx = new IdentifierContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(142);
-				match(BOOL);
+				match(ID);
 				}
 				break;
 			case STRING:
@@ -1280,17 +1280,17 @@ public class neoGPParser extends Parser {
 	private boolean expression_sempred(ExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 8);
-		case 1:
 			return precpred(_ctx, 7);
-		case 2:
+		case 1:
 			return precpred(_ctx, 6);
+		case 2:
+			return precpred(_ctx, 5);
 		case 3:
-			return precpred(_ctx, 4);
-		case 4:
 			return precpred(_ctx, 3);
-		case 5:
+		case 4:
 			return precpred(_ctx, 2);
+		case 5:
+			return precpred(_ctx, 1);
 		}
 		return true;
 	}
@@ -1305,8 +1305,8 @@ public class neoGPParser extends Parser {
 		"\u0001\u0001\u0001\u0001\u0001\u0003\u0001)\b\u0001\u0001\u0002\u0005"+
 		"\u0002,\b\u0002\n\u0002\f\u0002/\t\u0002\u0001\u0003\u0001\u0003\u0001"+
 		"\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001"+
+		"\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0004\u0001\u0004\u0001"+
 		"\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001"+
-		"\u0004\u0001\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001"+
 		"\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001"+
 		"\u0005\u0001\u0005\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0006\u0001"+
 		"\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001"+
@@ -1323,7 +1323,7 @@ public class neoGPParser extends Parser {
 		"\u0001\u0000\u000e\u000f\u0002\u0000\r\r\u0010\u0010\u0001\u0000\u0011"+
 		"\u0014\u0001\u0000\u0016\u0017\u009b\u0000\u001d\u0001\u0000\u0000\u0000"+
 		"\u0002(\u0001\u0000\u0000\u0000\u0004-\u0001\u0000\u0000\u0000\u00060"+
-		"\u0001\u0000\u0000\u0000\b8\u0001\u0000\u0000\u0000\n@\u0001\u0000\u0000"+
+		"\u0001\u0000\u0000\u0000\b<\u0001\u0000\u0000\u0000\nD\u0001\u0000\u0000"+
 		"\u0000\fL\u0001\u0000\u0000\u0000\u000eP\u0001\u0000\u0000\u0000\u0010"+
 		"V\u0001\u0000\u0000\u0000\u0012^\u0001\u0000\u0000\u0000\u0014c\u0001"+
 		"\u0000\u0000\u0000\u0016s\u0001\u0000\u0000\u0000\u0018\u0090\u0001\u0000"+
@@ -1341,13 +1341,13 @@ public class neoGPParser extends Parser {
 		"\u0000-.\u0001\u0000\u0000\u0000.\u0005\u0001\u0000\u0000\u0000/-\u0001"+
 		"\u0000\u0000\u000001\u0005\u0001\u0000\u000012\u0005\u0002\u0000\u0000"+
 		"23\u0003\u0016\u000b\u000034\u0005\u0003\u0000\u000045\u0005\u0004\u0000"+
-		"\u000056\u0003\u0004\u0002\u000067\u0005\u0005\u0000\u00007\u0007\u0001"+
-		"\u0000\u0000\u000089\u0005\u0006\u0000\u00009:\u0005\u0002\u0000\u0000"+
-		":;\u0003\u0016\u000b\u0000;<\u0005\u0003\u0000\u0000<=\u0005\u0004\u0000"+
-		"\u0000=>\u0003\u0004\u0002\u0000>?\u0005\u0005\u0000\u0000?\t\u0001\u0000"+
-		"\u0000\u0000@A\u0005\u0006\u0000\u0000AB\u0005\u0002\u0000\u0000BC\u0003"+
-		"\u0016\u000b\u0000CD\u0005\u0003\u0000\u0000DE\u0005\u0004\u0000\u0000"+
-		"EF\u0003\u0004\u0002\u0000FG\u0005\u0005\u0000\u0000GH\u0005\u0007\u0000"+
+		"\u000056\u0003\u0004\u0002\u000067\u0005\u0005\u0000\u000078\u0005\u0006"+
+		"\u0000\u000089\u0005\u0004\u0000\u00009:\u0003\u0004\u0002\u0000:;\u0005"+
+		"\u0005\u0000\u0000;\u0007\u0001\u0000\u0000\u0000<=\u0005\u0007\u0000"+
+		"\u0000=>\u0005\u0002\u0000\u0000>?\u0003\u0016\u000b\u0000?@\u0005\u0003"+
+		"\u0000\u0000@A\u0005\u0004\u0000\u0000AB\u0003\u0004\u0002\u0000BC\u0005"+
+		"\u0005\u0000\u0000C\t\u0001\u0000\u0000\u0000DE\u0005\u0001\u0000\u0000"+
+		"EF\u0005\u0002\u0000\u0000FG\u0003\u0016\u000b\u0000GH\u0005\u0003\u0000"+
 		"\u0000HI\u0005\u0004\u0000\u0000IJ\u0003\u0004\u0002\u0000JK\u0005\u0005"+
 		"\u0000\u0000K\u000b\u0001\u0000\u0000\u0000LM\u0005\b\u0000\u0000MN\u0005"+
 		"\u001a\u0000\u0000NO\u0005\u001e\u0000\u0000O\r\u0001\u0000\u0000\u0000"+
@@ -1361,29 +1361,29 @@ public class neoGPParser extends Parser {
 		"\u0001\u0000\u0000\u0000cd\u0005\f\u0000\u0000de\u0005\u001a\u0000\u0000"+
 		"ef\u0005\u000b\u0000\u0000fg\u0003\u0016\u000b\u0000gh\u0005\u001e\u0000"+
 		"\u0000h\u0015\u0001\u0000\u0000\u0000ij\u0006\u000b\uffff\uffff\u0000"+
-		"jk\u0005\u0002\u0000\u0000kl\u0003\u0016\u000b\u0000lm\u0005\u0003\u0000"+
-		"\u0000mt\u0001\u0000\u0000\u0000no\u0005\r\u0000\u0000ot\u0003\u0016\u000b"+
-		"\tpq\u0005\u0015\u0000\u0000qt\u0003\u0016\u000b\u0005rt\u0003\u0018\f"+
-		"\u0000si\u0001\u0000\u0000\u0000sn\u0001\u0000\u0000\u0000sp\u0001\u0000"+
-		"\u0000\u0000sr\u0001\u0000\u0000\u0000t\u0089\u0001\u0000\u0000\u0000"+
-		"uv\n\b\u0000\u0000vw\u0007\u0000\u0000\u0000w\u0088\u0003\u0016\u000b"+
-		"\txy\n\u0007\u0000\u0000yz\u0007\u0001\u0000\u0000z\u0088\u0003\u0016"+
-		"\u000b\b{|\n\u0006\u0000\u0000|}\u0007\u0002\u0000\u0000}\u0088\u0003"+
-		"\u0016\u000b\u0007~\u007f\n\u0004\u0000\u0000\u007f\u0080\u0007\u0003"+
-		"\u0000\u0000\u0080\u0088\u0003\u0016\u000b\u0005\u0081\u0082\n\u0003\u0000"+
-		"\u0000\u0082\u0083\u0005\u0018\u0000\u0000\u0083\u0088\u0003\u0016\u000b"+
-		"\u0004\u0084\u0085\n\u0002\u0000\u0000\u0085\u0086\u0005\u0019\u0000\u0000"+
-		"\u0086\u0088\u0003\u0016\u000b\u0003\u0087u\u0001\u0000\u0000\u0000\u0087"+
-		"x\u0001\u0000\u0000\u0000\u0087{\u0001\u0000\u0000\u0000\u0087~\u0001"+
-		"\u0000\u0000\u0000\u0087\u0081\u0001\u0000\u0000\u0000\u0087\u0084\u0001"+
-		"\u0000\u0000\u0000\u0088\u008b\u0001\u0000\u0000\u0000\u0089\u0087\u0001"+
-		"\u0000\u0000\u0000\u0089\u008a\u0001\u0000\u0000\u0000\u008a\u0017\u0001"+
-		"\u0000\u0000\u0000\u008b\u0089\u0001\u0000\u0000\u0000\u008c\u0091\u0005"+
-		"\u001a\u0000\u0000\u008d\u0091\u0005\u001b\u0000\u0000\u008e\u0091\u0005"+
-		"\u001c\u0000\u0000\u008f\u0091\u0005\u001d\u0000\u0000\u0090\u008c\u0001"+
-		"\u0000\u0000\u0000\u0090\u008d\u0001\u0000\u0000\u0000\u0090\u008e\u0001"+
-		"\u0000\u0000\u0000\u0090\u008f\u0001\u0000\u0000\u0000\u0091\u0019\u0001"+
-		"\u0000\u0000\u0000\b\u001d(-Zs\u0087\u0089\u0090";
+		"jt\u0003\u0018\f\u0000kl\u0005\u0002\u0000\u0000lm\u0003\u0016\u000b\u0000"+
+		"mn\u0005\u0003\u0000\u0000nt\u0001\u0000\u0000\u0000op\u0005\r\u0000\u0000"+
+		"pt\u0003\u0016\u000b\bqr\u0005\u0015\u0000\u0000rt\u0003\u0016\u000b\u0004"+
+		"si\u0001\u0000\u0000\u0000sk\u0001\u0000\u0000\u0000so\u0001\u0000\u0000"+
+		"\u0000sq\u0001\u0000\u0000\u0000t\u0089\u0001\u0000\u0000\u0000uv\n\u0007"+
+		"\u0000\u0000vw\u0007\u0000\u0000\u0000w\u0088\u0003\u0016\u000b\bxy\n"+
+		"\u0006\u0000\u0000yz\u0007\u0001\u0000\u0000z\u0088\u0003\u0016\u000b"+
+		"\u0007{|\n\u0005\u0000\u0000|}\u0007\u0002\u0000\u0000}\u0088\u0003\u0016"+
+		"\u000b\u0006~\u007f\n\u0003\u0000\u0000\u007f\u0080\u0007\u0003\u0000"+
+		"\u0000\u0080\u0088\u0003\u0016\u000b\u0004\u0081\u0082\n\u0002\u0000\u0000"+
+		"\u0082\u0083\u0005\u0018\u0000\u0000\u0083\u0088\u0003\u0016\u000b\u0003"+
+		"\u0084\u0085\n\u0001\u0000\u0000\u0085\u0086\u0005\u0019\u0000\u0000\u0086"+
+		"\u0088\u0003\u0016\u000b\u0002\u0087u\u0001\u0000\u0000\u0000\u0087x\u0001"+
+		"\u0000\u0000\u0000\u0087{\u0001\u0000\u0000\u0000\u0087~\u0001\u0000\u0000"+
+		"\u0000\u0087\u0081\u0001\u0000\u0000\u0000\u0087\u0084\u0001\u0000\u0000"+
+		"\u0000\u0088\u008b\u0001\u0000\u0000\u0000\u0089\u0087\u0001\u0000\u0000"+
+		"\u0000\u0089\u008a\u0001\u0000\u0000\u0000\u008a\u0017\u0001\u0000\u0000"+
+		"\u0000\u008b\u0089\u0001\u0000\u0000\u0000\u008c\u0091\u0005\u001b\u0000"+
+		"\u0000\u008d\u0091\u0005\u001c\u0000\u0000\u008e\u0091\u0005\u001a\u0000"+
+		"\u0000\u008f\u0091\u0005\u001d\u0000\u0000\u0090\u008c\u0001\u0000\u0000"+
+		"\u0000\u0090\u008d\u0001\u0000\u0000\u0000\u0090\u008e\u0001\u0000\u0000"+
+		"\u0000\u0090\u008f\u0001\u0000\u0000\u0000\u0091\u0019\u0001\u0000\u0000"+
+		"\u0000\b\u001d(-Zs\u0087\u0089\u0090";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

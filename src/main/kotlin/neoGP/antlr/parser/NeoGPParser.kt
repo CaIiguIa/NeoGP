@@ -110,9 +110,9 @@ class NeoGPParser : neoGPBaseListener() {
 
         enterExpression(ctx.expression())
         val exp = expressions.removeLast()
-        enterBlock(ctx.block().removeFirst())
+        enterBlock(ctx.block()[0])
         val block1 = blocks.removeLast()
-        enterBlock(ctx.block().first())
+        enterBlock(ctx.block()[1])
         val block2 = blocks.removeLast()
 
         statements.add(IfElse(ctx.text, exp, block1, block2))
@@ -194,9 +194,9 @@ class NeoGPParser : neoGPBaseListener() {
     override fun enterLogicOr(ctx: LogicOrContext?) {
         check(ctx != null) { "context cannot be null!" }
 
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[0])
         val exp1 = expressions.removeLast()
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[1])
         val exp2 = expressions.removeLast()
 
         expressions.add(Logical(ctx.text, exp1, exp2, Operator.OR))
@@ -209,9 +209,9 @@ class NeoGPParser : neoGPBaseListener() {
     override fun enterMultiplication(ctx: MultiplicationContext?) {
         check(ctx != null) { "context cannot be null!" }
 
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[0])
         val exp1 = expressions.removeLast()
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[1])
         val exp2 = expressions.removeLast()
         val operator = if (ctx.op.text == "*")
             Operator.MULTIPLY
@@ -227,9 +227,9 @@ class NeoGPParser : neoGPBaseListener() {
     override fun enterAddition(ctx: AdditionContext?) {
         check(ctx != null) { "context cannot be null!" }
 
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[0])
         val exp1 = expressions.removeLast()
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[1])
         val exp2 = expressions.removeLast()
         val operator = if (ctx.op.text == "+")
             Operator.ADD
@@ -265,9 +265,9 @@ class NeoGPParser : neoGPBaseListener() {
     override fun enterComparison(ctx: ComparisonContext?) {
         check(ctx != null) { "context cannot be null!" }
 
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[0])
         val exp1 = expressions.removeLast()
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[1])
         val exp2 = expressions.removeLast()
         val operator = when (ctx.op.text) {
             "<" -> Operator.LOWER_THAN
@@ -298,9 +298,9 @@ class NeoGPParser : neoGPBaseListener() {
     override fun enterEquality(ctx: EqualityContext?) {
         check(ctx != null) { "context cannot be null!" }
 
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[0])
         val exp1 = expressions.removeLast()
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[1])
         val exp2 = expressions.removeLast()
         val operator = if (ctx.op.text == "==")
             Operator.EQUAL
@@ -317,9 +317,9 @@ class NeoGPParser : neoGPBaseListener() {
     override fun enterLogicAnd(ctx: LogicAndContext?) {
         check(ctx != null) { "context cannot be null!" }
 
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[0])
         val exp1 = expressions.removeLast()
-        enterExpression(ctx.expression().removeFirst())
+        enterExpression(ctx.expression()[1])
         val exp2 = expressions.removeLast()
 
         expressions.add(Logical(ctx.text, exp1, exp2, Operator.AND))

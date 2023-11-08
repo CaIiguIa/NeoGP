@@ -3,9 +3,9 @@ grammar neoGP;
 program : statement*;
 
 statement
-    : loop
+    : ifElse
+    | loop
     | if
-    | ifElse
     | in
     | print
     | var
@@ -15,9 +15,9 @@ statement
 
 block: statement*;
 
+ifElse: 'if' '('  expression ')' '{' block '}' 'else' '{' block '}';
 loop: 'while' '(' expression ')' '{' block '}';
 if: 'if' '('  expression ')' '{' block '}';
-ifElse: 'if' '('  expression ')' '{' block '}' 'else' '{' block '}';
 in: 'in' ID LEND;
 print: 'print' '('  expression ')' LEND;
 var: 'var' ID ('=' expression)? LEND;
@@ -25,7 +25,8 @@ varAssign: ID '=' expression LEND;
 const: 'const' ID '=' expression LEND;
 
 expression
-    : '(' expression ')' # ParenthesizedExpression
+    : primary # PrimaryExpression
+    | '(' expression ')' # ParenthesizedExpression
     | '-' expression # UnaryMinus
     | expression op=('*'|'/') expression # Multiplication
     | expression op=('+'|'-') expression # Addition
@@ -34,13 +35,12 @@ expression
     | expression op=('=='|'!=') expression # Equality
     | expression op='&&' expression # LogicAnd
     | expression op='||' expression # LogicOr
-    | primary # PrimaryExpression
     ;
 
 primary
-    : ID # Identifier
-    | NUMBER # NumberLiteral
+    : NUMBER # NumberLiteral
     | BOOL # BooleanLiteral
+    | ID # Identifier
     | STRING # StringLiteral
     ;
 

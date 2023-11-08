@@ -53,6 +53,18 @@ public class neoGPBaseListener implements neoGPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterIfElse(neoGPParser.IfElseContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIfElse(neoGPParser.IfElseContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterLoop(neoGPParser.LoopContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -72,18 +84,6 @@ public class neoGPBaseListener implements neoGPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIf(neoGPParser.IfContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIfElse(neoGPParser.IfElseContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIfElse(neoGPParser.IfElseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -197,18 +197,6 @@ public class neoGPBaseListener implements neoGPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNegation(neoGPParser.NegationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNegation(neoGPParser.NegationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterPrimaryExpression(neoGPParser.PrimaryExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -216,6 +204,18 @@ public class neoGPBaseListener implements neoGPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPrimaryExpression(neoGPParser.PrimaryExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNegation(neoGPParser.NegationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNegation(neoGPParser.NegationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -269,18 +269,6 @@ public class neoGPBaseListener implements neoGPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIdentifier(neoGPParser.IdentifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIdentifier(neoGPParser.IdentifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterNumberLiteral(neoGPParser.NumberLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -300,6 +288,18 @@ public class neoGPBaseListener implements neoGPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBooleanLiteral(neoGPParser.BooleanLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdentifier(neoGPParser.IdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdentifier(neoGPParser.IdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
