@@ -1,11 +1,11 @@
 package neoGP.model.grammar
 
 class Block(
-    val statements: List<Statement>,
+    val statements: MutableList<Statement> = mutableListOf(),
 ) {
     companion object {
         fun generateRandom() =
-            Block(listOf(Statement.generateRandom())) //TODO: Zrobić więcej, ale im więcej tym rzadsze
+            Block(mutableListOf(Statement.generateRandom())) //TODO: Zrobić więcej, ale im więcej tym rzadsze ??
     }
 
     override fun toString(): String =
@@ -16,6 +16,6 @@ class Block(
 
     fun copy() =
         Block(
-            statements.map(Statement::copy)
+            statements.map(Statement::copy).toMutableList()
         )
 }

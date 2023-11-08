@@ -17,5 +17,7 @@ fun main() {
     val parser = neoGPParser(tokens)
     val tree: neoGPParser.ProgramContext = parser.program()
     val translator = NeoGPParser()
-    translator.enterProgram(tree)
+    val sameInd = translator.parse(tree)
+    println(sameInd)
+    check(ind.toString() == sameInd.toString()) { "Haha chciałbyś żeby działało" }
 }
