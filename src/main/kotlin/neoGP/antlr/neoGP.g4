@@ -38,16 +38,16 @@ expression
     ;
 
 primary
-    : NUMBER # NumberLiteral
+    : INT # IntLiteral
+    | FPNUMBER # FPNumberLiteral
     | BOOL # BooleanLiteral
     | ID # Identifier
-    | STRING # StringLiteral
     ;
 
 ID: [a-zA-Z_][a-zA-Z_0-9]*;
-NUMBER: [0-9]+;
+INT: [0-9]+;
+FPNUMBER: [0-9]+ '.' [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9];
 BOOL: 'true' | 'false';
-STRING: '"'  ~('\r' | '\n')* '"';
 
 
 LEND: ';';
