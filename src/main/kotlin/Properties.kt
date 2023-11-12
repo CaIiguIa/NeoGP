@@ -23,70 +23,70 @@ class Properties {
 
 
         val data: List<Problem> = listOf(
-//            Problem(
-//                SingleFunction(f1, "f1"),
-//                listOf(
-//                    Domain(-10, 10, "d1"),
-//                    Domain(0, 100, "d2"),
-//                    Domain(-1, 1, "d3"),
-//                    Domain(-1000, 1000, "d4"),
-//                )
-//            ),
-//            Problem(
-//                SingleFunction(f2, "f2"),
-//                listOf(
-//                    Domain(-3.14, 3.14, "d1"),
-//                    Domain(0, 7, "d2"),
-//                    Domain(0, 100, "d3"),
-//                    Domain(-100, 100, "d4"),
-//                )
-//            ),
-//            Problem(
-//                SingleFunction(f3, "f3"),
-//                listOf(
-//                    Domain(0, 4, "d1"),
-//                    Domain(0, 9, "d2"),
-//                    Domain(0, 99, "d3"),
-//                    Domain(0, 999, "d4"),
-//                )
-//            ),
-//            Problem(
-//                DoubleFunction(f4, "f4"),
-//                listOf(
-//                    Domain(0, 1, "d1"),
-//                    Domain(-10, 10, "d2"),
-//                    Domain(0, 100, "d3"),
-//                    Domain(-1000, 1000, "d4"),
-//                )
-//            ),
-//            Problem(
-//                DoubleFunction(f5, "f5"),
-//                listOf(
-//                    Domain(-3.14, 3.14, "d1"),
-//                    Domain(0, 7, "d2"),
-//                    Domain(0, 100, "d3"),
-//                    Domain(-100, 100, "d4"),
-//                )
-//            ),
-//            Problem(
-//                DoubleFunction(f6, "f6"),
-//                listOf(
-//                    Domain(-10, 10, "d1"),
-//                    Domain(0, 100, "d2"),
-//                    Domain(-1, 1, "d3"),
-//                    Domain(-1000, 1000, "d4"),
-//                )
-//            ),
-//            Problem(
-//                SingleFunction(f7, "f7"),
-//                listOf(
-//                    Domain(0.0, 2 * 3.14, "d1"),
-//                )
-//            ),
+            Problem(
+                SingleFunction(f1, "f1"),
+                listOf(
+                    Domain(-10, 10, "d1"),
+                    Domain(0, 100, "d2"),
+                    Domain(-1, 1, "d3"),
+                    Domain(-1000, 1000, "d4"),
+                )
+            ),
+            Problem(
+                SingleFunction(f2, "f2"),
+                listOf(
+                    Domain(-3.14, 3.14, "d1"),
+                    Domain(0, 7, "d2"),
+                    Domain(0, 100, "d3"),
+                    Domain(-100, 100, "d4"),
+                )
+            ),
+            Problem(
+                SingleFunction(f3, "f3"),
+                listOf(
+                    Domain(0, 4, "d1"),
+                    Domain(0, 9, "d2"),
+                    Domain(0, 99, "d3"),
+                    Domain(0, 999, "d4"),
+                )
+            ),
+            Problem(
+                DoubleFunction(f4, "f4"),
+                listOf(
+                    Domain(0, 1, "d1"),
+                    Domain(-10, 10, "d2"),
+                    Domain(0, 100, "d3"),
+                    Domain(-1000, 1000, "d4"),
+                )
+            ),
+            Problem(
+                DoubleFunction(f5, "f5"),
+                listOf(
+                    Domain(-3.14, 3.14, "d1"),
+                    Domain(0, 7, "d2"),
+                    Domain(0, 100, "d3"),
+                    Domain(-100, 100, "d4"),
+                )
+            ),
+            Problem(
+                DoubleFunction(f6, "f6"),
+                listOf(
+                    Domain(-10, 10, "d1"),
+                    Domain(0, 100, "d2"),
+                    Domain(-1, 1, "d3"),
+                    Domain(-1000, 1000, "d4"),
+                )
+            ),
+            Problem(
+                SingleFunction(f7, "f7"),
+                listOf(
+                    Domain(0.0, 2 * 3.14, "d1"),
+                )
+            ),
             Problem(
                 SingleFunction(f8, "f8"),
                 listOf(
-                    Domain(0.001, 3.14, "d1"),
+                    Domain(0.000, 3.14, "d1"),
                 )
             ),
         )
