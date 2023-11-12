@@ -86,7 +86,7 @@ class Population(
             ?: throw IllegalStateException("Random child implementation fault")
     }
 
-    private fun crossover(parent1: Individual, parent2: Individual): Individual {
+    fun crossover(parent1: Individual, parent2: Individual): Individual {
         val children1 = parent1.getChildrenAtDepth(0)
         val children2 = parent2.getChildrenAtDepth(0)
 
@@ -108,7 +108,7 @@ class Population(
         return newInd
     }
 
-    private fun mutation(parent: Individual): Individual {
+    fun mutation(parent: Individual): Individual {
         val copy = parent.copy()
         val idxToReplace = Random.nextInt(copy.statements.size)
         copy.statements.removeAt(idxToReplace)
