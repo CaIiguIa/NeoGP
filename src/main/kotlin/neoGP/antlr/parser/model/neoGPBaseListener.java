@@ -269,13 +269,25 @@ public class neoGPBaseListener implements neoGPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNumberLiteral(neoGPParser.NumberLiteralContext ctx) { }
+	@Override public void enterIntLiteral(neoGPParser.IntLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNumberLiteral(neoGPParser.NumberLiteralContext ctx) { }
+	@Override public void exitIntLiteral(neoGPParser.IntLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFPNumberLiteral(neoGPParser.FPNumberLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFPNumberLiteral(neoGPParser.FPNumberLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -300,18 +312,6 @@ public class neoGPBaseListener implements neoGPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIdentifier(neoGPParser.IdentifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterStringLiteral(neoGPParser.StringLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStringLiteral(neoGPParser.StringLiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

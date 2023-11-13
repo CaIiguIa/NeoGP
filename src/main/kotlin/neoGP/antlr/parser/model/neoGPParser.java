@@ -20,7 +20,7 @@ public class neoGPParser extends Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
-		T__24=25, ID=26, NUMBER=27, BOOL=28, STRING=29, LEND=30, WHITESPACE=31, 
+		T__24=25, ID=26, INT=27, FPNUMBER=28, BOOL=29, LEND=30, WHITESPACE=31, 
 		NEWLINE=32;
 	public static final int
 		RULE_program = 0, RULE_statement = 1, RULE_block = 2, RULE_ifElse = 3, 
@@ -47,7 +47,7 @@ public class neoGPParser extends Parser {
 		return new String[] {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, "ID", "NUMBER", "BOOL", "STRING", "LEND", "WHITESPACE", "NEWLINE"
+			null, null, "ID", "INT", "FPNUMBER", "BOOL", "LEND", "WHITESPACE", "NEWLINE"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -961,9 +961,9 @@ public class neoGPParser extends Parser {
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ID:
-			case NUMBER:
+			case INT:
+			case FPNUMBER:
 			case BOOL:
-			case STRING:
 				{
 				_localctx = new PrimaryExpressionContext(_localctx);
 				_ctx = _localctx;
@@ -1177,19 +1177,6 @@ public class neoGPParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class StringLiteralContext extends PrimaryContext {
-		public TerminalNode STRING() { return getToken(neoGPParser.STRING, 0); }
-		public StringLiteralContext(PrimaryContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).enterStringLiteral(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitStringLiteral(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
 	public static class BooleanLiteralContext extends PrimaryContext {
 		public TerminalNode BOOL() { return getToken(neoGPParser.BOOL, 0); }
 		public BooleanLiteralContext(PrimaryContext ctx) { copyFrom(ctx); }
@@ -1203,16 +1190,29 @@ public class neoGPParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class NumberLiteralContext extends PrimaryContext {
-		public TerminalNode NUMBER() { return getToken(neoGPParser.NUMBER, 0); }
-		public NumberLiteralContext(PrimaryContext ctx) { copyFrom(ctx); }
+	public static class IntLiteralContext extends PrimaryContext {
+		public TerminalNode INT() { return getToken(neoGPParser.INT, 0); }
+		public IntLiteralContext(PrimaryContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).enterNumberLiteral(this);
+			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).enterIntLiteral(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitNumberLiteral(this);
+			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitIntLiteral(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class FPNumberLiteralContext extends PrimaryContext {
+		public TerminalNode FPNUMBER() { return getToken(neoGPParser.FPNUMBER, 0); }
+		public FPNumberLiteralContext(PrimaryContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).enterFPNumberLiteral(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitFPNumberLiteral(this);
 		}
 	}
 
@@ -1223,36 +1223,36 @@ public class neoGPParser extends Parser {
 			setState(144);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case NUMBER:
-				_localctx = new NumberLiteralContext(_localctx);
+			case INT:
+				_localctx = new IntLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(140);
-				match(NUMBER);
+				match(INT);
+				}
+				break;
+			case FPNUMBER:
+				_localctx = new FPNumberLiteralContext(_localctx);
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(141);
+				match(FPNUMBER);
 				}
 				break;
 			case BOOL:
 				_localctx = new BooleanLiteralContext(_localctx);
-				enterOuterAlt(_localctx, 2);
+				enterOuterAlt(_localctx, 3);
 				{
-				setState(141);
+				setState(142);
 				match(BOOL);
 				}
 				break;
 			case ID:
 				_localctx = new IdentifierContext(_localctx);
-				enterOuterAlt(_localctx, 3);
-				{
-				setState(142);
-				match(ID);
-				}
-				break;
-			case STRING:
-				_localctx = new StringLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(143);
-				match(STRING);
+				match(ID);
 				}
 				break;
 			default:
@@ -1379,8 +1379,8 @@ public class neoGPParser extends Parser {
 		"\u0000\u0088\u008b\u0001\u0000\u0000\u0000\u0089\u0087\u0001\u0000\u0000"+
 		"\u0000\u0089\u008a\u0001\u0000\u0000\u0000\u008a\u0017\u0001\u0000\u0000"+
 		"\u0000\u008b\u0089\u0001\u0000\u0000\u0000\u008c\u0091\u0005\u001b\u0000"+
-		"\u0000\u008d\u0091\u0005\u001c\u0000\u0000\u008e\u0091\u0005\u001a\u0000"+
-		"\u0000\u008f\u0091\u0005\u001d\u0000\u0000\u0090\u008c\u0001\u0000\u0000"+
+		"\u0000\u008d\u0091\u0005\u001c\u0000\u0000\u008e\u0091\u0005\u001d\u0000"+
+		"\u0000\u008f\u0091\u0005\u001a\u0000\u0000\u0090\u008c\u0001\u0000\u0000"+
 		"\u0000\u0090\u008d\u0001\u0000\u0000\u0000\u0090\u008e\u0001\u0000\u0000"+
 		"\u0000\u0090\u008f\u0001\u0000\u0000\u0000\u0091\u0019\u0001\u0000\u0000"+
 		"\u0000\b\u001d(-Zs\u0087\u0089\u0090";
