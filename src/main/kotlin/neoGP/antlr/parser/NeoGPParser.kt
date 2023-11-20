@@ -6,15 +6,15 @@ import neoGP.antlr.parser.model.neoGPParser.AdditionContext
 import neoGP.antlr.parser.model.neoGPParser.BooleanLiteralContext
 import neoGP.antlr.parser.model.neoGPParser.ComparisonContext
 import neoGP.antlr.parser.model.neoGPParser.EqualityContext
+import neoGP.antlr.parser.model.neoGPParser.FPNumberLiteralContext
 import neoGP.antlr.parser.model.neoGPParser.IdentifierContext
+import neoGP.antlr.parser.model.neoGPParser.IntLiteralContext
 import neoGP.antlr.parser.model.neoGPParser.LogicAndContext
 import neoGP.antlr.parser.model.neoGPParser.LogicOrContext
 import neoGP.antlr.parser.model.neoGPParser.MultiplicationContext
 import neoGP.antlr.parser.model.neoGPParser.NegationContext
-import neoGP.antlr.parser.model.neoGPParser.NumberLiteralContext
 import neoGP.antlr.parser.model.neoGPParser.ParenthesizedExpressionContext
 import neoGP.antlr.parser.model.neoGPParser.PrimaryExpressionContext
-import neoGP.antlr.parser.model.neoGPParser.StringLiteralContext
 import neoGP.antlr.parser.model.neoGPParser.UnaryMinusContext
 import neoGP.model.grammar.*
 import org.antlr.v4.runtime.ParserRuleContext
@@ -338,13 +338,13 @@ class NeoGPParser : neoGPBaseListener() {
         super.exitIdentifier(ctx)
     }
 
-    override fun enterNumberLiteral(ctx: NumberLiteralContext?) {
+    override fun enterIntLiteral(ctx: IntLiteralContext?) {
         check(ctx != null) { "context cannot be null!" }
-        expressions.add(NumberToken(ctx.text))
+        expressions.add(IntNumberToken(ctx.text))
     }
 
-    override fun exitNumberLiteral(ctx: NumberLiteralContext?) {
-        super.exitNumberLiteral(ctx)
+    override fun exitIntLiteral(ctx: IntLiteralContext?) {
+        super.exitIntLiteral(ctx)
     }
 
     override fun enterBooleanLiteral(ctx: BooleanLiteralContext?) {
@@ -356,13 +356,9 @@ class NeoGPParser : neoGPBaseListener() {
         super.exitBooleanLiteral(ctx)
     }
 
-    override fun enterStringLiteral(ctx: StringLiteralContext?) {
+    override fun enterFPNumberLiteral(ctx: FPNumberLiteralContext?) {
         check(ctx != null) { "context cannot be null!" }
-        expressions.add(StringToken(ctx.text))
-    }
-
-    override fun exitStringLiteral(ctx: StringLiteralContext?) {
-        super.exitStringLiteral(ctx)
+        expressions.add(FloatNumberToken(ctx.text))
     }
 
     private fun enterExpression(ctx: neoGPParser.ExpressionContext?) {
@@ -387,9 +383,9 @@ class NeoGPParser : neoGPBaseListener() {
 
         when (ctx) {
             is IdentifierContext -> enterIdentifier(ctx)
-            is NumberLiteralContext -> enterNumberLiteral(ctx)
             is BooleanLiteralContext -> enterBooleanLiteral(ctx)
-            is StringLiteralContext -> enterStringLiteral(ctx)
+            is IntLiteralContext -> enterIntLiteral(ctx)
+            is FPNumberLiteralContext -> enterFPNumberLiteral(ctx)
         }
     }
 

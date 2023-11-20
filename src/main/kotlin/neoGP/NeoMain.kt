@@ -6,25 +6,26 @@ import neoGP.antlr.parser.model.neoGPParser
 import neoGP.model.Population
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
+import kotlin.system.measureTimeMillis
 
 fun main() {
-    val population = Population.generatePopulation(2)
-    val ind1 = population.individuals.first()
-    val ind2 = population.individuals[1]
-    val mut = population.mutation(ind1)
-    val cross = population.crossover(ind1, ind2)
+    var count = 0
 
-    println("Parent1: \n$ind1")
-    println("Parent2: \n$ind2")
-    println("Parent1 mutation: \n$mut")
-    println("crossover: \n$cross")
+    val time = measureTimeMillis {
+        val population = Population.generatePopulation(1000)
 
-    val lexer = neoGPLexer(CharStreams.fromString(cross.toString()))
-    val tokens = CommonTokenStream(lexer)
-    val parser = neoGPParser(tokens)
-    val tree: neoGPParser.ProgramContext = parser.program()
-    val translator = NeoGPParser()
-    val sameInd = translator.parse(tree)
-    println(sameInd)
-    check(cross.toString() == sameInd.toString()) { "Haha chciałbyś żeby działało" }
+        population.individuals.forEach {ind ->
+        val indString = ind.toString()
+        val lexer = neoGPLexer(CharStreams.fromString(indString))
+        val tokens = CommonTokenStream(lexer)
+        val parser = neoGPParser(tokens)
+        val tree: neoGPParser.ProgramContext = parser.program()
+        val translator = NeoGPParser()
+        val sameInd = translator.parse(tree)
+        check(indString == sameInd.toString()) { "Haha chciałbyś żeby działało" }
+            count += indString.count { it =='\n' }
+        }
+    }
+    println("Time: ${time/1000.0}, avg instructions: ${count/1000.0}")
+
 }
