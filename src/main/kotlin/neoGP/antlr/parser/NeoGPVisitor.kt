@@ -4,10 +4,21 @@ import neoGP.antlr.parser.model.neoGPBaseVisitor
 import neoGP.antlr.parser.model.neoGPParser
 import java.lang.IllegalStateException
 
-class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
-    val variables: MutableList<Variable> = mutableListOf()
-    val inputs: MutableList<String> = mutableListOf()
-    var inputIdx: Int = 0
+class NeoGPVisitor(
+    private val inputs: List<String>,
+    private val maxInstructions: Int = 1000,
+) : neoGPBaseVisitor<List<String>>() {
+    private var variables: MutableList<Variable> = mutableListOf()
+    private var inputIdx: Int = 0
+    private var instrNumber = 0
+
+    fun run(program: neoGPParser.ProgramContext?): List<String> {
+        instrNumber = 0
+        inputIdx = 0
+        variables = mutableListOf()
+
+        return visitProgram(program)
+    }
 
     companion object {
         private const val INT_REGEX = "-?[0-9]+"
@@ -15,49 +26,72 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitProgram(ctx: neoGPParser.ProgramContext?): List<String> {
-        return ctx?.statement()?.flatMap {
-            visit(it)
+        check(ctx != null) { "context cannot be null!" }
+        if (instrNumber >= maxInstructions) return listOf()
+
+        return ctx.statement()?.flatMap {
+            visitStatement(it)
         } ?: throw IllegalStateException("context cannot be null!")
     }
 
     override fun visitBlock(ctx: neoGPParser.BlockContext?): List<String> {
-        return ctx?.statement()?.flatMap {
-            visit(it)
+        check(ctx != null) { "context cannot be null!" }
+        if (instrNumber >= maxInstructions) return listOf()
+
+        return ctx.statement()?.flatMap {
+            visitStatement(it)
         } ?: listOf()
     }
 
     override fun visitIfElse(ctx: neoGPParser.IfElseContext?): List<String> {
-        val expression = visit(ctx!!.expression())
+        check(ctx != null) { "context cannot be null!" }
+        if (instrNumber >= maxInstructions) return listOf()
+        instrNumber += 1
+
+        val expression = visitExpression(ctx.expression())
 
         return if (expression.first() == "true")
-            visit(ctx.block(0))
+            visitBlock(ctx.block(0))
         else
-            visit(ctx.block(1))
+            visitBlock(ctx.block(1))
     }
 
     override fun visitLoop(ctx: neoGPParser.LoopContext?): List<String> {
-        var expression = visit(ctx!!.expression()).first()
+        check(ctx != null) { "context cannot be null!" }
+        if (instrNumber >= maxInstructions) return listOf()
+        instrNumber += 1
+
+        var expression = visitExpression(ctx.expression()).first()
         val outputs = mutableListOf<String>()
 
         while (expression == "true") {
-            outputs += visit(ctx.block())
-            expression = visit(ctx.expression()).first()
+            outputs += visitBlock(ctx.block())
+            expression = visitExpression(ctx.expression()).first()
+            if (instrNumber>=maxInstructions) break
         }
 
         return outputs
     }
 
     override fun visitIf(ctx: neoGPParser.IfContext?): List<String> {
-        val expression = visit(ctx!!.expression())
+        check(ctx != null) { "context cannot be null!" }
+        if (instrNumber >= maxInstructions) return listOf()
+        instrNumber += 1
+
+        val expression = visitExpression(ctx.expression())
 
         return if (expression.first() == "true")
-            visit(ctx.block())
+            visitBlock(ctx.block())
         else
             listOf()
     }
 
     override fun visitIn(ctx: neoGPParser.InContext?): List<String> {
-        val name = ctx!!.ID().text
+        check(ctx != null) { "context cannot be null!" }
+        if (instrNumber >= maxInstructions) return listOf()
+        instrNumber += 1
+
+        val name = ctx.ID().text
         val value = inputs[inputIdx]
         inputIdx = (inputIdx + 1) % inputs.size
 
@@ -72,12 +106,20 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitPrint(ctx: neoGPParser.PrintContext?): List<String> {
-        return visit(ctx!!.expression())
+        check(ctx != null) { "context cannot be null!" }
+        if (instrNumber >= maxInstructions) return listOf()
+        instrNumber += 1
+
+        return visitExpression(ctx.expression())
     }
 
     override fun visitVar(ctx: neoGPParser.VarContext?): List<String> {
-        val name = ctx!!.ID().text
-        val expression = ctx.expression()?.let { visit(it) }?.first()
+        check(ctx != null) { "context cannot be null!" }
+        if (instrNumber >= maxInstructions) return listOf()
+        instrNumber += 1
+
+        val name = ctx.ID().text
+        val expression = ctx.expression()?.let { visitExpression(it) }?.first()
 
         if (variables.any { it.name == name })
             throw IllegalStateException("Variable $name is already defined")
@@ -88,22 +130,30 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitVarAssign(ctx: neoGPParser.VarAssignContext?): List<String> {
-        val name = ctx!!.ID().text
+        check(ctx != null) { "context cannot be null!" }
+        if (instrNumber >= maxInstructions) return listOf()
+        instrNumber += 1
+
+        val name = ctx.ID().text
 
         if (variables.none { it.name == name })
             throw IllegalStateException("Variable $name is not defined in the scope")
         if (!variables.first().mutable)
             throw IllegalStateException("Const value cannot be reassigned")
 
-        val expression = visit(ctx.expression()).first()
+        val expression = visitExpression(ctx.expression()).first()
         variables.first { it.name == name }.value = expression
 
         return listOf()
     }
 
     override fun visitConst(ctx: neoGPParser.ConstContext?): List<String> {
-        val name = ctx!!.ID().text
-        val expression = visit(ctx.expression()).first()
+        check(ctx != null) { "context cannot be null!" }
+        if (instrNumber >= maxInstructions) return listOf()
+        instrNumber += 1
+
+        val name = ctx.ID().text
+        val expression = visitExpression(ctx.expression()).first()
 
         if (variables.any { it.name == name })
             throw IllegalStateException("Variable $name is already defined")
@@ -114,12 +164,16 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitParenthesizedExpression(ctx: neoGPParser.ParenthesizedExpressionContext?): List<String> {
-        return visit(ctx!!.expression())
+        check(ctx != null) { "context cannot be null!" }
+
+        return visitExpression(ctx.expression())
     }
 
     override fun visitLogicOr(ctx: neoGPParser.LogicOrContext?): List<String> {
-        val leftExpr = visit(ctx!!.expression(0)).first()
-        val rightExpr = visit(ctx.expression(1)).first()
+        check(ctx != null) { "context cannot be null!" }
+
+        val leftExpr = visitExpression(ctx.expression(0)).first()
+        val rightExpr = visitExpression(ctx.expression(1)).first()
         val left = leftExpr.toBoolean()
         val right = rightExpr.toBoolean()
 
@@ -127,8 +181,10 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitMultiplication(ctx: neoGPParser.MultiplicationContext?): List<String> {
-        val leftExpr = visit(ctx!!.expression(0)).first()
-        val rightExpr = visit(ctx.expression(1)).first()
+        check(ctx != null) { "context cannot be null!" }
+
+        val leftExpr = visitExpression(ctx.expression(0)).first()
+        val rightExpr = visitExpression(ctx.expression(1)).first()
 
         if (!leftExpr.isNumeric() || !rightExpr.isNumeric())
             throw IllegalStateException("Unsupported operation on Boolean value: ${ctx.op.text}")
@@ -161,8 +217,9 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitAddition(ctx: neoGPParser.AdditionContext?): List<String> {
-        val leftExpr = visit(ctx!!.expression(0)).first()
-        val rightExpr = visit(ctx.expression(1)).first()
+        check(ctx != null) { "context cannot be null!" }
+        val leftExpr = visitExpression(ctx.expression(0)).first()
+        val rightExpr = visitExpression(ctx.expression(1)).first()
 
         if (!leftExpr.isNumeric() || !rightExpr.isNumeric())
             throw IllegalStateException("Unsupported operation on Boolean value: ${ctx.op.text}")
@@ -189,17 +246,23 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitPrimaryExpression(ctx: neoGPParser.PrimaryExpressionContext?): List<String> {
-        return super.visitPrimaryExpression(ctx)
+        check(ctx != null) { "context cannot be null!" }
+
+        return visitPrimary(ctx.primary())
     }
 
     override fun visitNegation(ctx: neoGPParser.NegationContext?): List<String> {
-        val expression = visit(ctx!!.expression()).first()
+        check(ctx != null) { "context cannot be null!" }
+
+        val expression = visitExpression(ctx.expression()).first()
         return listOf(expression.toBoolean().toString())
     }
 
     override fun visitComparison(ctx: neoGPParser.ComparisonContext?): List<String> {
-        val leftExpr = visit(ctx!!.expression(0)).first()
-        val rightExpr = visit(ctx.expression(1)).first()
+        check(ctx != null) { "context cannot be null!" }
+
+        val leftExpr = visitExpression(ctx.expression(0)).first()
+        val rightExpr = visitExpression(ctx.expression(1)).first()
 
         if (!leftExpr.isNumeric() || !rightExpr.isNumeric())
             throw IllegalStateException("Unsupported operation on Boolean value: ${ctx.op.text}")
@@ -219,7 +282,9 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitUnaryMinus(ctx: neoGPParser.UnaryMinusContext?): List<String> {
-        val expression = visit(ctx!!.expression()).first()
+        check(ctx != null) { "context cannot be null!" }
+
+        val expression = visitExpression(ctx.expression()).first()
         val value = when {
             expression.isBoolean() -> throw IllegalStateException("Unsupported operation on Boolean value: unary minus")
             expression.isInt() -> (expression.toInt() * -1).toString()
@@ -231,8 +296,10 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitEquality(ctx: neoGPParser.EqualityContext?): List<String> {
-        val left = visit(ctx!!.expression(0)).first()
-        val right = visit(ctx.expression(1)).first()
+        check(ctx != null) { "context cannot be null!" }
+
+        val left = visitExpression(ctx.expression(0)).first()
+        val right = visitExpression(ctx.expression(1)).first()
         val value = when {
             left.isBoolean() && right.isBoolean() -> left == right
             left.isInt() && right.isInt() -> left == right
@@ -244,8 +311,10 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitLogicAnd(ctx: neoGPParser.LogicAndContext?): List<String> {
-        val leftExpr = visit(ctx!!.expression(0)).first()
-        val rightExpr = visit(ctx.expression(1)).first()
+        check(ctx != null) { "context cannot be null!" }
+
+        val leftExpr = visitExpression(ctx.expression(0)).first()
+        val rightExpr = visitExpression(ctx.expression(1)).first()
         val left = leftExpr.toBoolean()
         val right = rightExpr.toBoolean()
 
@@ -253,20 +322,32 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitIntLiteral(ctx: neoGPParser.IntLiteralContext?): List<String> {
-        return listOf(ctx!!.INT().text)
+        check(ctx != null) { "context cannot be null!" }
+
+        return listOf(ctx.INT().text)
     }
 
     override fun visitFPNumberLiteral(ctx: neoGPParser.FPNumberLiteralContext?): List<String> {
-        return listOf(ctx!!.FPNUMBER().text)
+        check(ctx != null) { "context cannot be null!" }
+
+        return listOf(ctx.FPNUMBER().text)
     }
 
     override fun visitBooleanLiteral(ctx: neoGPParser.BooleanLiteralContext?): List<String> {
-        return listOf(ctx!!.BOOL().text)
+        check(ctx != null) { "context cannot be null!" }
+
+        return listOf(ctx.BOOL().text)
     }
 
     override fun visitIdentifier(ctx: neoGPParser.IdentifierContext?): List<String> {
-        val value = variables.firstOrNull { it.name == ctx!!.ID().text }?.value
-        return listOf(value ?: "null")
+        check(ctx != null) { "context cannot be null!" }
+
+        val variable = variables.firstOrNull { it.name == ctx.ID().text }
+            ?: throw IllegalStateException("Variable ${ctx.ID()?.text} referenced before declaration")
+        val value = variable.value
+            ?: throw IllegalStateException("Variable ${ctx.ID()?.text} referenced before assigning value")
+
+        return listOf(value)
     }
 
     private fun String.toBoolean(): Boolean = when (this) {
@@ -286,6 +367,37 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
 
     private fun String.isNumeric(): Boolean =
         this.isInt() || this.isFloat()
+
+    private fun visitExpression(ctx: neoGPParser.ExpressionContext?): List<String> {
+        check(ctx != null) { "context cannot be null!" }
+
+        return when (ctx) {
+            is neoGPParser.ParenthesizedExpressionContext -> visitParenthesizedExpression(ctx)
+            is neoGPParser.UnaryMinusContext -> visitUnaryMinus(ctx)
+            is neoGPParser.MultiplicationContext -> visitMultiplication(ctx)
+            is neoGPParser.AdditionContext -> visitAddition(ctx)
+            is neoGPParser.ComparisonContext -> visitComparison(ctx)
+            is neoGPParser.NegationContext -> visitNegation(ctx)
+            is neoGPParser.EqualityContext -> visitEquality(ctx)
+            is neoGPParser.LogicAndContext -> visitLogicAnd(ctx)
+            is neoGPParser.LogicOrContext -> visitLogicOr(ctx)
+            is neoGPParser.PrimaryExpressionContext -> visitPrimaryExpression(ctx)
+            else -> throw IllegalStateException("Illegal expression: ${ctx.text}")
+        }
+    }
+
+    private fun visitPrimary(ctx: neoGPParser.PrimaryContext?): List<String> {
+        check(ctx != null) { "context cannot be null!" }
+
+        return when (ctx) {
+            is neoGPParser.IdentifierContext -> visitIdentifier(ctx)
+            is neoGPParser.BooleanLiteralContext -> visitBooleanLiteral(ctx)
+            is neoGPParser.IntLiteralContext -> visitIntLiteral(ctx)
+            is neoGPParser.FPNumberLiteralContext -> visitFPNumberLiteral(ctx)
+            else -> throw IllegalStateException("Illegal primary expression: ${ctx.text}")
+
+        }
+    }
 
 }
 

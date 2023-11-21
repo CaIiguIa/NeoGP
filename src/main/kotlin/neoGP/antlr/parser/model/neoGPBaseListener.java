@@ -269,6 +269,18 @@ public class neoGPBaseListener implements neoGPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBooleanLiteral(neoGPParser.BooleanLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBooleanLiteral(neoGPParser.BooleanLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterIntLiteral(neoGPParser.IntLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -288,18 +300,6 @@ public class neoGPBaseListener implements neoGPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFPNumberLiteral(neoGPParser.FPNumberLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBooleanLiteral(neoGPParser.BooleanLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBooleanLiteral(neoGPParser.BooleanLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

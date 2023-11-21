@@ -147,6 +147,13 @@ public interface neoGPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLogicAnd(neoGPParser.LogicAndContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code BooleanLiteral}
+	 * labeled alternative in {@link neoGPParser#primary}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleanLiteral(neoGPParser.BooleanLiteralContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code IntLiteral}
 	 * labeled alternative in {@link neoGPParser#primary}.
 	 * @param ctx the parse tree
@@ -160,13 +167,6 @@ public interface neoGPVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFPNumberLiteral(neoGPParser.FPNumberLiteralContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code BooleanLiteral}
-	 * labeled alternative in {@link neoGPParser#primary}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBooleanLiteral(neoGPParser.BooleanLiteralContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Identifier}
 	 * labeled alternative in {@link neoGPParser#primary}.

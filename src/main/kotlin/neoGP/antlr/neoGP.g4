@@ -15,11 +15,11 @@ statement
 
 block: statement*;
 
-ifElse: 'if' '('  expression ')' '{' block '}' 'else' '{' block '}';
+ifElse: 'if' '(' expression ')' '{' block '}' 'else' '{' block '}';
 loop: 'while' '(' expression ')' '{' block '}';
-if: 'if' '('  expression ')' '{' block '}';
+if: 'if' '(' expression ')' '{' block '}';
 in: 'in' ID LEND;
-print: 'print' '('  expression ')' LEND;
+print: 'print' '(' expression ')' LEND;
 var: 'var' ID ('=' expression)? LEND;
 varAssign: ID '=' expression LEND;
 const: 'const' ID '=' expression LEND;
@@ -38,16 +38,16 @@ expression
     ;
 
 primary
-    : INT # IntLiteral
+    :  BOOL # BooleanLiteral
+    | INT # IntLiteral
     | FPNUMBER # FPNumberLiteral
-    | BOOL # BooleanLiteral
     | ID # Identifier
     ;
 
+BOOL: 'true' | 'false';
 ID: [a-zA-Z_][a-zA-Z_0-9]*;
 INT: [0-9]+;
 FPNUMBER: [0-9]+ '.' [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9];
-BOOL: 'true' | 'false';
 
 
 LEND: ';';

@@ -238,6 +238,18 @@ public interface neoGPListener extends ParseTreeListener {
 	 */
 	void exitLogicAnd(neoGPParser.LogicAndContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code BooleanLiteral}
+	 * labeled alternative in {@link neoGPParser#primary}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanLiteral(neoGPParser.BooleanLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code BooleanLiteral}
+	 * labeled alternative in {@link neoGPParser#primary}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanLiteral(neoGPParser.BooleanLiteralContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code IntLiteral}
 	 * labeled alternative in {@link neoGPParser#primary}.
 	 * @param ctx the parse tree
@@ -261,18 +273,6 @@ public interface neoGPListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFPNumberLiteral(neoGPParser.FPNumberLiteralContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code BooleanLiteral}
-	 * labeled alternative in {@link neoGPParser#primary}.
-	 * @param ctx the parse tree
-	 */
-	void enterBooleanLiteral(neoGPParser.BooleanLiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code BooleanLiteral}
-	 * labeled alternative in {@link neoGPParser#primary}.
-	 * @param ctx the parse tree
-	 */
-	void exitBooleanLiteral(neoGPParser.BooleanLiteralContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Identifier}
 	 * labeled alternative in {@link neoGPParser#primary}.
