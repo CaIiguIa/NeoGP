@@ -10,8 +10,8 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     var inputIdx: Int = 0
 
     companion object {
-        private const val INT = "[0-9]+"
-        private const val FLOAT = "[0-9]+.[0-9]{8}"
+        private const val INT_REGEX = "-?[0-9]+"
+        private const val FLOAT_REGEX = "-?[0-9]+.[0-9]{8}"
     }
 
     override fun visitProgram(ctx: neoGPParser.ProgramContext?): List<String> {
@@ -120,18 +120,72 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     override fun visitLogicOr(ctx: neoGPParser.LogicOrContext?): List<String> {
         val leftExpr = visit(ctx!!.expression(0)).first()
         val rightExpr = visit(ctx.expression(1)).first()
-        val left = getBoolean(leftExpr)
-        val right = getBoolean(rightExpr)
+        val left = leftExpr.toBoolean()
+        val right = rightExpr.toBoolean()
 
         return listOf((left || right).toString())
     }
 
     override fun visitMultiplication(ctx: neoGPParser.MultiplicationContext?): List<String> {
-        return super.visitMultiplication(ctx)
+        val leftExpr = visit(ctx!!.expression(0)).first()
+        val rightExpr = visit(ctx.expression(1)).first()
+
+        if (!leftExpr.isNumeric() || !rightExpr.isNumeric())
+            throw IllegalStateException("Unsupported operation on Boolean value: ${ctx.op.text}")
+
+        if (leftExpr.isFloat() || rightExpr.isFloat()) {
+            val left = leftExpr.toFloat()
+            val right = rightExpr.toFloat()
+
+            if (right == 0F)
+                throw IllegalStateException("Cannot divide by zero")
+
+            return when (ctx.op.text) {
+                "*" -> listOf((left * right).toString())
+                "/" -> listOf((left / right).toString())
+                else -> throw IllegalStateException("Unsupported Multiplication operator: ${ctx.op.text}")
+            }
+        }
+
+        val left = leftExpr.toInt()
+        val right = rightExpr.toInt()
+
+        if (right == 0)
+            throw IllegalStateException("Cannot divide by zero")
+
+        return when (ctx.op.text) {
+            "*" -> listOf((left * right).toString())
+            "/" -> listOf((left / right).toString())
+            else -> throw IllegalStateException("Unsupported Multiplication operator: ${ctx.op.text}")
+        }
     }
 
     override fun visitAddition(ctx: neoGPParser.AdditionContext?): List<String> {
-        return super.visitAddition(ctx)
+        val leftExpr = visit(ctx!!.expression(0)).first()
+        val rightExpr = visit(ctx.expression(1)).first()
+
+        if (!leftExpr.isNumeric() || !rightExpr.isNumeric())
+            throw IllegalStateException("Unsupported operation on Boolean value: ${ctx.op.text}")
+
+        if (leftExpr.isFloat() || rightExpr.isFloat()) {
+            val left = leftExpr.toFloat()
+            val right = rightExpr.toFloat()
+
+            return when (ctx.op.text) {
+                "+" -> listOf((left + right).toString())
+                "-" -> listOf((left - right).toString())
+                else -> throw IllegalStateException("Unsupported Addition operator: ${ctx.op.text}")
+            }
+        }
+
+        val left = leftExpr.toInt()
+        val right = rightExpr.toInt()
+
+        return when (ctx.op.text) {
+            "+" -> listOf((left + right).toString())
+            "-" -> listOf((left - right).toString())
+            else -> throw IllegalStateException("Unsupported Addition operator: ${ctx.op.text}")
+        }
     }
 
     override fun visitPrimaryExpression(ctx: neoGPParser.PrimaryExpressionContext?): List<String> {
@@ -139,51 +193,100 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitNegation(ctx: neoGPParser.NegationContext?): List<String> {
-        return super.visitNegation(ctx)
+        val expression = visit(ctx!!.expression()).first()
+        return listOf(expression.toBoolean().toString())
     }
 
     override fun visitComparison(ctx: neoGPParser.ComparisonContext?): List<String> {
-        return super.visitComparison(ctx)
+        val leftExpr = visit(ctx!!.expression(0)).first()
+        val rightExpr = visit(ctx.expression(1)).first()
+
+        if (!leftExpr.isNumeric() || !rightExpr.isNumeric())
+            throw IllegalStateException("Unsupported operation on Boolean value: ${ctx.op.text}")
+
+        val left = leftExpr.toFloat()
+        val right = rightExpr.toFloat()
+
+        val value = when (ctx.op.text) {
+            ">" -> (left > right)
+            ">=" -> (left >= right)
+            "<" -> (left < right)
+            "<=" -> (left <= right)
+            else -> throw IllegalStateException("Unsupported comparison operator: ${ctx.op.text}")
+        }
+
+        return listOf(value.toString())
     }
 
     override fun visitUnaryMinus(ctx: neoGPParser.UnaryMinusContext?): List<String> {
-        return super.visitUnaryMinus(ctx)
+        val expression = visit(ctx!!.expression()).first()
+        val value = when {
+            expression.isBoolean() -> throw IllegalStateException("Unsupported operation on Boolean value: unary minus")
+            expression.isInt() -> (expression.toInt() * -1).toString()
+            expression.isFloat() -> (expression.toFloat() * -1).toString()
+            else -> throw IllegalStateException("Value $expression is of unsupported type")
+        }
+
+        return listOf(value)
     }
 
     override fun visitEquality(ctx: neoGPParser.EqualityContext?): List<String> {
-        return super.visitEquality(ctx)
+        val left = visit(ctx!!.expression(0)).first()
+        val right = visit(ctx.expression(1)).first()
+        val value = when {
+            left.isBoolean() && right.isBoolean() -> left == right
+            left.isInt() && right.isInt() -> left == right
+            left.isFloat() && right.isFloat() -> left == right
+            else -> throw IllegalStateException("Values $left and $right are not comparable")
+        }
+
+        return listOf(value.toString())
     }
 
     override fun visitLogicAnd(ctx: neoGPParser.LogicAndContext?): List<String> {
         val leftExpr = visit(ctx!!.expression(0)).first()
         val rightExpr = visit(ctx.expression(1)).first()
-        val left = getBoolean(leftExpr)
-        val right = getBoolean(rightExpr)
+        val left = leftExpr.toBoolean()
+        val right = rightExpr.toBoolean()
 
         return listOf((left && right).toString())
     }
 
     override fun visitIntLiteral(ctx: neoGPParser.IntLiteralContext?): List<String> {
-        return super.visitIntLiteral(ctx)
+        return listOf(ctx!!.INT().text)
     }
 
     override fun visitFPNumberLiteral(ctx: neoGPParser.FPNumberLiteralContext?): List<String> {
-        return super.visitFPNumberLiteral(ctx)
+        return listOf(ctx!!.FPNUMBER().text)
     }
 
     override fun visitBooleanLiteral(ctx: neoGPParser.BooleanLiteralContext?): List<String> {
-        return super.visitBooleanLiteral(ctx)
+        return listOf(ctx!!.BOOL().text)
     }
 
     override fun visitIdentifier(ctx: neoGPParser.IdentifierContext?): List<String> {
-        return super.visitIdentifier(ctx)
+        val value = variables.firstOrNull { it.name == ctx!!.ID().text }?.value
+        return listOf(value ?: "null")
     }
 
-    fun getBoolean(value: String): Boolean = when (value) {
+    private fun String.toBoolean(): Boolean = when (this) {
         "true" -> true
         "false" -> false
-        else -> value.toFloat() != 0F
+        else -> this.toFloat() != 0F
     }
+
+    private fun String.isBoolean(): Boolean =
+        this == "true" || this == "false"
+
+    private fun String.isInt(): Boolean =
+        Regex(INT_REGEX).matches(this)
+
+    private fun String.isFloat(): Boolean =
+        Regex(FLOAT_REGEX).matches(this)
+
+    private fun String.isNumeric(): Boolean =
+        this.isInt() || this.isFloat()
+
 }
 
 data class Variable(
