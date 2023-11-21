@@ -200,6 +200,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitStatement(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitStatement(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final StatementContext statement() throws RecognitionException {
@@ -298,6 +303,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitBlock(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitBlock(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final BlockContext block() throws RecognitionException {
@@ -356,6 +366,11 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitIfElse(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitIfElse(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -420,6 +435,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitLoop(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitLoop(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final LoopContext loop() throws RecognitionException {
@@ -475,6 +495,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitIf(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitIf(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final IfContext if_() throws RecognitionException {
@@ -526,6 +551,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitIn(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitIn(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final InContext in() throws RecognitionException {
@@ -570,6 +600,11 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitPrint(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitPrint(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -620,6 +655,11 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitVar(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitVar(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -680,6 +720,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitVarAssign(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitVarAssign(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final VarAssignContext varAssign() throws RecognitionException {
@@ -727,6 +772,11 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitConst(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitConst(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -785,6 +835,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitParenthesizedExpression(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitParenthesizedExpression(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class LogicOrContext extends ExpressionContext {
@@ -803,6 +858,11 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitLogicOr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitLogicOr(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -823,6 +883,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitMultiplication(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitMultiplication(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class AdditionContext extends ExpressionContext {
@@ -842,6 +907,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitAddition(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitAddition(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class PrimaryExpressionContext extends ExpressionContext {
@@ -857,6 +927,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitPrimaryExpression(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitPrimaryExpression(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class NegationContext extends ExpressionContext {
@@ -871,6 +946,11 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitNegation(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitNegation(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -891,6 +971,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitComparison(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitComparison(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class UnaryMinusContext extends ExpressionContext {
@@ -905,6 +990,11 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitUnaryMinus(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitUnaryMinus(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -925,6 +1015,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitEquality(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitEquality(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class LogicAndContext extends ExpressionContext {
@@ -943,6 +1038,11 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitLogicAnd(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitLogicAnd(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1180,6 +1280,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitIdentifier(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitIdentifier(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class BooleanLiteralContext extends PrimaryContext {
@@ -1192,6 +1297,11 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitBooleanLiteral(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitBooleanLiteral(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -1206,6 +1316,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitIntLiteral(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitIntLiteral(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class FPNumberLiteralContext extends PrimaryContext {
@@ -1218,6 +1333,11 @@ public class neoGPParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitFPNumberLiteral(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitFPNumberLiteral(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 

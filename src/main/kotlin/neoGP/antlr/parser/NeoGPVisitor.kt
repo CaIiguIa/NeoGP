@@ -9,6 +9,11 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     val inputs: MutableList<String> = mutableListOf()
     var inputIdx: Int = 0
 
+    companion object {
+        private const val INT = "[0-9]+"
+        private const val FLOAT = "[0-9]+.[0-9]{8}"
+    }
+
     override fun visitProgram(ctx: neoGPParser.ProgramContext?): List<String> {
         return ctx?.statement()?.flatMap {
             visit(it)
@@ -113,9 +118,12 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitLogicOr(ctx: neoGPParser.LogicOrContext?): List<String> {
-        val left = visit(ctx!!.expression(0)).first()
-        val right = visit(ctx.expression(1)).first()
+        val leftExpr = visit(ctx!!.expression(0)).first()
+        val rightExpr = visit(ctx.expression(1)).first()
+        val left = getBoolean(leftExpr)
+        val right = getBoolean(rightExpr)
 
+        return listOf((left || right).toString())
     }
 
     override fun visitMultiplication(ctx: neoGPParser.MultiplicationContext?): List<String> {
@@ -147,7 +155,12 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
     }
 
     override fun visitLogicAnd(ctx: neoGPParser.LogicAndContext?): List<String> {
-        return super.visitLogicAnd(ctx)
+        val leftExpr = visit(ctx!!.expression(0)).first()
+        val rightExpr = visit(ctx.expression(1)).first()
+        val left = getBoolean(leftExpr)
+        val right = getBoolean(rightExpr)
+
+        return listOf((left && right).toString())
     }
 
     override fun visitIntLiteral(ctx: neoGPParser.IntLiteralContext?): List<String> {
@@ -166,13 +179,15 @@ class NeoGPVisitor : neoGPBaseVisitor<List<String>>() {
         return super.visitIdentifier(ctx)
     }
 
-    fun getBoolean(value: String): Boolean {
-
+    fun getBoolean(value: String): Boolean = when (value) {
+        "true" -> true
+        "false" -> false
+        else -> value.toFloat() != 0F
     }
 }
 
 data class Variable(
-val name: String,
-var value: String?,
-val mutable: Boolean,
+    val name: String,
+    var value: String?,
+    val mutable: Boolean,
 )
