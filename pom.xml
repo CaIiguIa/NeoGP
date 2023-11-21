@@ -72,7 +72,7 @@
                     <sourceDirectory>${basedir}/src/main/kotlin/neoGP/antlr</sourceDirectory>
                     <outputDirectory>${basedir}/src/main/kotlin/neoGP/antlr/parser/model</outputDirectory>
                     <listener>true</listener>
-                    <visitor>false</visitor>
+                    <visitor>true</visitor>
                     <arguments>
                         <argument>-package</argument>
                         <argument>neoGP.antlr.parser.model</argument>

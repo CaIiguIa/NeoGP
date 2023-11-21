@@ -121,6 +121,11 @@ public class neoGPParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof neoGPListener ) ((neoGPListener)listener).exitProgram(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof neoGPVisitor ) return ((neoGPVisitor<? extends T>)visitor).visitProgram(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ProgramContext program() throws RecognitionException {
