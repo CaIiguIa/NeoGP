@@ -1,5 +1,6 @@
 package neoGP
 
+import neoGP.antlr.parser.NeoGPGenerator
 import neoGP.antlr.parser.NeoGPParser
 import neoGP.antlr.parser.NeoGPVisitor
 import neoGP.antlr.parser.model.neoGPLexer
@@ -10,8 +11,7 @@ import org.antlr.v4.runtime.CommonTokenStream
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    testVisitor()
-
+    testMultipleRandomIndividuals()
 }
 
 fun testParser() {
@@ -52,15 +52,37 @@ fun testVisitor() {
         print(variable4);
         }
     """.trimIndent()
-            val lexer = neoGPLexer(CharStreams.fromString(ind))
-            val tokens = CommonTokenStream(lexer)
-            val parser = neoGPParser(tokens)
-            val tree: neoGPParser.ProgramContext = parser.program()
             val visitor = NeoGPVisitor(listOf("11", "14"), 1000)
-            visitor.run(tree)
+            visitor.run(getTreeForIndividual(ind))
         }
     }
     println("Time: ${time / 1000.0}, avg instructions: 7, number of individuals: $nIter")
+}
 
+fun testRandomIndividual() {
+    val individual = NeoGPGenerator.randomIndividual(5)
 
+    val visitor = NeoGPVisitor(listOf("11", "14"), 1000)
+    val output = visitor.run(getTreeForIndividual(individual.toString()))
+}
+
+fun getTreeForIndividual(individual: String): neoGPParser.ProgramContext {
+    val lexer = neoGPLexer(CharStreams.fromString(individual))
+    val tokens = CommonTokenStream(lexer)
+    val parser = neoGPParser(tokens)
+    return parser.program()
+}
+
+fun testMultipleRandomIndividuals() {
+    var flops = 0
+    val time = measureTimeMillis {
+        for (i in 1..1000) {
+            try {
+                testRandomIndividual()
+            } catch (_: Exception) {
+                flops += 1
+            }
+        }
+    }
+    println("Time: ${time / 1000.0}, number of individuals: 1000, flops: $flops")
 }

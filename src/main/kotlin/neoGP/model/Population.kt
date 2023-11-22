@@ -1,5 +1,6 @@
 package neoGP.model
 
+import neoGP.antlr.parser.NeoGPGenerator
 import neoGP.model.grammar.Individual
 import neoGP.model.grammar.Statement
 import kotlin.random.Random
@@ -11,7 +12,7 @@ class Population(
         fun generatePopulation(size: Int, maxDepth: Int? = null): Population {
             val population = Population()
             for (i in 1..size)
-                population.individuals.add(Individual.generateRandom(5))
+                population.individuals.add(NeoGPGenerator.randomIndividual(5))
 
             return population
         }
@@ -112,7 +113,7 @@ class Population(
         val copy = parent.copy()
         val idxToReplace = Random.nextInt(copy.statements.size)
         copy.statements.removeAt(idxToReplace)
-        copy.statements.add(idxToReplace, Statement.generateRandom())
+        copy.statements.add(idxToReplace, NeoGPGenerator.randomStatement())
 
         return copy
     }

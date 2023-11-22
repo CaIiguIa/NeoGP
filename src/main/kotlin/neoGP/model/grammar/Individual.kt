@@ -3,16 +3,6 @@ package neoGP.model.grammar
 class Individual(
     val statements: MutableList<Statement> = mutableListOf()
 ) {
-    companion object {
-        fun generateRandom(size: Int): Individual {
-            val individual = Individual()
-            for (i in 1..size)
-                individual.statements.add(Statement.generateRandom())
-
-            return individual
-        }
-    }
-
 
     override fun toString(): String =
         statements.joinToString("\n")

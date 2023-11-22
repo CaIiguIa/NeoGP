@@ -67,7 +67,7 @@ class NeoGPVisitor(
         while (expression == "true") {
             outputs += visitBlock(ctx.block())
             expression = visitExpression(ctx.expression()).first()
-            if (instrNumber>=maxInstructions) break
+            if (instrNumber >= maxInstructions) break
         }
 
         return outputs
@@ -97,7 +97,7 @@ class NeoGPVisitor(
 
         if (variables.none { it.name == name })
             throw IllegalStateException("Variable $name is not defined in the scope")
-        if (!variables.first().mutable)
+        if (!variables.first { it.name == name }.isMutable)
             throw IllegalStateException("Const value cannot be reassigned")
 
         variables.first { it.name == name }.value = value
@@ -138,8 +138,8 @@ class NeoGPVisitor(
 
         if (variables.none { it.name == name })
             throw IllegalStateException("Variable $name is not defined in the scope")
-        if (!variables.first().mutable)
-            throw IllegalStateException("Const value cannot be reassigned")
+        if (!variables.first { it.name == name }.isMutable)
+            throw IllegalStateException("Const value cannot be reassigned: $name")
 
         val expression = visitExpression(ctx.expression()).first()
         variables.first { it.name == name }.value = expression
@@ -404,5 +404,12 @@ class NeoGPVisitor(
 data class Variable(
     val name: String,
     var value: String?,
-    val mutable: Boolean,
+    val isMutable: Boolean,
+    var type: VariableType? = null
 )
+
+enum class VariableType {
+    BOOL,
+    INT,
+    FLOAT,
+}
