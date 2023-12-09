@@ -120,50 +120,44 @@ class NeoGPVisitor(
 
     override fun visitVar(ctx: neoGPParser.VarContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
-        if (instrNumber >= maxInstructions) return listOf()
-        instrNumber += 1
 
         val name = ctx.ID().text
-        val expression = visitExpression(ctx.expression()!!).first()
+        val expression = ctx.expression()?.let { visitExpression(it) }?.first()
 
-        val variable = variables.firstOrNull { it.name == name }
-            ?: Variable(name, null, false).also(variables::add)
-        variable.value = expression
-        variable.type = getValueType(expression)
-
-        return listOf()
+        return visitCreateVariable(name, expression)
     }
 
     override fun visitVarAssign(ctx: neoGPParser.VarAssignContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
-        if (instrNumber >= maxInstructions) return listOf()
-        instrNumber += 1
+
 
         val name = ctx.ID().text
         val expression = visitExpression(ctx.expression()).first()
 
+        return visitCreateVariable(name, expression)
+    }
+
+    private fun visitCreateVariable(name: String, value: String?): List<String> {
+        if (instrNumber >= maxInstructions) return listOf()
+        instrNumber += 1
+
         val variable = variables.firstOrNull { it.name == name }
             ?: Variable(name, null, false).also(variables::add)
-        variable.value = expression
-        variable.type = getValueType(expression)
+        variable.value = value
+        value?.let {
+            variable.type = getValueType(value)
+        }
 
         return listOf()
     }
 
     override fun visitConst(ctx: neoGPParser.ConstContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
-        if (instrNumber >= maxInstructions) return listOf()
-        instrNumber += 1
 
         val name = ctx.ID().text
         val expression = visitExpression(ctx.expression()).first()
 
-        val variable = variables.firstOrNull { it.name == name }
-            ?: Variable(name, null, false).also(variables::add)
-        variable.value = expression
-        variable.type = getValueType(expression)
-
-        return listOf()
+        return visitCreateVariable(name, expression)
     }
 
     override fun visitParenthesizedExpression(ctx: neoGPParser.ParenthesizedExpressionContext?): List<String> {
@@ -189,7 +183,7 @@ class NeoGPVisitor(
         val leftExpr = visitExpression(ctx.expression(0)).first()
         val rightExpr = visitExpression(ctx.expression(1)).first()
 
-        if (rightExpr.toInt() != 0 && leftExpr.isInt() && rightExpr.isInt()) {
+        if (rightExpr.toIntValue() != 0 && leftExpr.isInt() && rightExpr.isInt()) {
             val left = leftExpr.toIntValue()
             val right = rightExpr.toIntValue()
 
@@ -345,7 +339,7 @@ class NeoGPVisitor(
     private fun String.toIntValue(): Int = when (this) {
         "true" -> 1
         "false" -> 0
-        else -> this.toInt()
+        else -> this.toFloat().toInt()
     }
 
     private fun String.toFloatValue(): Float = when (this) {

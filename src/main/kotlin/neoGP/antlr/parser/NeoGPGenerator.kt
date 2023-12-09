@@ -9,10 +9,8 @@ import kotlin.random.Random
 class NeoGPGenerator() {
     companion object {
 
-
         private var variables: MutableList<Variable> = mutableListOf()
         private var variableIdx: Int = 0
-
 
         fun randomIndividual(size: Int): Individual {
             variables = mutableListOf()
@@ -269,12 +267,6 @@ class NeoGPGenerator() {
 
                 else -> randomFloatPrimary()
             }
-        }
-
-        private fun randomPrimary(): Pair<Primary, VariableType> = when (Random.nextInt(3)) {
-            0 -> Pair(randomBooleanPrimary(), VariableType.BOOL)
-            1 -> Pair(randomIntPrimary(), VariableType.INT)
-            else -> Pair(randomFloatPrimary(), VariableType.FLOAT)
         }
 
         private fun randomBooleanPrimary() = when (Random.nextInt(2)) {

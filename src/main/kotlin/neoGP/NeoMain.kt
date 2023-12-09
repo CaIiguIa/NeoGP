@@ -11,10 +11,10 @@ import org.antlr.v4.runtime.CommonTokenStream
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    testRandomIndividual(true)
+//    testRandomIndividual(true)
 
 //    testMultipleRandomIndividuals()
-//    testVisitor()
+    testVisitor()
 }
 
 fun testParser() {
@@ -47,7 +47,8 @@ fun testVisitor() {
             try {
                 visitor.run(getTreeForIndividual(ind))
             } catch (e: Exception) {
-//                println("Error ${e.message}")
+                println("Error ${e.message}")
+//                println(e.printStackTrace())
             }
 
         }
