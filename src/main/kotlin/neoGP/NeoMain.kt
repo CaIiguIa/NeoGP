@@ -11,8 +11,9 @@ import org.antlr.v4.runtime.CommonTokenStream
 import kotlin.system.measureTimeMillis
 
 fun main() {
-//    testRandomIndividual(true)
-    testMultipleRandomIndividuals()
+    testRandomIndividual(true)
+
+//    testMultipleRandomIndividuals()
 //    testVisitor()
 }
 
@@ -41,21 +42,14 @@ fun testVisitor() {
     val nIter = 1000
     val time = measureTimeMillis {
         for (i in 0..nIter) {
-            val ind = """
-        var variable0 ;
-var variable1 ;
-var variable2 = 217;
-if ( ( !( 162.62632601 >= ( ( ( - 254 ) * 923 ) * 196 ) ) ) ) { 
-var variable3 ; 
-} 
-else { 
-variable1 = ( ( - ( - ( 5.53834956 / ( ( - 619.69983050 ) - 421.52823276 ) ) ) ) / 135.45481903 ); 
-}
-const variable4 = ( ( ( 780.60279620 * 509.41893660 ) * variable1 ) + 178.48075468 );
-        }
-    """.trimIndent()
+            val ind = NeoGPGenerator.randomIndividual(5).toString()
             val visitor = NeoGPVisitor(listOf("11", "14"), 1000)
-            visitor.run(getTreeForIndividual(ind))
+            try {
+                visitor.run(getTreeForIndividual(ind))
+            } catch (e: Exception) {
+//                println("Error ${e.message}")
+            }
+
         }
     }
     println("Time: ${time / 1000.0}, avg instructions: 7, number of individuals: $nIter")

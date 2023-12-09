@@ -3,6 +3,7 @@ package neoGP.antlr.parser
 import neoGP.antlr.parser.model.neoGPBaseVisitor
 import neoGP.antlr.parser.model.neoGPParser
 import java.lang.IllegalStateException
+import kotlin.math.abs
 
 class NeoGPVisitor(
     private val inputs: List<String>,
@@ -22,7 +23,7 @@ class NeoGPVisitor(
 
     companion object {
         private const val INT_REGEX = "-?[0-9]+"
-        private const val FLOAT_REGEX = "-?[0-9]+(.|,)[0-9]+(E-?[0-9]+)?"
+        private const val FLOAT_REGEX = "-?([0-9]+(.|,)[0-9]+(E-?[0-9]+)?|Infinity)"
     }
 
     override fun visitProgram(ctx: neoGPParser.ProgramContext?): List<String> {
@@ -99,15 +100,12 @@ class NeoGPVisitor(
         instrNumber += 1
 
         val name = ctx.ID().text
-        val value = inputs[inputIdx]
-        inputIdx = (inputIdx + 1) % inputs.size
+        val value = nextVariableValue()
 
-        if (variables.none { it.name == name })
-            throw IllegalStateException("Variable $name is not defined in the scope")
-        if (!variables.first { it.name == name }.isMutable)
-            throw IllegalStateException("Const value cannot be reassigned")
-
-        variables.first { it.name == name }.value = value
+        val variable = variables.firstOrNull { it.name == name }
+            ?: Variable(name, null, false).also(variables::add)
+        variable.value = value
+        variable.type = getValueType(value)
 
         return listOf()
     }
@@ -126,12 +124,12 @@ class NeoGPVisitor(
         instrNumber += 1
 
         val name = ctx.ID().text
-        val expression = ctx.expression()?.let { visitExpression(it) }?.first()
+        val expression = visitExpression(ctx.expression()!!).first()
 
-        if (variables.any { it.name == name })
-            throw IllegalStateException("Variable $name is already defined")
-
-        variables.add(Variable(name, expression, true))
+        val variable = variables.firstOrNull { it.name == name }
+            ?: Variable(name, null, false).also(variables::add)
+        variable.value = expression
+        variable.type = getValueType(expression)
 
         return listOf()
     }
@@ -142,14 +140,12 @@ class NeoGPVisitor(
         instrNumber += 1
 
         val name = ctx.ID().text
-
-        if (variables.none { it.name == name })
-            throw IllegalStateException("Variable $name is not defined in the scope")
-        if (!variables.first { it.name == name }.isMutable)
-            throw IllegalStateException("Const value cannot be reassigned: $name")
-
         val expression = visitExpression(ctx.expression()).first()
-        variables.first { it.name == name }.value = expression
+
+        val variable = variables.firstOrNull { it.name == name }
+            ?: Variable(name, null, false).also(variables::add)
+        variable.value = expression
+        variable.type = getValueType(expression)
 
         return listOf()
     }
@@ -162,10 +158,10 @@ class NeoGPVisitor(
         val name = ctx.ID().text
         val expression = visitExpression(ctx.expression()).first()
 
-        if (variables.any { it.name == name })
-            throw IllegalStateException("Variable $name is already defined")
-
-        variables.add(Variable(name, expression, false))
+        val variable = variables.firstOrNull { it.name == name }
+            ?: Variable(name, null, false).also(variables::add)
+        variable.value = expression
+        variable.type = getValueType(expression)
 
         return listOf()
     }
@@ -181,8 +177,8 @@ class NeoGPVisitor(
 
         val leftExpr = visitExpression(ctx.expression(0)).first()
         val rightExpr = visitExpression(ctx.expression(1)).first()
-        val left = leftExpr.toBoolean()
-        val right = rightExpr.toBoolean()
+        val left = leftExpr.toBooleanValue()
+        val right = rightExpr.toBooleanValue()
 
         return listOf((left || right).toString())
     }
@@ -193,15 +189,9 @@ class NeoGPVisitor(
         val leftExpr = visitExpression(ctx.expression(0)).first()
         val rightExpr = visitExpression(ctx.expression(1)).first()
 
-        if (!leftExpr.isNumeric() || !rightExpr.isNumeric())
-            throw IllegalStateException("Unsupported operation on non-numeric value: $leftExpr ${ctx.op.text} $rightExpr")
-
-        if (leftExpr.isFloat() || rightExpr.isFloat()) {
-            val left = leftExpr.toFloat()
-            val right = rightExpr.toFloat()
-
-            if (right == 0F)
-                throw IllegalStateException("Cannot divide by zero $leftExpr / $rightExpr")
+        if (rightExpr.toInt() != 0 && leftExpr.isInt() && rightExpr.isInt()) {
+            val left = leftExpr.toIntValue()
+            val right = rightExpr.toIntValue()
 
             return when (ctx.op.text) {
                 "*" -> listOf((left * right).toString())
@@ -210,11 +200,11 @@ class NeoGPVisitor(
             }
         }
 
-        val left = leftExpr.toInt()
-        val right = rightExpr.toInt()
+        val left = leftExpr.toFloatValue()
+        var right = rightExpr.toFloatValue()
 
-        if (right == 0)
-            throw IllegalStateException("Cannot divide by zero")
+        if (ctx.op.text == "/" && abs(right) < 0.001)
+            right = 0.001f
 
         return when (ctx.op.text) {
             "*" -> listOf((left * right).toString())
@@ -228,12 +218,9 @@ class NeoGPVisitor(
         val leftExpr = visitExpression(ctx.expression(0)).first()
         val rightExpr = visitExpression(ctx.expression(1)).first()
 
-        if (!leftExpr.isNumeric() || !rightExpr.isNumeric())
-            throw IllegalStateException("Unsupported operation on Boolean value: $leftExpr ${ctx.op.text} $rightExpr")
-
-        if (leftExpr.isFloat() || rightExpr.isFloat()) {
-            val left = leftExpr.toFloat()
-            val right = rightExpr.toFloat()
+        if (leftExpr.isInt() || rightExpr.isInt()) {
+            val left = leftExpr.toIntValue()
+            val right = rightExpr.toIntValue()
 
             return when (ctx.op.text) {
                 "+" -> listOf((left + right).toString())
@@ -242,8 +229,8 @@ class NeoGPVisitor(
             }
         }
 
-        val left = leftExpr.toInt()
-        val right = rightExpr.toInt()
+        val left = leftExpr.toFloatValue()
+        val right = rightExpr.toFloatValue()
 
         return when (ctx.op.text) {
             "+" -> listOf((left + right).toString())
@@ -262,7 +249,7 @@ class NeoGPVisitor(
         check(ctx != null) { "context cannot be null!" }
 
         val expression = visitExpression(ctx.expression()).first()
-        return listOf(expression.toBoolean().toString())
+        return listOf(expression.toBooleanValue().toString())
     }
 
     override fun visitComparison(ctx: neoGPParser.ComparisonContext?): List<String> {
@@ -271,11 +258,8 @@ class NeoGPVisitor(
         val leftExpr = visitExpression(ctx.expression(0)).first()
         val rightExpr = visitExpression(ctx.expression(1)).first()
 
-        if (!leftExpr.isNumeric() || !rightExpr.isNumeric())
-            throw IllegalStateException("Unsupported operation on Boolean value: $leftExpr ${ctx.op.text} $rightExpr")
-
-        val left = leftExpr.toFloat()
-        val right = rightExpr.toFloat()
+        val left = leftExpr.toFloatValue()
+        val right = rightExpr.toFloatValue()
 
         val value = when (ctx.op.text) {
             ">" -> (left > right)
@@ -293,9 +277,8 @@ class NeoGPVisitor(
 
         val expression = visitExpression(ctx.expression()).first()
         val value = when {
-            expression.isBoolean() -> throw IllegalStateException("Unsupported operation on Boolean value: unary minus")
-            expression.isInt() -> (expression.toInt() * -1).toString()
-            expression.isFloat() -> (expression.toFloat() * -1).toString()
+            expression.isBoolean() || expression.isInt() -> (expression.toIntValue() * -1).toString()
+            expression.isFloat() -> (expression.toFloatValue() * -1).toString()
             else -> throw IllegalStateException("Value $expression is of unsupported type")
         }
 
@@ -307,15 +290,7 @@ class NeoGPVisitor(
 
         val leftExpr = visitExpression(ctx.expression(0)).first()
         val rightExpr = visitExpression(ctx.expression(1)).first()
-        val value = when {
-            leftExpr.isBoolean() && rightExpr.isBoolean() ->
-                leftExpr.toBoolean() == rightExpr.toBoolean()
-
-            leftExpr.isNumeric() && rightExpr.isNumeric() ->
-                leftExpr.toFloat() == rightExpr.toFloat()
-
-            else -> throw IllegalStateException("Values $leftExpr and $rightExpr are not comparable")
-        }
+        val value = leftExpr.toFloatValue() == rightExpr.toFloatValue()
 
         return listOf(value.toString())
     }
@@ -325,8 +300,8 @@ class NeoGPVisitor(
 
         val leftExpr = visitExpression(ctx.expression(0)).first()
         val rightExpr = visitExpression(ctx.expression(1)).first()
-        val left = leftExpr.toBoolean()
-        val right = rightExpr.toBoolean()
+        val left = leftExpr.toBooleanValue()
+        val right = rightExpr.toBooleanValue()
 
         return listOf((left && right).toString())
     }
@@ -353,17 +328,30 @@ class NeoGPVisitor(
         check(ctx != null) { "context cannot be null!" }
 
         val variable = variables.firstOrNull { it.name == ctx.ID().text }
-            ?: throw IllegalStateException("Variable ${ctx.ID()?.text} referenced before declaration")
-        val value = variable.value
-            ?: throw IllegalStateException("Variable ${ctx.ID()?.text} referenced before assigning value")
+            ?: Variable(ctx.ID().text, null, true).also(variables::add)
+        if (variable.value == null)
+            variable.value = nextVariableValue()
 
-        return listOf(value)
+        variable.type = getValueType(variable.value!!)
+        return listOf(variable.value!!)
     }
 
-    private fun String.toBoolean(): Boolean = when (this) {
+    private fun String.toBooleanValue(): Boolean = when (this) {
         "true" -> true
         "false" -> false
         else -> this.toFloat() != 0F
+    }
+
+    private fun String.toIntValue(): Int = when (this) {
+        "true" -> 1
+        "false" -> 0
+        else -> this.toInt()
+    }
+
+    private fun String.toFloatValue(): Float = when (this) {
+        "true" -> 1f
+        "false" -> 0f
+        else -> this.toFloat()
     }
 
     private fun String.isBoolean(): Boolean =
@@ -377,6 +365,13 @@ class NeoGPVisitor(
 
     private fun String.isNumeric(): Boolean =
         this.isInt() || this.isFloat()
+
+    private fun getValueType(value: String): VariableType = when {
+        value.isBoolean() -> VariableType.BOOL
+        value.isInt() -> VariableType.INT
+        value.isFloat() -> VariableType.FLOAT
+        else -> throw IllegalStateException("Value \"$value\" is of unsupported type")
+    }
 
     private fun visitExpression(ctx: neoGPParser.ExpressionContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
@@ -405,8 +400,13 @@ class NeoGPVisitor(
             is neoGPParser.IntLiteralContext -> visitIntLiteral(ctx)
             is neoGPParser.FPNumberLiteralContext -> visitFPNumberLiteral(ctx)
             else -> throw IllegalStateException("Illegal primary expression: ${ctx.text}")
-
         }
+    }
+
+    private fun nextVariableValue(): String {
+        val value = inputs[inputIdx]
+        inputIdx = (inputIdx + 1) % inputs.size
+        return value
     }
 
 }
