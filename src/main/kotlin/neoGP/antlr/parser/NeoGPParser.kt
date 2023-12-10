@@ -1,6 +1,7 @@
 package neoGP.antlr.parser
 
 import neoGP.antlr.parser.model.neoGPBaseListener
+import neoGP.antlr.parser.model.neoGPLexer
 import neoGP.antlr.parser.model.neoGPParser
 import neoGP.antlr.parser.model.neoGPParser.AdditionContext
 import neoGP.antlr.parser.model.neoGPParser.BooleanLiteralContext
@@ -17,6 +18,8 @@ import neoGP.antlr.parser.model.neoGPParser.ParenthesizedExpressionContext
 import neoGP.antlr.parser.model.neoGPParser.PrimaryExpressionContext
 import neoGP.antlr.parser.model.neoGPParser.UnaryMinusContext
 import neoGP.model.grammar.*
+import org.antlr.v4.runtime.CharStreams
+import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
@@ -27,7 +30,11 @@ class NeoGPParser : neoGPBaseListener() {
     private val blocks = ArrayDeque<Block>()
     private val expressions = ArrayDeque<Expression>()
 
-    fun parse(ctx: neoGPParser.ProgramContext?): Individual {
+    fun toIndividual(program: String): Individual {
+        val lexer = neoGPLexer(CharStreams.fromString(program))
+        val tokens = CommonTokenStream(lexer)
+        val parser = neoGPParser(tokens)
+        val ctx = parser.program()
         enterProgram(ctx)
 
         return individual
@@ -146,8 +153,12 @@ class NeoGPParser : neoGPBaseListener() {
     override fun enterVar(ctx: neoGPParser.VarContext?) {
         check(ctx != null) { "context cannot be null!" }
 
-        enterExpression(ctx.expression())
+        if (ctx.expression() == null) {
+            statements.add(Var(ctx.text, Id(ctx.ID().text), null))
+            return
+        }
 
+        enterExpression(ctx.expression())
         statements.add(Var(ctx.text, Id(ctx.ID().text), expressions.removeLast()))
     }
 

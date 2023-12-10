@@ -1,5 +1,6 @@
 package neoGP.antlr.parser
 
+import neoGP.NeoProperties
 import neoGP.antlr.parser.model.neoGPBaseVisitor
 import neoGP.antlr.parser.model.neoGPParser
 import java.lang.IllegalStateException
@@ -7,7 +8,6 @@ import kotlin.math.abs
 
 class NeoGPVisitor(
     private val inputs: List<String>,
-    private val maxInstructions: Int = 1000,
 ) : neoGPBaseVisitor<List<String>>() {
     private var variables: MutableList<Variable> = mutableListOf()
     private var inputIdx: Int = 0
@@ -28,7 +28,7 @@ class NeoGPVisitor(
 
     override fun visitProgram(ctx: neoGPParser.ProgramContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
-        if (instrNumber >= maxInstructions) return listOf()
+        if (instrNumber >= NeoProperties.MAX_INSTRUCTIONS) return listOf()
 
         return ctx.statement().flatMap {
             visitStatement(it)
@@ -37,7 +37,7 @@ class NeoGPVisitor(
 
     override fun visitBlock(ctx: neoGPParser.BlockContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
-        if (instrNumber >= maxInstructions) return listOf()
+        if (instrNumber >= NeoProperties.MAX_INSTRUCTIONS) return listOf()
 
         return ctx.statement().flatMap {
             visitStatement(it)
@@ -46,7 +46,7 @@ class NeoGPVisitor(
 
     override fun visitIfElse(ctx: neoGPParser.IfElseContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
-        if (instrNumber >= maxInstructions) return listOf()
+        if (instrNumber >= NeoProperties.MAX_INSTRUCTIONS) return listOf()
         instrNumber += 1
 
         val expression = visitExpression(ctx.expression())
@@ -59,13 +59,13 @@ class NeoGPVisitor(
 
     override fun visitLoop(ctx: neoGPParser.LoopContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
-        if (instrNumber >= maxInstructions) return listOf()
-        instrNumber += 1
+        if (instrNumber >= NeoProperties.MAX_INSTRUCTIONS) return listOf()
 
         var expression = visitExpression(ctx.expression()).first()
         val outputs = mutableListOf<String>()
 
         while (expression == "true") {
+            instrNumber += 1
             val lastVarBefore = variables.size
 
             outputs += visitBlock(ctx.block())
@@ -75,7 +75,7 @@ class NeoGPVisitor(
                 val toRemove = variables.filterIndexed { index, _ -> index >= lastVarBefore }
                 variables.removeAll(toRemove)
             }
-            if (instrNumber >= maxInstructions) break
+            if (instrNumber >= NeoProperties.MAX_INSTRUCTIONS) break
         }
 
         return outputs
@@ -83,7 +83,7 @@ class NeoGPVisitor(
 
     override fun visitIf(ctx: neoGPParser.IfContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
-        if (instrNumber >= maxInstructions) return listOf()
+        if (instrNumber >= NeoProperties.MAX_INSTRUCTIONS) return listOf()
         instrNumber += 1
 
         val expression = visitExpression(ctx.expression())
@@ -96,7 +96,7 @@ class NeoGPVisitor(
 
     override fun visitIn(ctx: neoGPParser.InContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
-        if (instrNumber >= maxInstructions) return listOf()
+        if (instrNumber >= NeoProperties.MAX_INSTRUCTIONS) return listOf()
         instrNumber += 1
 
         val name = ctx.ID().text
@@ -112,7 +112,7 @@ class NeoGPVisitor(
 
     override fun visitPrint(ctx: neoGPParser.PrintContext?): List<String> {
         check(ctx != null) { "context cannot be null!" }
-        if (instrNumber >= maxInstructions) return listOf()
+        if (instrNumber >= NeoProperties.MAX_INSTRUCTIONS) return listOf()
         instrNumber += 1
 
         return visitExpression(ctx.expression())
@@ -138,7 +138,7 @@ class NeoGPVisitor(
     }
 
     private fun visitCreateVariable(name: String, value: String?): List<String> {
-        if (instrNumber >= maxInstructions) return listOf()
+        if (instrNumber >= NeoProperties.MAX_INSTRUCTIONS) return listOf()
         instrNumber += 1
 
         val variable = variables.firstOrNull { it.name == name }
@@ -243,7 +243,7 @@ class NeoGPVisitor(
         check(ctx != null) { "context cannot be null!" }
 
         val expression = visitExpression(ctx.expression()).first()
-        return listOf(expression.toBooleanValue().toString())
+        return listOf((!expression.toBooleanValue()).toString())
     }
 
     override fun visitComparison(ctx: neoGPParser.ComparisonContext?): List<String> {

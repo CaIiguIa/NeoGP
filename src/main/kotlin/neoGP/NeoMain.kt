@@ -12,55 +12,50 @@ import kotlin.system.measureTimeMillis
 
 fun main() {
 //    testRandomIndividual(true)
-
 //    testMultipleRandomIndividuals()
-    testVisitor()
+//    testVisitor()
+    testParser()
 }
 
 fun testParser() {
     var count = 0
 
     val time = measureTimeMillis {
-        val population = Population.generatePopulation(1000)
+        val population = Population.generatePopulation()
 
         population.individuals.forEach { ind ->
             val indString = ind.toString()
-            val lexer = neoGPLexer(CharStreams.fromString(indString))
-            val tokens = CommonTokenStream(lexer)
-            val parser = neoGPParser(tokens)
-            val tree: neoGPParser.ProgramContext = parser.program()
             val translator = NeoGPParser()
-            val sameInd = translator.parse(tree)
+            val sameInd = translator.toIndividual(indString)
             check(indString == sameInd.toString()) { "Haha chciałbyś żeby działało" }
             count += indString.count { it == '\n' }
         }
     }
-    println("Time: ${time / 1000.0}, avg instructions: ${count / 1000.0}")
+    println("Time: ${time / 1000.0}, avg instructions: ${count / NeoProperties.POPULATION_SIZE.toFloat()}")
 }
 
 fun testVisitor() {
     val nIter = 1000
     val time = measureTimeMillis {
         for (i in 0..nIter) {
-            val ind = NeoGPGenerator.randomIndividual(5).toString()
-            val visitor = NeoGPVisitor(listOf("11", "14"), 1000)
+            val ind = NeoGPGenerator.randomIndividual().toString()
+            val visitor = NeoGPVisitor(listOf("11", "14"))
             try {
                 visitor.run(getTreeForIndividual(ind))
             } catch (e: Exception) {
                 println("Error ${e.message}")
 //                println(e.printStackTrace())
             }
-
         }
     }
-    println("Time: ${time / 1000.0}, avg instructions: 7, number of individuals: $nIter")
+    println("Time: ${time / 1000.0}, number of individuals: $nIter")
 }
 
 fun testRandomIndividual(print: Boolean = false) {
-    val individual = NeoGPGenerator.randomIndividual(5)
+    val individual = NeoGPGenerator.randomIndividual()
     if (print) println(individual)
 
-    val visitor = NeoGPVisitor(listOf("11", "14"), 1000)
+    val visitor = NeoGPVisitor(listOf("11", "14"))
     val output = visitor.run(getTreeForIndividual(individual.toString()))
     if (print) println(output)
 }
@@ -75,7 +70,7 @@ fun getTreeForIndividual(individual: String): neoGPParser.ProgramContext {
 fun testMultipleRandomIndividuals() {
     var flops = 0
     val time = measureTimeMillis {
-        for (i in 1..1000) {
+        for (i in 1..NeoProperties.POPULATION_SIZE) {
             try {
                 testRandomIndividual()
             } catch (_: Exception) {

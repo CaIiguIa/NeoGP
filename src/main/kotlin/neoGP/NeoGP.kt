@@ -4,10 +4,6 @@ import java.io.File
 
 class NeoGP {
     data class Params(
-        val populationSize: Int,
-        val maxGenCount: Int,
-        val maxDepth: Int,
-        val timeLimit: Int,
         val inputs: List<String>,
         val outputs: List<String>
     )
@@ -31,10 +27,10 @@ class NeoGP {
             if (gpParams.size != 4)
                 throw Exception("Error while parsing $filePath:  wrong number of GP params, expected 4 got ${gpParams.size}")
 
-            val populationSize = gpParams[0].toInt()
-            val maxGenCount = gpParams[1].toInt()
-            val maxDepth = gpParams[2].toInt()
-            val timeLimit = gpParams[3].toInt()
+            NeoProperties.POPULATION_SIZE = gpParams[0].toInt()
+            NeoProperties.MAX_GEN = gpParams[1].toInt()
+            NeoProperties.MAX_DEPTH = gpParams[2].toInt()
+            NeoProperties.MAX_INSTRUCTIONS = gpParams[3].toInt()
 
             // Read count of inputs and outputs
             val ioParams = lines[1].split(" ")
@@ -50,7 +46,7 @@ class NeoGP {
             val inputs = ios.subList(0, inputCount)
             val outputs = ios.subList(inputCount, inputCount + outputCount)
 
-            return Params(populationSize, maxGenCount, maxDepth, timeLimit, inputs, outputs)
+            return Params(inputs, outputs)
         }
     }
 }

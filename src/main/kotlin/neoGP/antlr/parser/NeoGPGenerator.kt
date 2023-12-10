@@ -1,5 +1,6 @@
 package neoGP.antlr.parser
 
+import neoGP.NeoProperties
 import neoGP.model.grammar.*
 import java.lang.UnsupportedOperationException
 import java.math.BigDecimal
@@ -11,13 +12,15 @@ class NeoGPGenerator() {
 
         private var variables: MutableList<Variable> = mutableListOf()
         private var variableIdx: Int = 0
+        private var depth = 1
 
-        fun randomIndividual(size: Int): Individual {
+        fun randomIndividual(): Individual {
             variables = mutableListOf()
             variableIdx = 0
+            depth = 1
 
             val individual = Individual()
-            for (i in 1..size)
+            for (i in 1..NeoProperties.INIT_INSTRUCTION_NUMBER)
                 individual.statements.add(generateRandomStatement())
 
             return individual
@@ -47,13 +50,23 @@ class NeoGPGenerator() {
 
         private fun randomBlock(): Block {
             val lastVarBefore = variables.size
-            val variablesCopy = variables.map { it.copy() }
-            val block = Block(mutableListOf(generateRandomStatement()))
+            val block = Block(mutableListOf())
+            if (depth == NeoProperties.MAX_DEPTH)
+                return block
+
+            depth += 1
+            val instructionNumber =
+                Random.nextInt(NeoProperties.MIN_INSTRUCTION_BLOCK_SIZE, NeoProperties.MAX_INSTRUCTION_BLOCK_SIZE + 1)
+
+            for (i in 1..instructionNumber)
+                block.statements.add(generateRandomStatement())
+
             val lastVarAfter = variables.size
             if (lastVarAfter != lastVarBefore) {
                 val toRemove = variables.filterIndexed { index, _ -> index >= lastVarBefore }
                 variables.removeAll(toRemove) //  prevent using variables not declared in this scope
             }
+            depth -= 1
             return block
         }
 
@@ -275,10 +288,10 @@ class NeoGPGenerator() {
         }
 
         private fun randomIntPrimary() =
-            IntNumberToken("${Random.nextInt(1000)}")
+            IntNumberToken("${Random.nextInt(NeoProperties.MAX_INT_VALUE)}")
 
         private fun randomFloatPrimary(): FloatNumberToken {
-            val number = Random.nextDouble() * 1000
+            val number = Random.nextDouble() * NeoProperties.MAX_FLOAT_VALUE
             val roundedNumber = BigDecimal(number).setScale(8, RoundingMode.HALF_EVEN)
             return FloatNumberToken("$roundedNumber")
         }

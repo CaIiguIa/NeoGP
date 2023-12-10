@@ -1,5 +1,6 @@
 package neoGP.model
 
+import neoGP.NeoProperties
 import neoGP.antlr.parser.NeoGPGenerator
 import neoGP.model.grammar.Individual
 import neoGP.model.grammar.Statement
@@ -9,16 +10,14 @@ class Population(
     val individuals: MutableList<Individual> = mutableListOf()
 ) {
     companion object {
-        fun generatePopulation(size: Int, maxDepth: Int? = null): Population {
+        fun generatePopulation(): Population {
             val population = Population()
-            for (i in 1..size)
-                population.individuals.add(NeoGPGenerator.randomIndividual(5))
+            for (i in 1..NeoProperties.POPULATION_SIZE)
+                population.individuals.add(NeoGPGenerator.randomIndividual())
 
             return population
         }
 
-        const val CROSSOVER_PROBABILITY = 0.9
-        const val COMPETITOR_NUMBER = 5
     }
 
     fun replaceWorstIndividual(newIndividual: Individual) {
@@ -29,7 +28,7 @@ class Population(
     }
 
     fun createNewIndividual(): Individual {
-        val crossover = Random.nextDouble() < CROSSOVER_PROBABILITY
+        val crossover = Random.nextDouble() < NeoProperties.CROSSOVER_PROBABILITY
 
         val parent1 = findBest()
         val parent2 = findBest()
@@ -48,7 +47,7 @@ class Population(
         var competitor: Individual
         var competitorFitness: Double
 
-        for (i in 1 until COMPETITOR_NUMBER) {
+        for (i in 1 until NeoProperties.COMPETITOR_NUMBER) {
             competitor = individuals.random()
             competitorFitness = competitor.fitness()
 
@@ -67,7 +66,7 @@ class Population(
         var competitor: Individual
         var competitorFitness: Double
 
-        for (i in 1 until COMPETITOR_NUMBER) {
+        for (i in 1 until NeoProperties.COMPETITOR_NUMBER) {
             competitor = individuals.random()
             competitorFitness = competitor.fitness()
 
