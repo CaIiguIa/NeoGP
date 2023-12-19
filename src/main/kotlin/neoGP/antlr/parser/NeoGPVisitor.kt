@@ -114,8 +114,10 @@ class NeoGPVisitor(
         check(ctx != null) { "context cannot be null!" }
         if (instrNumber >= NeoProperties.MAX_INSTRUCTIONS) return listOf()
         instrNumber += 1
+        val output = visitExpression(ctx.expression())
+            .map { it.toFloatValue().toString() }
 
-        return visitExpression(ctx.expression())
+        return output
     }
 
     override fun visitVar(ctx: neoGPParser.VarContext?): List<String> {

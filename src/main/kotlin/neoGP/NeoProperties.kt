@@ -17,12 +17,12 @@ class NeoProperties {
         var MIN_INSTRUCTION_BLOCK_SIZE = 1  // Min Number of instructions in a generated block of code
         var MAX_INSTRUCTION_BLOCK_SIZE = 2  // MaxNumber of instructions in a generated block of code, values above 2 will make the program veeeery slow
         var POPULATION_SIZE = 1000
-        var MAX_INT_VALUE = 100             // Max value of int numbers in generated population
-        var MAX_FLOAT_VALUE = 100           // Max value of float numbers in generated population
+        var MAX_INT_VALUE = 10              // Max value of int numbers in generated population
+        var MAX_FLOAT_VALUE = 10            // Max value of float numbers in generated population
 
         // Fitness function
         var MAX_INSTRUCTIONS = 1000         // Max number of instructions in a Program
-        var BEST_FITNESS_THRESHOLD = 3
+        var BEST_FITNESS_THRESHOLD = 5
 
 
         //Program variables

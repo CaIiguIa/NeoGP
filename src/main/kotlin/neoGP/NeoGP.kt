@@ -8,6 +8,8 @@ import neoGP.model.grammar.Individual
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import java.io.File
+import kotlin.math.abs
+import kotlin.math.min
 import kotlin.reflect.KFunction2
 
 class NeoGP {
@@ -64,10 +66,10 @@ class NeoGP {
 
             // Read count of inputs and outputs
             for (line in lines.drop(2)) {
-                if (line.isEmpty())
+                if (line.isBlank())
                     break
 
-                val ios = lines[2].split(" ")
+                val ios = line.split(" ")
                 if (ios.size != inputCount + outputCount)
                     throw Exception("Error while parsing $filePath:  wrong number of inputs/outputs, expected ${inputCount + outputCount} got ${ios.size}")
 
@@ -82,7 +84,8 @@ class NeoGP {
                 "fitInclude" -> ::fitInclude
                 "fitExactPercentage" -> ::fitExactPercentage
                 "fitIncludePercentage" -> ::fitIncludePercentage
-                else -> throw Exception("Error while parsing $filePath:  unknown fitness function ${lines[2 + paramsList.size]}")
+                "fitSquaredDistance" -> ::fitSquaredDistance
+                else -> throw Exception("Error while parsing $filePath:  unknown fitness function ${gpParams["fit_function"]}")
             }
 
             return Data(paramsList, fitnessFunction)
@@ -112,16 +115,46 @@ class NeoGP {
                 correct += if (value == programOutput.getOrNull(idx)) 1 else 0
             }
 
-            return 10 - (correct/correctOutput.size * 10)
+            return 10 - (correct / correctOutput.size * 10)
         }
 
-        fun fitIncludePercentage(correctOutput: List<String>, programOutput: List<String>): Int {
+        private fun fitIncludePercentage(correctOutput: List<String>, programOutput: List<String>): Int {
             return 10 - correctOutput.sumOf { value ->
                 if (value in programOutput)
                     1 as Int
                 else
                     0 as Int
             }
+        }
+
+        private fun fitSquaredDistance(correctOutput: List<String>, programOutput: List<String>): Int {
+            if (correctOutput.isEmpty() || programOutput.isEmpty())
+                return Int.MAX_VALUE
+
+            val sizeDiffers = correctOutput.size != programOutput.size
+
+            val smaller = when {
+                sizeDiffers -> listOf(correctOutput, programOutput).minBy { it.size }
+                else -> correctOutput
+            }
+
+            val bigger = when {
+                sizeDiffers -> listOf(correctOutput, programOutput).maxBy { it.size }
+                else -> programOutput
+            }
+
+            var distance: Double = 0.0
+            smaller.forEachIndexed { idx, value ->
+//                println("dist($value, ${bigger[idx]})=${abs(value.toDouble() - bigger[idx].toDouble())}")
+
+                distance += abs(value.toDouble() - bigger[idx].toDouble())
+            }
+            if (smaller.size != bigger.size) {
+                val penalty: Double = bigger.size.toDouble() / smaller.size
+                distance = distance * penalty + NeoProperties.BEST_FITNESS_THRESHOLD
+            }
+
+            return (distance * distance).toInt()
         }
 
         fun evolve() {
@@ -148,16 +181,18 @@ class NeoGP {
 
         fun calculateFitness(individual: Individual): StatsOfIndividual {
             val tree = getParseTreeForIndividual(individual.toString())
-            var fitness = 0
-            var instructions= 0
+            var fitness = 0L
+            var instructions = 0
+//            println("INDIVIDUAL: ${individual.toOneLineString()}")
             NeoProperties.inputsOutputs.forEach {
                 val visitor = NeoGPVisitor(it.inputs)
                 val programOutput = visitor.run(tree)
                 fitness += NeoProperties.fitnessFunction!!(it.outputs, programOutput.first)
                 instructions += programOutput.second
             }
+            fitness = min(Int.MAX_VALUE.toLong(), fitness)
 
-            return StatsOfIndividual(fitness, instructions, NeoProperties.inputsOutputs.size)
+            return StatsOfIndividual(fitness.toInt(), instructions, NeoProperties.inputsOutputs.size)
         }
 
         fun getParseTreeForIndividual(individual: String): neoGPParser.ProgramContext {
@@ -172,9 +207,9 @@ class NeoGP {
             var averageInstructions = 0
 
             NeoProperties.population.individuals.forEach { individual ->
-                averageFitness = individual.fitness()
-                averageInstructions = individual.instructions()
-                if (NeoProperties.bestFitness > individual.fitness()) {
+                averageFitness += individual.fitness()
+                averageInstructions += individual.instructions()
+                if (NeoProperties.bestFitness >= individual.fitness()) {
                     NeoProperties.bestFitness = individual.fitness()
                     NeoProperties.bestIndividual = individual
                 }

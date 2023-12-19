@@ -57,11 +57,6 @@ class Population(
             }
         }
 
-        if (bestFitness < NeoProperties.bestFitness) {
-            NeoProperties.bestFitness = bestFitness
-            NeoProperties.bestIndividual = best
-        }
-
         return best
     }
 
