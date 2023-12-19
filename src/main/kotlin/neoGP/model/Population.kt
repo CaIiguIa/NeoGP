@@ -43,18 +43,23 @@ class Population(
 
     private fun findBest(): Individual {
         var best = individuals.random()
-        var bestFitness = -1e34
+        var bestFitness = Int.MAX_VALUE
         var competitor: Individual
-        var competitorFitness: Double
+        var competitorFitness: Int
 
         for (i in 1 until NeoProperties.COMPETITOR_NUMBER) {
             competitor = individuals.random()
             competitorFitness = competitor.fitness()
 
-            if (competitorFitness > bestFitness) { //TODO: uwaga na znak fitness
+            if (competitorFitness < bestFitness) {
                 bestFitness = competitorFitness
                 best = competitor
             }
+        }
+
+        if (bestFitness < NeoProperties.bestFitness) {
+            NeoProperties.bestFitness = bestFitness
+            NeoProperties.bestIndividual = best
         }
 
         return best
@@ -62,15 +67,15 @@ class Population(
 
     private fun findWorst(): Individual {
         var worst = individuals.random()
-        var worstFitness = 1e34
+        var worstFitness = 0
         var competitor: Individual
-        var competitorFitness: Double
+        var competitorFitness: Int
 
         for (i in 1 until NeoProperties.COMPETITOR_NUMBER) {
             competitor = individuals.random()
             competitorFitness = competitor.fitness()
 
-            if (competitorFitness < worstFitness) { //TODO: uwaga na znak fitness
+            if (competitorFitness > worstFitness) {
                 worstFitness = competitorFitness
                 worst = competitor
             }
@@ -79,14 +84,7 @@ class Population(
         return worst
     }
 
-    fun getRandomChild(parent: Individual): Statement {
-        val parentDepth = Random.nextInt(parent.depth())
-
-        return parent.getChildrenAtDepth(parentDepth).randomOrNull()
-            ?: throw IllegalStateException("Random child implementation fault")
-    }
-
-    fun crossover(parent1: Individual, parent2: Individual): Individual {
+    private fun crossover(parent1: Individual, parent2: Individual): Individual {
         val children1 = parent1.getChildrenAtDepth(0)
         val children2 = parent2.getChildrenAtDepth(0)
 
@@ -108,7 +106,7 @@ class Population(
         return newInd
     }
 
-    fun mutation(parent: Individual): Individual {
+    private fun mutation(parent: Individual): Individual {
         val copy = parent.copy()
         val idxToReplace = Random.nextInt(copy.statements.size)
         copy.statements.removeAt(idxToReplace)

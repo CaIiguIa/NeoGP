@@ -13,12 +13,12 @@ class NeoGPVisitor(
     private var inputIdx: Int = 0
     private var instrNumber = 0
 
-    fun run(program: neoGPParser.ProgramContext?): List<String> {
+    fun run(program: neoGPParser.ProgramContext?): Pair<List<String>, Int> {
         instrNumber = 0
         inputIdx = 0
         variables = mutableListOf()
 
-        return visitProgram(program)
+        return Pair(visitProgram(program), instrNumber)
     }
 
     companion object {

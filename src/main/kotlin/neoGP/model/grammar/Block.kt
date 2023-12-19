@@ -14,4 +14,8 @@ class Block(
         Block(
             statements.map(Statement::copy).toMutableList()
         )
+
+    fun toOneLineString(): String =
+        statements.joinToString { it.toOneLineString() }
+
 }

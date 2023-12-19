@@ -3,18 +3,21 @@ package neoGP
 import neoGP.antlr.parser.NeoGPGenerator
 import neoGP.antlr.parser.NeoGPParser
 import neoGP.antlr.parser.NeoGPVisitor
-import neoGP.antlr.parser.model.neoGPLexer
-import neoGP.antlr.parser.model.neoGPParser
 import neoGP.model.Population
-import org.antlr.v4.runtime.CharStreams
-import org.antlr.v4.runtime.CommonTokenStream
 import kotlin.system.measureTimeMillis
 
-fun main() {
+fun main(args: Array<String>) {
 //    testRandomIndividual(true)
 //    testMultipleRandomIndividuals()
 //    testVisitor()
-    testParser()
+//    testParser()
+    if (args.size != 1)
+        throw UnsupportedOperationException("Wrong number of program's input arguments! (${args.size})")
+
+    val data = NeoGP.loadParams(args.first())
+    NeoProperties.inputsOutputs = data.params
+    NeoProperties.fitnessFunction = data.fitnessFunction
+    NeoGP.evolve()
 }
 
 fun testParser() {
@@ -41,7 +44,7 @@ fun testVisitor() {
             val ind = NeoGPGenerator.randomIndividual().toString()
             val visitor = NeoGPVisitor(listOf("11", "14"))
             try {
-                visitor.run(getTreeForIndividual(ind))
+                visitor.run(NeoGP.getParseTreeForIndividual(ind))
             } catch (e: Exception) {
                 println("Error ${e.message}")
 //                println(e.printStackTrace())
@@ -56,15 +59,8 @@ fun testRandomIndividual(print: Boolean = false) {
     if (print) println(individual)
 
     val visitor = NeoGPVisitor(listOf("11", "14"))
-    val output = visitor.run(getTreeForIndividual(individual.toString()))
+    val output = visitor.run(NeoGP.getParseTreeForIndividual(individual.toString()))
     if (print) println(output)
-}
-
-fun getTreeForIndividual(individual: String): neoGPParser.ProgramContext {
-    val lexer = neoGPLexer(CharStreams.fromString(individual))
-    val tokens = CommonTokenStream(lexer)
-    val parser = neoGPParser(tokens)
-    return parser.program()
 }
 
 fun testMultipleRandomIndividuals() {

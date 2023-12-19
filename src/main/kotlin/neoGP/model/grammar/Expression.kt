@@ -3,9 +3,7 @@ package neoGP.model.grammar
 abstract class Expression(
     open val value: String,
 ) {
-
     abstract override fun toString(): String
-
     abstract fun copy(): Expression
 }
 

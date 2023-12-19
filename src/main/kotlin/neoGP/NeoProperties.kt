@@ -1,5 +1,9 @@
 package neoGP
 
+import neoGP.model.Population
+import neoGP.model.grammar.Individual
+import kotlin.reflect.KFunction2
+
 class NeoProperties {
     companion object {
         // Simulation
@@ -10,7 +14,7 @@ class NeoProperties {
 
         //Population generation
         var INIT_INSTRUCTION_NUMBER = 5     // Initial number of instructions in a Program
-        var MIN_INSTRUCTION_BLOCK_SIZE = 2  // Min Number of instructions in a generated block of code
+        var MIN_INSTRUCTION_BLOCK_SIZE = 1  // Min Number of instructions in a generated block of code
         var MAX_INSTRUCTION_BLOCK_SIZE = 2  // MaxNumber of instructions in a generated block of code, values above 2 will make the program veeeery slow
         var POPULATION_SIZE = 1000
         var MAX_INT_VALUE = 100             // Max value of int numbers in generated population
@@ -18,5 +22,14 @@ class NeoProperties {
 
         // Fitness function
         var MAX_INSTRUCTIONS = 1000         // Max number of instructions in a Program
+        var BEST_FITNESS_THRESHOLD = 0.01
+
+
+        //Program variables
+        var population = Population.generatePopulation()
+        var inputsOutputs: List<NeoGP.Params> = listOf()
+        var fitnessFunction: KFunction2<List<String>, List<String>, Int>? = null
+        var bestFitness = Int.MAX_VALUE
+        var bestIndividual: Individual? = null
     }
 }

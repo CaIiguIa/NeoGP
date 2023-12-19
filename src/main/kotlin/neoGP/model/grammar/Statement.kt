@@ -3,14 +3,11 @@ package neoGP.model.grammar
 abstract class Statement(
     open val value: String,
 ) {
-
     abstract override fun toString(): String
     open fun depth(): Int = 0
-    open fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
-
+    abstract fun getChildrenAtDepth(depth: Int): List<Statement>
     abstract fun copy(): Statement
-
-
+    abstract fun toOneLineString(): String
 }
 
 class Loop(
@@ -37,6 +34,9 @@ class Loop(
             expression.copy(),
             block.copy()
         )
+
+    override fun toOneLineString(): String =
+        "while ( $expression ) { ${block.toOneLineString()} }"
 }
 
 class If(
@@ -63,6 +63,9 @@ class If(
             expression.copy(),
             block.copy()
         )
+
+    override fun toOneLineString(): String =
+        "if ( $expression ) { ${block.toOneLineString()} }"
 }
 
 class IfElse(
@@ -91,6 +94,9 @@ class IfElse(
             block.copy(),
             elseBlock.copy()
         )
+
+    override fun toOneLineString(): String =
+        "if ( $expression ) { ${block.toOneLineString()} } else { ${elseBlock.toOneLineString()} }"
 }
 
 class In(
@@ -101,11 +107,16 @@ class In(
     override fun toString(): String =
         "in $id;"
 
+    override fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
+
     override fun copy(): Statement =
         In(
             value,
             id.copy()
         )
+
+    override fun toOneLineString(): String =
+        "in $id;"
 }
 
 class Print(
@@ -121,6 +132,12 @@ class Print(
             value,
             expression.copy()
         )
+
+    override fun toOneLineString(): String =
+        "print ( $expression );"
+
+    override fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
+
 }
 
 class Var(
@@ -138,6 +155,12 @@ class Var(
             id.copy(),
             expression?.copy()
         )
+
+    override fun toOneLineString(): String =
+        "var $id ${expression?.let { "= $it" } ?: ""};"
+
+    override fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
+
 }
 
 class VarAssign(
@@ -155,6 +178,12 @@ class VarAssign(
             id.copy(),
             expression.copy()
         )
+
+    override fun toOneLineString(): String =
+        "$id = $expression;"
+
+    override fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
+
 }
 
 class Const(
@@ -172,4 +201,10 @@ class Const(
             id.copy(),
             expression.copy()
         )
+
+    override fun toOneLineString(): String =
+        "const $id = $expression;"
+
+    override fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
+
 }
