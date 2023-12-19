@@ -22,7 +22,7 @@ class NeoProperties {
 
         // Fitness function
         var MAX_INSTRUCTIONS = 1000         // Max number of instructions in a Program
-        var BEST_FITNESS_THRESHOLD = 0.01
+        var BEST_FITNESS_THRESHOLD = 3
 
 
         //Program variables

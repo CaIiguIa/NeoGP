@@ -43,11 +43,11 @@ class NeoGP {
             val gpParams = lines[0].split(',')
                 .associate {
                     val (key, value) = it.split('=')
-                    key to value
+                    key.trim() to value.trim()
                 }
 
-            if (gpParams.size != 4)
-                throw Exception("Error while parsing $filePath:  wrong number of GP params, expected 4 got ${gpParams.size}")
+            if (gpParams.size != 5)
+                throw Exception("Error while parsing $filePath:  wrong number of GP params, expected 5 got ${gpParams.size}")
 
             NeoProperties.POPULATION_SIZE = gpParams["population_size"]!!.toInt()
             NeoProperties.MAX_GEN = gpParams["max_gen_count"]!!.toInt()
@@ -112,11 +112,11 @@ class NeoGP {
                 correct += if (value == programOutput.getOrNull(idx)) 1 else 0
             }
 
-            return correct/correctOutput.size * 10
+            return 10 - (correct/correctOutput.size * 10)
         }
 
         fun fitIncludePercentage(correctOutput: List<String>, programOutput: List<String>): Int {
-            return correctOutput.sumOf { value ->
+            return 10 - correctOutput.sumOf { value ->
                 if (value in programOutput)
                     1 as Int
                 else
@@ -128,10 +128,9 @@ class NeoGP {
             var individual: Int
             var newInd: Individual
 
-//            pokaż parametry wejścia
             printGeneration(0)
             for (gen in 1 until NeoProperties.MAX_GEN) {
-                if (NeoProperties.bestFitness > NeoProperties.BEST_FITNESS_THRESHOLD) {
+                if (NeoProperties.bestFitness < NeoProperties.BEST_FITNESS_THRESHOLD) {
                     print("PROBLEM SOLVED\n")
                     return
                 }
@@ -185,7 +184,11 @@ class NeoGP {
             averageInstructions /= NeoProperties.population.individuals.size
 
             print(
-                """Generation=$gen Avg Fitness=${averageFitness} Best Fitness=${NeoProperties.bestFitness} Avg Size=${averageInstructions}
+                """
+Generation=$gen; 
+Avg Fitness=${averageFitness}; 
+Best Fitness=${NeoProperties.bestFitness}; 
+Avg Size=${averageInstructions};
 Best Individual: ${NeoProperties.bestIndividual!!.toOneLineString()}
 """
             )

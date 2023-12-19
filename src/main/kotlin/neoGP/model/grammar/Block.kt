@@ -16,6 +16,6 @@ class Block(
         )
 
     fun toOneLineString(): String =
-        statements.joinToString { it.toOneLineString() }
+        statements.joinToString(separator = " ", transform = {it.toOneLineString()})
 
 }
