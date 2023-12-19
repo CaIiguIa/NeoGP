@@ -80,6 +80,8 @@ class NeoGP {
             val fitnessFunction = when (gpParams["fit_function"]) {
                 "fitExact" -> ::fitExact
                 "fitInclude" -> ::fitInclude
+                "fitExactPercentage" -> ::fitExactPercentage
+                "fitIncludePercentage" -> ::fitIncludePercentage
                 else -> throw Exception("Error while parsing $filePath:  unknown fitness function ${lines[2 + paramsList.size]}")
             }
 
@@ -90,18 +92,36 @@ class NeoGP {
         // 0 - for match
         // 1 - for no match
         // Sum fitness of all test cases to get total fitness
-        fun fitExact(correctOutput: List<String>, programOutput: List<String>): Int {
+        private fun fitExact(correctOutput: List<String>, programOutput: List<String>): Int {
             return if (correctOutput == programOutput)
                 0
             else
                 1
         }
 
-        fun fitInclude(correctOutput: List<String>, programOutput: List<String>): Int {
+        private fun fitInclude(correctOutput: List<String>, programOutput: List<String>): Int {
             return if (correctOutput.all { programOutput.contains(it) })
                 0
             else
                 1
+        }
+
+        private fun fitExactPercentage(correctOutput: List<String>, programOutput: List<String>): Int {
+            var correct = 0
+            correctOutput.forEachIndexed { idx, value ->
+                correct += if (value == programOutput.getOrNull(idx)) 1 else 0
+            }
+
+            return correct/correctOutput.size * 10
+        }
+
+        fun fitIncludePercentage(correctOutput: List<String>, programOutput: List<String>): Int {
+            return correctOutput.sumOf { value ->
+                if (value in programOutput)
+                    1 as Int
+                else
+                    0 as Int
+            }
         }
 
         fun evolve() {
