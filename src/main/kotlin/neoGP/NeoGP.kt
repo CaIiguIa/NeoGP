@@ -74,7 +74,7 @@ class NeoGP {
                     throw Exception("Error while parsing $filePath:  wrong number of inputs/outputs, expected ${inputCount + outputCount} got ${ios.size}")
 
                 val inputs = ios.subList(0, inputCount)
-                val outputs = ios.subList(inputCount, inputCount + outputCount)
+                val outputs = ios.subList(inputCount, inputCount + outputCount).map { it.trim() }
 
                 paramsList.add(Params(inputs, outputs))
             }
@@ -96,40 +96,91 @@ class NeoGP {
         // 1 - for no match
         // Sum fitness of all test cases to get total fitness
         private fun fitExact(correctOutput: List<String>, programOutput: List<String>): Int {
-            return if (correctOutput == programOutput)
-                0
-            else
-                1
+            if (NeoProperties.CONVERT_FLOAT_TO_INT) {
+                val cout = correctOutput.map { it.toFloat().toInt() }
+                val pout = programOutput.map { it.toFloat().toInt() }
+                return if (cout == pout)
+                    0
+                else
+                    1
+            }
+            else {
+                val cout = correctOutput.map { it.toFloat() }
+                val pout = programOutput.map { it.toFloat() }
+                return if (cout == pout)
+                    0
+                else
+                    1
+            }
+
         }
 
         private fun fitInclude(correctOutput: List<String>, programOutput: List<String>): Int {
-            return if (correctOutput.all { programOutput.contains(it) })
-                0
-            else
-                1
+            if (NeoProperties.CONVERT_FLOAT_TO_INT) {
+                val cout = correctOutput.map { it.toFloat().toInt() }
+                val pout = programOutput.map { it.toFloat().toInt() }
+                return if (cout.all { pout.contains(it) })
+                    0
+                else
+                    1
+            }
+            else {
+                val cout = correctOutput.map { it.toFloat() }
+                val pout = programOutput.map { it.toFloat() }
+                return if (cout.all { pout.contains(it) })
+                    0
+                else
+                    1
+            }
+
+
         }
 
         private fun fitExactPercentage(correctOutput: List<String>, programOutput: List<String>): Int {
-            var correct = 0
-            correctOutput.forEachIndexed { idx, value ->
-                correct += if (value == programOutput.getOrNull(idx)) 1 else 0
-            }
+            if (NeoProperties.CONVERT_FLOAT_TO_INT) {
+                var correct = 0
+                val out = programOutput.map { it.toFloat().toInt() }
+                correctOutput.forEachIndexed { idx, value ->
+                    correct += if (value.toFloat().toInt() == out.getOrNull(idx)) 1 else 0
+                }
 
-            return 10 - (correct / correctOutput.size * 10)
+                return 10 - (correct / correctOutput.size * 10)
+            }
+            else {
+                var correct = 0
+                val out = programOutput.map { it.toFloat() }
+                correctOutput.forEachIndexed { idx, value ->
+                    correct += if (value.toFloat() == out.getOrNull(idx)) 1 else 0
+                }
+
+                return 10 - (correct / correctOutput.size * 10)
+            }
         }
 
         private fun fitIncludePercentage(correctOutput: List<String>, programOutput: List<String>): Int {
-            return 10 - correctOutput.sumOf { value ->
-                if (value in programOutput)
-                    1 as Int
-                else
-                    0 as Int
+            if (NeoProperties.CONVERT_FLOAT_TO_INT) {
+                val out = programOutput.map { it.toFloat().toInt() }
+                return 10 - correctOutput.map { it.toFloat().toInt() }.sumOf { value ->
+                    if (value in out)
+                        1 as Int
+                    else
+                        0 as Int
+                }
+            }
+            else {
+                val out = programOutput.map { it.toFloat() }
+                return 10 - correctOutput.map { it.toFloat() }.sumOf { value ->
+                    if (value in out)
+                        1 as Int
+                    else
+                        0 as Int
+                }
             }
         }
 
         private fun fitSquaredDistance(correctOutput: List<String>, programOutput: List<String>): Int {
             if (correctOutput.isEmpty() || programOutput.isEmpty())
-                return Int.MAX_VALUE
+                return Int.MAX_VALUE-1000
 
             val sizeDiffers = correctOutput.size != programOutput.size
 
@@ -143,9 +194,8 @@ class NeoGP {
                 else -> programOutput
             }
 
-            var distance: Double = 0.0
+            var distance = 0.0
             smaller.forEachIndexed { idx, value ->
-//                println("dist($value, ${bigger[idx]})=${abs(value.toDouble() - bigger[idx].toDouble())}")
 
                 distance += abs(value.toDouble() - bigger[idx].toDouble())
             }
@@ -163,7 +213,7 @@ class NeoGP {
 
             printGeneration(0)
             for (gen in 1 until NeoProperties.MAX_GEN) {
-                if (NeoProperties.bestFitness < NeoProperties.BEST_FITNESS_THRESHOLD) {
+                if (NeoProperties.bestFitness <= NeoProperties.BEST_FITNESS_THRESHOLD) {
                     print("PROBLEM SOLVED\n")
                     return
                 }
@@ -183,7 +233,6 @@ class NeoGP {
             val tree = getParseTreeForIndividual(individual.toString())
             var fitness = 0L
             var instructions = 0
-//            println("INDIVIDUAL: ${individual.toOneLineString()}")
             NeoProperties.inputsOutputs.forEach {
                 val visitor = NeoGPVisitor(it.inputs)
                 val programOutput = visitor.run(tree)
@@ -203,13 +252,13 @@ class NeoGP {
         }
 
         private fun printGeneration(gen: Int) {
-            var averageFitness = 0
+            var averageFitness = 0L
             var averageInstructions = 0
 
             NeoProperties.population.individuals.forEach { individual ->
                 averageFitness += individual.fitness()
                 averageInstructions += individual.instructions()
-                if (NeoProperties.bestFitness >= individual.fitness()) {
+                if (NeoProperties.bestFitness > individual.fitness()) {
                     NeoProperties.bestFitness = individual.fitness()
                     NeoProperties.bestIndividual = individual
                 }
@@ -224,7 +273,7 @@ Generation=$gen;
 Avg Fitness=${averageFitness}; 
 Best Fitness=${NeoProperties.bestFitness}; 
 Avg Size=${averageInstructions};
-Best Individual: ${NeoProperties.bestIndividual!!.toOneLineString()}
+Best Individual: ${NeoProperties.bestIndividual?.toOneLineString()}
 """
             )
         }

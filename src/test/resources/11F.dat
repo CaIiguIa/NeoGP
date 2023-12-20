@@ -1,4 +1,4 @@
-population_size=100, max_gen_count=100, max_depth=5, time_limit=100, fit_function=fitExact
+population_size=1000, max_gen_count=100, max_depth=5, time_limit=100, fit_function=fitExact
 4 1
 5 7 2 6 1
 4 3 4 8 1
