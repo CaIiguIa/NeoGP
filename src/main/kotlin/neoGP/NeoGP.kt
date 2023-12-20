@@ -48,8 +48,8 @@ class NeoGP {
                     key.trim() to value.trim()
                 }
 
-            if (gpParams.size != 5)
-                throw Exception("Error while parsing $filePath:  wrong number of GP params, expected 5 got ${gpParams.size}")
+            if (gpParams.size != 9)
+                throw Exception("Error while parsing $filePath:  wrong number of GP params, expected 9 got ${gpParams.size}")
 
             NeoProperties.POPULATION_SIZE = gpParams["population_size"]!!.toInt()
             NeoProperties.MAX_GEN = gpParams["max_gen_count"]!!.toInt()
@@ -58,6 +58,7 @@ class NeoGP {
             NeoProperties.CONVERT_FLOAT_TO_INT = gpParams["convert_float_to_int"]!!.toBoolean()
             NeoProperties.MAX_FLOAT_VALUE = gpParams["max_float_value"]!!.toInt()
             NeoProperties.MAX_INT_VALUE = gpParams["max_int_value"]!!.toInt()
+            NeoProperties.BEST_FITNESS_THRESHOLD = gpParams["best_fitness_threshold"]!!.toInt()
 
             val ioParams = lines[1].split(" ")
             if (ioParams.size != 2)
