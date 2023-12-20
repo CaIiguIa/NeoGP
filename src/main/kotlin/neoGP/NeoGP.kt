@@ -55,6 +55,9 @@ class NeoGP {
             NeoProperties.MAX_GEN = gpParams["max_gen_count"]!!.toInt()
             NeoProperties.MAX_DEPTH = gpParams["max_depth"]!!.toInt()
             NeoProperties.MAX_INSTRUCTIONS = gpParams["time_limit"]!!.toInt()
+            NeoProperties.CONVERT_FLOAT_TO_INT = gpParams["convert_float_to_int"]!!.toBoolean()
+            NeoProperties.MAX_FLOAT_VALUE = gpParams["max_float_value"]!!.toInt()
+            NeoProperties.MAX_INT_VALUE = gpParams["max_int_value"]!!.toInt()
 
             val ioParams = lines[1].split(" ")
             if (ioParams.size != 2)
