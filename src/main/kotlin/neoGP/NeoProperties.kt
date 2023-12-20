@@ -14,8 +14,8 @@ class NeoProperties {
 
         //Population generation
         var INIT_INSTRUCTION_NUMBER = 5     // Initial number of instructions in a Program
-        var MIN_INSTRUCTION_BLOCK_SIZE = 1  // Min Number of instructions in a generated block of code
-        var MAX_INSTRUCTION_BLOCK_SIZE = 2  // MaxNumber of instructions in a generated block of code, values above 2 will make the program veeeery slow
+        var MIN_INSTRUCTION_BLOCK_SIZE = 2  // Min Number of instructions in a generated block of code
+        var MAX_INSTRUCTION_BLOCK_SIZE = 3  // MaxNumber of instructions in a generated block of code, values above 2 will make the program veeeery slow
         var POPULATION_SIZE = 1000
         var MAX_INT_VALUE = 10              // Max value of int numbers in generated population
         var MAX_FLOAT_VALUE = 10            // Max value of float numbers in generated population
