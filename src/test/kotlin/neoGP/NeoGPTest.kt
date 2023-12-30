@@ -1,13 +1,9 @@
 package neoGP
 
-import neoGP.antlr.parser.NeoGPVisitor
 import neoGP.model.Population
-import neoGP.model.grammar.Individual
 import org.junit.jupiter.api.BeforeEach
 import java.nio.file.Paths
 import kotlin.test.Test
-import kotlin.test.assertTrue
-import kotlin.test.fail
 
 class NeoGPTest {
     @BeforeEach
@@ -25,7 +21,7 @@ class NeoGPTest {
         //1.1.A Program powinien wygenerować na wyjściu (na dowolnej pozycji w danych wyjściowych) liczbę 1. Poza liczbą 1 może też zwrócić inne liczby.
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/11A.dat"
 
-        testOutputContains(path, listOf("1", "1.0"))
+        TestService.testOutputContains(path, listOf("1", "1.0"))
     }
 
     @Test
@@ -33,7 +29,7 @@ class NeoGPTest {
         //1.1.B Program powinien wygenerować na wyjściu (na dowolnej pozycji w danych wyjściowych) liczbę 789. Poza liczbą 789 może też zwrócić inne liczby.
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/11B.dat"
 
-        testOutputContains(path, listOf("789", "789.0"))
+        TestService.testOutputContains(path, listOf("789", "789.0"))
     }
 
     @Test
@@ -44,7 +40,7 @@ class NeoGPTest {
         NeoProperties.MAX_INT_VALUE = 100000
         NeoProperties.MAX_FLOAT_VALUE = 100000
 
-        testOutputContains(path, listOf("31415", "31415.0"))
+        TestService.testOutputContains(path, listOf("31415", "31415.0"))
     }
 
     @Test
@@ -54,7 +50,7 @@ class NeoGPTest {
         NeoProperties.MAX_INT_VALUE = 100
         NeoProperties.MAX_FLOAT_VALUE = 100
 
-        testOutputContains(path, listOf("1", "1.0"))
+        TestService.testOutputContains(path, listOf("1", "1.0"))
     }
 
     @Test
@@ -64,7 +60,7 @@ class NeoGPTest {
         NeoProperties.MAX_INT_VALUE = 1000
         NeoProperties.MAX_FLOAT_VALUE = 1000
 
-        testOutputContains(path, listOf("789", "789.0"))
+        TestService.testOutputContains(path, listOf("789", "789.0"))
     }
 
     @Test
@@ -73,7 +69,7 @@ class NeoGPTest {
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/11F.dat"
 
 
-        testOutputContains(path, listOf("1", "1.0"))
+        TestService.testOutputContains(path, listOf("1", "1.0"))
     }
 
     @Test
@@ -82,7 +78,7 @@ class NeoGPTest {
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/12A.dat"
 
 
-        testOutputExact(path)
+        TestService.testOutputExact(path)
     }
 
     @Test
@@ -91,7 +87,7 @@ class NeoGPTest {
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/12B.dat"
 
 
-        testOutputExact(path)
+        TestService.testOutputExact(path)
     }
 
     @Test
@@ -100,7 +96,7 @@ class NeoGPTest {
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/12C.dat"
 
 
-        testOutputExact(path)
+        TestService.testOutputExact(path)
     }
 
     @Test
@@ -109,7 +105,7 @@ class NeoGPTest {
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/12D.dat"
 
 
-        testOutputExact(path)
+        TestService.testOutputExact(path)
     }
 
     @Test
@@ -118,7 +114,7 @@ class NeoGPTest {
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/12E.dat"
 
 
-        testOutputExact(path)
+        TestService.testOutputExact(path)
     }
 
     @Test
@@ -128,7 +124,7 @@ class NeoGPTest {
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/13A.dat"
 
 
-        testOutputExact(path)
+        TestService.testOutputExact(path)
     }
 
     @Test
@@ -138,7 +134,7 @@ class NeoGPTest {
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/13B.dat"
 
 
-        testOutputExact(path)
+        TestService.testOutputExact(path)
     }
 
     @Test
@@ -148,98 +144,7 @@ class NeoGPTest {
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/14A.dat"
 
 
-        testOutputExact(path)
-    }
-
-    private fun testOutputContains(filePath: String, expectedValues: List<String>) {
-        try {
-            val data = NeoGP.loadParams(filePath)
-            NeoProperties.inputsOutputs = data.params
-            NeoProperties.fitnessFunction = data.fitnessFunction
-            NeoGP.evolve()
-            val outputs = getOutputsFor(NeoProperties.bestIndividual!!, data.params)
-
-            assertTrue(contains(outputs, expectedValues), "program does not find the best solution")
-        } catch (e: Exception) {
-            println("Program does not run properly, following exception has been thrown:")
-            e.printStackTrace()
-            fail()
-        }
-    }
-
-    private fun getOutputsFor(individual: Individual, ios: List<NeoGP.Params>): List<List<String>> {
-        return ios.map { io ->
-            val visitor = NeoGPVisitor(io.inputs)
-            val tree = NeoGP.getParseTreeForIndividual(individual.toString())
-
-            visitor.run(tree).first
-        }
-    }
-
-    private fun contains(outputs: List<List<String>>, expectedValues: List<String>): Boolean =
-        if (NeoProperties.CONVERT_FLOAT_TO_INT)
-            outputs.all { out ->
-                val o = out.map { it.toFloat().toInt() }
-                val anyContains = expectedValues.any { value ->
-                    value.toFloat().toInt() in o
-                }
-                if (!anyContains) println("Assertion error: not all values from $o are present in $expectedValues")
-
-                anyContains
-            }
-        else
-            outputs.all { out ->
-                val o = out.map { it.toFloat() }
-                val anyContains = expectedValues.any { value ->
-                    value.toFloat() in o
-                }
-                if (!anyContains) println("Assertion error: not all values from $o are present in [$expectedValues]")
-
-                anyContains
-            }
-
-
-    private fun testOutputExact(filePath: String) {
-        try {
-            val data = NeoGP.loadParams(filePath)
-            NeoProperties.inputsOutputs = data.params
-            NeoProperties.fitnessFunction = data.fitnessFunction
-            NeoGP.evolve()
-            val outputs = getOutputsFor(NeoProperties.bestIndividual!!, data.params)
-
-            assertTrue(containsExact(outputs, data.params.map { it.outputs }), "program does not find the best solution")
-        } catch (e: Exception) {
-            println("Program does not run properly, following exception has been thrown:")
-            e.printStackTrace()
-            fail()
-        }
-    }
-
-    private fun containsExact(outputs: List<List<String>>, expectedValues: List<List<String>>): Boolean {
-        if (outputs.size != expectedValues.size)
-            return false
-        if (NeoProperties.CONVERT_FLOAT_TO_INT)
-            outputs.forEachIndexed { idx, _ ->
-                val out = outputs[idx].map { it.toFloat().toInt() }
-                val anyNotPresent = expectedValues[idx].any {
-                    it.toFloat().toInt() !in out
-                }
-                if (anyNotPresent) {
-                    return false
-                }
-            }
-        else
-            outputs.forEachIndexed { idx, _ ->
-                val out = outputs[idx].map { it.toFloat() }
-                val anyNotPresent = expectedValues[idx].any {
-                    it.toFloat() !in out
-                }
-                if (anyNotPresent) {
-                    return false
-                }
-            }
-
-        return true
+        TestService.testOutputExact(path)
     }
 
 }

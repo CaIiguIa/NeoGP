@@ -64,7 +64,7 @@ class NeoGPGenerator() {
             val lastVarAfter = variables.size
             if (lastVarAfter != lastVarBefore) {
                 val toRemove = variables.filterIndexed { index, _ -> index >= lastVarBefore }
-                variables.removeAll(toRemove) //  prevent using variables not declared in this scope
+                variables.removeAll(toRemove) // prevent using variables not declared in this scope
             }
             depth -= 1
             return block
@@ -239,14 +239,14 @@ class NeoGPGenerator() {
         }
 
         private fun randomBooleanExpression(): Expression {
-            val random = Random.nextInt(10)
+            val random = Random.nextInt(12)
 
             return when {
                 random == 0 -> randomLogical()
                 random == 1 -> randomNegation()
                 random == 2 -> randomComparison()
                 random == 3 -> randomEquality()
-                random == 4 && variables.any { it.value != null && it.type == VariableType.BOOL } -> randomVariable(
+                random in listOf(4, 5, 6, 7) && variables.any { it.value != null } -> randomVariable(
                     VariableType.BOOL
                 )
 
@@ -260,7 +260,7 @@ class NeoGPGenerator() {
             return when {
                 random == 0 -> randomMathematical(VariableType.INT)
                 random == 1 -> randomUnaryMinus(VariableType.INT)
-                random == 2 && variables.any { it.value != null && it.type == VariableType.INT } -> randomVariable(
+                random in listOf(2, 3) && variables.any { it.value != null } -> randomVariable(
                     VariableType.INT
                 )
 
@@ -274,7 +274,7 @@ class NeoGPGenerator() {
             return when {
                 random == 0 -> randomMathematical(VariableType.FLOAT)
                 random == 1 -> randomUnaryMinus(VariableType.FLOAT)
-                random == 2 && variables.any { it.value != null && it.type == VariableType.FLOAT } -> randomVariable(
+                random in listOf(2, 3) && variables.any { it.value != null } -> randomVariable(
                     VariableType.FLOAT
                 )
 
@@ -297,7 +297,21 @@ class NeoGPGenerator() {
         }
 
         private fun randomVariable(ofType: VariableType) =
-            Id(variables.filter { it.value != null && it.type == ofType }.random().name)
+            Id(variables.filter { it.value != null && it.type == ofType }
+                .randomOrNull()?.name
+                ?: variables.randomOrNull()?.name
+                ?: randomPrimaryValue()
+            )
+
+        private fun randomPrimaryValue(): String {
+            val random = Random.nextInt(3)
+
+            return when (random) {
+                0 -> randomBooleanPrimary().value
+                1 -> randomIntPrimary().value
+                else -> randomFloatPrimary().value
+            }
+        }
 
     }
 }

@@ -4,7 +4,10 @@ import neoGP.NeoProperties
 import neoGP.antlr.parser.model.neoGPBaseVisitor
 import neoGP.antlr.parser.model.neoGPParser
 import java.lang.IllegalStateException
+import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.math.abs
+import kotlin.random.Random
 
 class NeoGPVisitor(
     private val inputs: List<String>,
@@ -359,9 +362,6 @@ class NeoGPVisitor(
     private fun String.isFloat(): Boolean =
         Regex(FLOAT_REGEX).matches(this)
 
-    private fun String.isNumeric(): Boolean =
-        this.isInt() || this.isFloat()
-
     private fun getValueType(value: String): VariableType = when {
         value.isBoolean() -> VariableType.BOOL
         value.isInt() -> VariableType.INT
@@ -400,9 +400,18 @@ class NeoGPVisitor(
     }
 
     private fun nextVariableValue(): String {
+        if (inputs.isEmpty())
+            return randomVariableValue()
         val value = inputs[inputIdx]
         inputIdx = (inputIdx + 1) % inputs.size
         return value
+    }
+
+    private fun randomVariableValue(): String = when (Random.nextInt(3)) {
+        0 -> listOf("false", "true").random()
+        1 -> Random.nextInt(NeoProperties.MAX_INT_VALUE).toString()
+        else -> BigDecimal(Random.nextDouble() * NeoProperties.MAX_FLOAT_VALUE)
+            .setScale(8, RoundingMode.HALF_EVEN).toString()
     }
 
 }
