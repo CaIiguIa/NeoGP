@@ -31,6 +31,9 @@ class Id(override val value: String) : Primary(value) {
     }
 
     override fun copy(): Id = Id(value)
+
+    override fun getChildren(): Int = 1
+
 }
 
 class IntNumberToken(override val value: String) : Primary(value) {
@@ -46,6 +49,9 @@ class IntNumberToken(override val value: String) : Primary(value) {
     }
 
     override fun copy(): IntNumberToken = IntNumberToken(value)
+
+    override fun getChildren(): Int = 1
+
 }
 
 class FloatNumberToken(override val value: String) : Primary(value) {
@@ -64,6 +70,9 @@ class FloatNumberToken(override val value: String) : Primary(value) {
     }
 
     override fun copy(): FloatNumberToken = FloatNumberToken(value)
+
+    override fun getChildren(): Int = 1
+
 }
 
 
@@ -78,4 +87,7 @@ class BooleanToken(override val value: String) : Primary(value) {
     }
 
     override fun copy(): BooleanToken = BooleanToken(value)
+
+    override fun getChildren(): Int = 1
+
 }

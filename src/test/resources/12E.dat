@@ -1,7 +1,6 @@
 population_size=1000, max_gen_count=100, max_depth=5, time_limit=100, fit_function=fitSquaredDistance, convert_float_to_int=true, max_float_value=1000, max_int_value=1000, best_fitness_threshold=0
-2 1
--989 -234 231426
--171 -587 100377
--385 -582 224070
--404 990 -399960
--377 930 -350610
+-989 -234 ;  231426
+-171 -587 ;  100377
+-385 -582 ;  224070
+-404 990  ; -399960
+-377 930  ; -350610

@@ -29,7 +29,7 @@ class NeoGP {
             // population_size=0, max_gen_count=0, max_depth=0, time_limit=0, fit_function=fitExact
             // input1 input2 ... inputN ; output1 output2 ... outputM
             // ...
-            // input1 input2 ... inputN ; output1 output2 ... outputM
+            // input1 input2 ... inputK ; output1 output2 ... outputL
 
             val file = File(filePath)
             if (!file.exists())
@@ -47,17 +47,17 @@ class NeoGP {
                     key.trim() to value.trim()
                 }
 
-            if (gpParams.size != 9)
-                throw Exception("Error while parsing $filePath:  wrong number of GP params, expected 9 got ${gpParams.size}")
+            if (gpParams["fit_function"] == null)
+                throw Exception("Error while parsing $filePath:  fitness function should be provided")
 
-            NeoProperties.POPULATION_SIZE = gpParams["population_size"]!!.toInt()
-            NeoProperties.MAX_GEN = gpParams["max_gen_count"]!!.toInt()
-            NeoProperties.MAX_DEPTH = gpParams["max_depth"]!!.toInt()
-            NeoProperties.MAX_INSTRUCTIONS = gpParams["time_limit"]!!.toInt()
-            NeoProperties.CONVERT_FLOAT_TO_INT = gpParams["convert_float_to_int"]!!.toBoolean()
-            NeoProperties.MAX_FLOAT_VALUE = gpParams["max_float_value"]!!.toInt()
-            NeoProperties.MAX_INT_VALUE = gpParams["max_int_value"]!!.toInt()
-            NeoProperties.BEST_FITNESS_THRESHOLD = gpParams["best_fitness_threshold"]!!.toInt()
+            gpParams["population_size"]?.toInt()?.let { NeoProperties.POPULATION_SIZE = it }
+            gpParams["max_gen_count"]?.toInt()?.let { NeoProperties.MAX_GEN = it }
+            gpParams["max_depth"]?.toInt()?.let { NeoProperties.MAX_DEPTH = it }
+            gpParams["time_limit"]?.toInt()?.let { NeoProperties.MAX_INSTRUCTIONS = it }
+            gpParams["convert_float_to_int"]?.toBoolean()?.let { NeoProperties.CONVERT_FLOAT_TO_INT = it }
+            gpParams["max_float_value"]?.toInt()?.let { NeoProperties.MAX_FLOAT_VALUE = it }
+            gpParams["max_int_value"]?.toInt()?.let { NeoProperties.MAX_INT_VALUE = it }
+            gpParams["best_fitness_threshold"]?.toInt()?.let { NeoProperties.BEST_FITNESS_THRESHOLD = it }
 
             val paramsList: MutableList<Params> = mutableListOf()
 
@@ -254,9 +254,10 @@ class NeoGP {
                 when {
                     NeoProperties.bestFitness > individual.fitness() -> NeoProperties.bestIndividual = individual
                     NeoProperties.bestFitness == individual.fitness() ->
-                        NeoProperties.bestIndividual = chooseShorterIndividual(NeoProperties.bestIndividual!!, individual)
+                        NeoProperties.bestIndividual =
+                            NeoProperties.bestIndividual?.let { chooseShorterIndividual(it, individual) } ?: individual
                 }
-                    NeoProperties.bestFitness = NeoProperties.bestIndividual!!.fitness()
+                NeoProperties.bestFitness = NeoProperties.bestIndividual?.fitness() ?: Int.MAX_VALUE
             }
 
             averageFitness /= NeoProperties.population.individuals.size

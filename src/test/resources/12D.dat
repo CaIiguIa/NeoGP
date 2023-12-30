@@ -1,9 +1,8 @@
 population_size=1000, max_gen_count=100, max_depth=5, time_limit=100, fit_function=fitSquaredDistance, convert_float_to_int=true, max_float_value=10000, max_int_value=10000, best_fitness_threshold=0
-2 1
--6474 9058 -15532
-8209 2901 5308
-3055 -7677 10732
-7847 -5427 13274
-8933 7245 1688
-168 5163 -4995
-8233 -7088 15321
+-6474 9058 ;-15532
+8209 2901 ;5308
+3055 -7677 ;10732
+7847 -5427; 13274
+8933 7245; 1688
+168 5163 ;-4995
+8233 -7088 ;15321

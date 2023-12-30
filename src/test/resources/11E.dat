@@ -1,9 +1,8 @@
 population_size=1000, max_gen_count=100, max_depth=5, time_limit=100, fit_function=fitExactPercentage, convert_float_to_int=true, max_float_value=1000, max_int_value=1000, best_fitness_threshold=0
-10 1
-2 2 0 9 4 4 4 7 7 3 789
-5 3 8 1 5 3 6 1 4 3 789
-5 9 7 0 3 8 1 9 8 4 789
-7 5 2 9 4 1 7 3 6 8 789
-9 4 0 9 1 0 6 5 5 4 789
-9 9 7 4 0 2 8 0 2 1 789
-5 3 9 0 0 9 1 9 3 6 789
+2 2 0 9 4 4 4 7 7 3 ; 789
+5 3 8 1 5 3 6 1 4 3 ; 789
+5 9 7 0 3 8 1 9 8 4 ; 789
+7 5 2 9 4 1 7 3 6 8 ; 789
+9 4 0 9 1 0 6 5 5 4 ; 789
+9 9 7 4 0 2 8 0 2 1 ; 789
+5 3 9 0 0 9 1 9 3 6 ; 789
