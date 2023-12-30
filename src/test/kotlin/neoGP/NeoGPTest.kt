@@ -180,16 +180,22 @@ class NeoGPTest {
         if (NeoProperties.CONVERT_FLOAT_TO_INT)
             outputs.all { out ->
                 val o = out.map { it.toFloat().toInt() }
-                expectedValues.any { value ->
+                val anyContains = expectedValues.any { value ->
                     value.toFloat().toInt() in o
                 }
+                if (!anyContains) println("Assertion error: not all values from $o are present in $expectedValues")
+
+                anyContains
             }
         else
             outputs.all { out ->
                 val o = out.map { it.toFloat() }
-                expectedValues.any { value ->
+                val anyContains = expectedValues.any { value ->
                     value.toFloat() in o
                 }
+                if (!anyContains) println("Assertion error: not all values from $o are present in [$expectedValues]")
+
+                anyContains
             }
 
 
@@ -218,8 +224,9 @@ class NeoGPTest {
                 val anyNotPresent = expectedValues[idx].any {
                     it.toFloat().toInt() !in out
                 }
-                if (anyNotPresent)
+                if (anyNotPresent) {
                     return false
+                }
             }
         else
             outputs.forEachIndexed { idx, _ ->
@@ -227,8 +234,9 @@ class NeoGPTest {
                 val anyNotPresent = expectedValues[idx].any {
                     it.toFloat() !in out
                 }
-                if (anyNotPresent)
+                if (anyNotPresent) {
                     return false
+                }
             }
 
         return true
