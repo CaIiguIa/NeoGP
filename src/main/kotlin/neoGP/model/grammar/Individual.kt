@@ -37,6 +37,9 @@ class Individual(
     else
         statements.flatMap { it.getChildrenAtDepth(depth - 1) }
 
+    fun getChildren(): Int =
+        statements.sumOf(Statement::getChildren)
+
     fun copy() =
         Individual(
             statements.map(Statement::copy).toMutableList()

@@ -16,6 +16,9 @@ class Block(
         )
 
     fun toOneLineString(): String =
-        statements.joinToString(separator = " ", transform = {it.toOneLineString()})
+        statements.joinToString(separator = " ", transform = { it.toOneLineString() })
+
+    fun getChildren(): Int =
+        statements.sumOf(Statement::getChildren) + 1
 
 }

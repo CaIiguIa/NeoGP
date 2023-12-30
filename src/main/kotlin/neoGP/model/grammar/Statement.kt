@@ -8,6 +8,7 @@ abstract class Statement(
     abstract fun getChildrenAtDepth(depth: Int): List<Statement>
     abstract fun copy(): Statement
     abstract fun toOneLineString(): String
+    abstract fun getChildren(): Int
 }
 
 class Loop(
@@ -37,6 +38,10 @@ class Loop(
 
     override fun toOneLineString(): String =
         "while ( $expression ) { ${block.toOneLineString()} }"
+
+    override fun getChildren(): Int =
+        expression.getChildren() + block.getChildren() + 1
+
 }
 
 class If(
@@ -66,6 +71,10 @@ class If(
 
     override fun toOneLineString(): String =
         "if ( $expression ) { ${block.toOneLineString()} }"
+
+    override fun getChildren(): Int =
+        expression.getChildren() + block.getChildren() + 1
+
 }
 
 class IfElse(
@@ -97,6 +106,10 @@ class IfElse(
 
     override fun toOneLineString(): String =
         "if ( $expression ) { ${block.toOneLineString()} } else { ${elseBlock.toOneLineString()} }"
+
+    override fun getChildren(): Int =
+        expression.getChildren() + block.getChildren() + elseBlock.getChildren() + 1
+
 }
 
 class In(
@@ -117,6 +130,10 @@ class In(
 
     override fun toOneLineString(): String =
         "in $id;"
+
+    override fun getChildren(): Int =
+        1
+
 }
 
 class Print(
@@ -137,6 +154,9 @@ class Print(
         "print ( $expression );"
 
     override fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
+
+    override fun getChildren(): Int =
+        expression.getChildren() + 1
 
 }
 
@@ -161,6 +181,9 @@ class Var(
 
     override fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
 
+    override fun getChildren(): Int =
+        (expression?.getChildren() ?: 0) + 1
+
 }
 
 class VarAssign(
@@ -184,6 +207,9 @@ class VarAssign(
 
     override fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
 
+    override fun getChildren(): Int =
+        expression.getChildren() + 1
+
 }
 
 class Const(
@@ -206,5 +232,8 @@ class Const(
         "const $id = $expression;"
 
     override fun getChildrenAtDepth(depth: Int): List<Statement> = listOf()
+
+    override fun getChildren(): Int =
+        expression.getChildren() + 1
 
 }

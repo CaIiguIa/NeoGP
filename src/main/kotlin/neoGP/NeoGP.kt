@@ -107,8 +107,7 @@ class NeoGP {
                     0
                 else
                     1
-            }
-            else {
+            } else {
                 val cout = correctOutput.map { it.toFloat() }
                 val pout = programOutput.map { it.toFloat() }
                 return if (cout == pout)
@@ -127,8 +126,7 @@ class NeoGP {
                     0
                 else
                     1
-            }
-            else {
+            } else {
                 val cout = correctOutput.map { it.toFloat() }
                 val pout = programOutput.map { it.toFloat() }
                 return if (cout.all { pout.contains(it) })
@@ -149,8 +147,7 @@ class NeoGP {
                 }
 
                 return 10 - (correct / correctOutput.size * 10)
-            }
-            else {
+            } else {
                 var correct = 0
                 val out = programOutput.map { it.toFloat() }
                 correctOutput.forEachIndexed { idx, value ->
@@ -170,8 +167,7 @@ class NeoGP {
                     else
                         0 as Int
                 }
-            }
-            else {
+            } else {
                 val out = programOutput.map { it.toFloat() }
                 return 10 - correctOutput.map { it.toFloat() }.sumOf { value ->
                     if (value in out)
@@ -184,7 +180,7 @@ class NeoGP {
 
         private fun fitSquaredDistance(correctOutput: List<String>, programOutput: List<String>): Int {
             if (correctOutput.isEmpty() || programOutput.isEmpty())
-                return Int.MAX_VALUE-1000
+                return Int.MAX_VALUE - 1000
 
             val sizeDiffers = correctOutput.size != programOutput.size
 
@@ -262,10 +258,12 @@ class NeoGP {
             NeoProperties.population.individuals.forEach { individual ->
                 averageFitness += individual.fitness()
                 averageInstructions += individual.instructions()
-                if (NeoProperties.bestFitness > individual.fitness()) {
-                    NeoProperties.bestFitness = individual.fitness()
-                    NeoProperties.bestIndividual = individual
+                when {
+                    NeoProperties.bestFitness > individual.fitness() -> NeoProperties.bestIndividual = individual
+                    NeoProperties.bestFitness == individual.fitness() ->
+                        NeoProperties.bestIndividual = chooseShorterIndividual(NeoProperties.bestIndividual!!, individual)
                 }
+                    NeoProperties.bestFitness = NeoProperties.bestIndividual!!.fitness()
             }
 
             averageFitness /= NeoProperties.population.individuals.size
@@ -281,6 +279,9 @@ Best Individual: ${NeoProperties.bestIndividual?.toOneLineString()}
 """
             )
         }
+
+        private fun chooseShorterIndividual(ind1: Individual, ind2: Individual): Individual =
+            listOf(ind1, ind2).minBy(Individual::getChildren)
 
     }
 }

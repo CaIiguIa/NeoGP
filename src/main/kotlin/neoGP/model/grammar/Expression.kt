@@ -5,6 +5,7 @@ abstract class Expression(
 ) {
     abstract override fun toString(): String
     abstract fun copy(): Expression
+    abstract fun getChildren(): Int
 }
 
 class ExpressionParenthesis(
@@ -20,6 +21,10 @@ class ExpressionParenthesis(
             value,
             expression.copy()
         )
+
+    override fun getChildren(): Int =
+        expression.getChildren() + 1
+
 }
 
 class UnaryMinus(
@@ -35,6 +40,10 @@ class UnaryMinus(
             value,
             expression.copy()
         )
+
+    override fun getChildren(): Int =
+        expression.getChildren() + 1
+
 }
 
 class Mathematical(
@@ -62,6 +71,10 @@ class Mathematical(
             expression2.copy(),
             operator
         )
+
+    override fun getChildren(): Int =
+        expression1.getChildren() + expression2.getChildren() + 1
+
 }
 
 class Comparison(
@@ -90,6 +103,10 @@ class Comparison(
             expression2.copy(),
             operator
         )
+
+    override fun getChildren(): Int =
+        expression1.getChildren() + expression2.getChildren() + 1
+
 }
 
 class Negation(
@@ -105,6 +122,9 @@ class Negation(
             value,
             expression.copy()
         )
+
+    override fun getChildren(): Int =
+        expression.getChildren() + 1
 }
 
 class Equality(
@@ -132,6 +152,10 @@ class Equality(
             expression2.copy(),
             operator
         )
+
+    override fun getChildren(): Int =
+        expression1.getChildren() + expression2.getChildren() + 1
+
 }
 
 class Logical(
@@ -159,6 +183,10 @@ class Logical(
             expression2.copy(),
             operator
         )
+
+    override fun getChildren(): Int =
+        expression1.getChildren() + expression2.getChildren() + 1
+
 }
 
 enum class Operator(val value: String) {
