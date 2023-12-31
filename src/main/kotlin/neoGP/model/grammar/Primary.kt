@@ -45,7 +45,7 @@ class IntNumberToken(override val value: String) : Primary(value) {
 
     init {
         check(Regex(regex).matches(value))
-        { "The value does not match regex!" }
+        { "The value does not match regex! $value" }
     }
 
     override fun copy(): IntNumberToken = IntNumberToken(value)
@@ -66,7 +66,7 @@ class FloatNumberToken(override val value: String) : Primary(value) {
 
     init {
         check(Regex(regex).matches(value))
-        { "The value does not match regex!" }
+        { "The value does not match regex! $value" }
     }
 
     override fun copy(): FloatNumberToken = FloatNumberToken(value)
@@ -83,7 +83,7 @@ class BooleanToken(override val value: String) : Primary(value) {
 
     init {
         check(value == "true" || value == "false")
-        { "The value does not match regex!" }
+        { "The value does not match regex!  $value" }
     }
 
     override fun copy(): BooleanToken = BooleanToken(value)

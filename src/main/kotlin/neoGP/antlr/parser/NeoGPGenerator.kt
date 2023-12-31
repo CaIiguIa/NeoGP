@@ -13,15 +13,21 @@ class NeoGPGenerator() {
         private var variables: MutableList<Variable> = mutableListOf()
         private var variableIdx: Int = 0
         private var depth = 0
+        private var maxDepth = 0
         private var exprDepth = 0
         private var growFullTree = false
 
-        fun randomIndividual(growFullTree: Boolean = false): Individual {
+        fun randomIndividual(growFullTree: Boolean = false, maxDepth: Int? = null): Individual {
             variables = mutableListOf()
             variableIdx = 0
             depth = 0
             exprDepth = 0
             this.growFullTree = growFullTree
+            this.maxDepth = when {
+                maxDepth != null -> maxDepth
+                growFullTree -> NeoProperties.MAX_FULL_DEPTH
+                else -> NeoProperties.MAX_GROW_DEPTH //"GROW" method
+            }
 
             val individual = Individual()
             for (i in 1..NeoProperties.INIT_INSTRUCTION_NUMBER)
@@ -39,7 +45,7 @@ class NeoGPGenerator() {
 
         private fun generateRandomStatement(): Statement {
             val random = when {
-                depth == NeoProperties.MAX_DEPTH - 1 -> Random.nextInt(3, 8)
+                depth == maxDepth - 1 -> Random.nextInt(3, 8)
                 growFullTree -> Random.nextInt(3)
                 else -> Random.nextInt(8)
             }
@@ -60,8 +66,10 @@ class NeoGPGenerator() {
             val lastVarBefore = variables.size
             val block = Block(mutableListOf())
 
-            val instructionNumber =
-                Random.nextInt(NeoProperties.MIN_INSTRUCTION_BLOCK_SIZE, NeoProperties.MAX_INSTRUCTION_BLOCK_SIZE + 1)
+            val instructionNumber = if (growFullTree)
+                NeoProperties.MAX_FULL_BLOCK_SIZE
+            else
+                Random.nextInt(NeoProperties.MIN_GROW_BLOCK_SIZE, NeoProperties.MAX_GROW_BLOCK_SIZE + 1)
 
             for (i in 1..instructionNumber)
                 block.statements.add(generateRandomStatement())
@@ -339,8 +347,8 @@ class NeoGPGenerator() {
 
         private fun randomFloatPrimary(): FloatNumberToken {
             val number = Random.nextDouble() * NeoProperties.MAX_FLOAT_VALUE
-            val roundedNumber = BigDecimal(number).setScale(8, RoundingMode.HALF_EVEN)
-            return FloatNumberToken("$roundedNumber")
+            val roundedNumber = BigDecimal(number).setScale(8, RoundingMode.HALF_EVEN).toPlainString()
+            return FloatNumberToken(roundedNumber)
         }
 
         private fun randomVariable(ofType: VariableType) =

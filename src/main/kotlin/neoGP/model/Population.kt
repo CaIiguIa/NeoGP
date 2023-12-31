@@ -10,13 +10,69 @@ class Population(
     val individuals: MutableList<Individual> = mutableListOf()
 ) {
     companion object {
-        fun generatePopulation(): Population {
+        fun generatePopulation(
+            method: PopulationGenerationMethod = NeoProperties.POPULATION_GENERATION_METHOD
+        ): Population {
+            println("Generating population...")
+
+            return when (method) {
+                PopulationGenerationMethod.GROW -> growMethodPopulation()
+                PopulationGenerationMethod.FULL -> fullMethodPopulation()
+                PopulationGenerationMethod.RAMPED -> rampedMethodPopulation()
+            }.also {
+                println("Generated population of ${NeoProperties.POPULATION_SIZE}")
+            }
+        }
+
+        private fun growMethodPopulation(): Population {
             val population = Population()
             for (i in 1..NeoProperties.POPULATION_SIZE)
-                population.individuals.add(NeoGPGenerator.randomIndividual())
+                population.individuals.add(
+                    NeoGPGenerator.randomIndividual(growFullTree = false, NeoProperties.MAX_GROW_DEPTH)
+                )
 
             return population
         }
+
+        private fun fullMethodPopulation(): Population {
+            val population = Population()
+            for (i in 1..NeoProperties.POPULATION_SIZE)
+                population.individuals.add(
+                    NeoGPGenerator.randomIndividual(growFullTree = true, NeoProperties.MAX_FULL_DEPTH)
+                )
+
+            return population
+        }
+
+        private fun rampedMethodPopulation(): Population {
+            val population = Population()
+            val n = (NeoProperties.MAX_GROW_DEPTH * NeoProperties.MAX_FULL_DEPTH - 1)
+            val avgSize = NeoProperties.POPULATION_SIZE / n
+            val sizes = List(n) { avgSize }.toMutableList()
+
+            var sizeLeft =
+                NeoProperties.POPULATION_SIZE // make sure to generate population of exactly (NeoProperties.POPULATION_SIZE) size
+            for (i in 0 until n)
+                sizeLeft -= sizes[i]
+            sizes[n - 1] += sizeLeft
+
+            sizes.forEachIndexed { idx, size ->
+                val half1 = size / 2
+                val half2 = size - half1
+                for (i in 0 until half1)
+                    population.individuals.add(
+                        NeoGPGenerator.randomIndividual(growFullTree = true, idx + 1)
+                    )
+
+                for (i in 0 until half2)
+                    population.individuals.add(
+                        NeoGPGenerator.randomIndividual(growFullTree = false, idx + 1)
+                    )
+
+            }
+            return population
+        }
+
 
     }
 
@@ -109,4 +165,10 @@ class Population(
 
         return copy
     }
+}
+
+enum class PopulationGenerationMethod {
+    GROW,
+    FULL,
+    RAMPED
 }

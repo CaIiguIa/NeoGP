@@ -411,7 +411,7 @@ class NeoGPVisitor(
         0 -> listOf("false", "true").random()
         1 -> Random.nextInt(NeoProperties.MAX_INT_VALUE).toString()
         else -> BigDecimal(Random.nextDouble() * NeoProperties.MAX_FLOAT_VALUE)
-            .setScale(8, RoundingMode.HALF_EVEN).toString()
+            .setScale(8, RoundingMode.HALF_EVEN).toPlainString()
     }
 
 }

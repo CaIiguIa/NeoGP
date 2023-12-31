@@ -1,6 +1,5 @@
 package neoGP
 
-import neoGP.model.Population
 import org.junit.jupiter.api.BeforeEach
 import java.nio.file.Paths
 import kotlin.test.Test
@@ -9,7 +8,7 @@ class NeoGPBenchmarks {
 
     @BeforeEach
     fun setUp() {
-        NeoProperties.population = Population.generatePopulation()
+//        NeoProperties.population = Population.generatePopulation()
         NeoProperties.inputsOutputs = listOf()
         NeoProperties.fitnessFunction = null
         NeoProperties.bestFitness = Int.MAX_VALUE

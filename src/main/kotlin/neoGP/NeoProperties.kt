@@ -1,6 +1,7 @@
 package neoGP
 
 import neoGP.model.Population
+import neoGP.model.PopulationGenerationMethod
 import neoGP.model.grammar.Individual
 import kotlin.reflect.KFunction2
 
@@ -8,14 +9,17 @@ class NeoProperties {
     companion object {
         // Simulation
         var MAX_GEN = 50                    // Max number of generations of programs during learning
-        var MAX_DEPTH = 10                  // Max depth of code blocks a Program
+        var MAX_GROW_DEPTH = 3             // Max depth of code blocks a Program in grow generation method
+        var MAX_FULL_DEPTH = 3             // Max depth of code blocks a Program in full generation method
         var CROSSOVER_PROBABILITY = 0.9
         var COMPETITOR_NUMBER = 5           // Number of competitors in a tournament
 
         //Population generation
+        var POPULATION_GENERATION_METHOD = PopulationGenerationMethod.RAMPED
         var INIT_INSTRUCTION_NUMBER = 5     // Initial number of instructions in a Program
-        var MIN_INSTRUCTION_BLOCK_SIZE = 1  // Min number of instructions in a generated block of code
-        var MAX_INSTRUCTION_BLOCK_SIZE = 3  // Max number of instructions in a generated block of code, values above 2 will make the program veeeery slow
+        var MIN_GROW_BLOCK_SIZE = 1         // Min number of instructions in a generated block of code in grow method
+        var MAX_GROW_BLOCK_SIZE = 3         // Max number of instructions in a generated block of code in grow method
+        var MAX_FULL_BLOCK_SIZE = 3         // Max number of instructions in a generated block of code in full method
         var MAX_EXPRESSION_DEPTH = 3        // Max number of  expression encapsulation
         var POPULATION_SIZE = 1000
         var MAX_INT_VALUE = 10              // Max value of int numbers in generated population
