@@ -41,7 +41,7 @@ fun testVisitor() {
     val nIter = 1000
     val time = measureTimeMillis {
         for (i in 0..nIter) {
-            val ind = NeoGPGenerator.randomIndividual().toString()
+            val ind = NeoGPGenerator.randomIndividual(true).toString()
             val visitor = NeoGPVisitor(listOf("11", "14"))
             try {
                 visitor.run(NeoGP.getParseTreeForIndividual(ind))

@@ -12,12 +12,16 @@ class NeoGPGenerator() {
 
         private var variables: MutableList<Variable> = mutableListOf()
         private var variableIdx: Int = 0
-        private var depth = 1
+        private var depth = 0
+        private var exprDepth = 0
+        private var growFullTree = false
 
-        fun randomIndividual(): Individual {
+        fun randomIndividual(growFullTree: Boolean = false): Individual {
             variables = mutableListOf()
             variableIdx = 0
-            depth = 1
+            depth = 0
+            exprDepth = 0
+            this.growFullTree = growFullTree
 
             val individual = Individual()
             for (i in 1..NeoProperties.INIT_INSTRUCTION_NUMBER)
@@ -34,7 +38,11 @@ class NeoGPGenerator() {
         }
 
         private fun generateRandomStatement(): Statement {
-            val random = Random.nextInt(8)
+            val random = when {
+                depth == NeoProperties.MAX_DEPTH - 1 -> Random.nextInt(3, 8)
+                growFullTree -> Random.nextInt(3)
+                else -> Random.nextInt(8)
+            }
 
             return when {
                 random == 0 -> randomLoop()
@@ -51,10 +59,7 @@ class NeoGPGenerator() {
         private fun randomBlock(): Block {
             val lastVarBefore = variables.size
             val block = Block(mutableListOf())
-            if (depth == NeoProperties.MAX_DEPTH)
-                return block
 
-            depth += 1
             val instructionNumber =
                 Random.nextInt(NeoProperties.MIN_INSTRUCTION_BLOCK_SIZE, NeoProperties.MAX_INSTRUCTION_BLOCK_SIZE + 1)
 
@@ -66,14 +71,19 @@ class NeoGPGenerator() {
                 val toRemove = variables.filterIndexed { index, _ -> index >= lastVarBefore }
                 variables.removeAll(toRemove) // prevent using variables not declared in this scope
             }
-            depth -= 1
             return block
         }
 
-        private fun randomIfElse(): IfElse =
-            IfElse("", randomBooleanExpression(), randomBlock(), randomBlock())
+        private fun randomIfElse(): IfElse {
+            depth += 1
+
+            return IfElse("", randomBooleanExpression(), randomBlock(), randomBlock()).also {
+                depth -= 1
+            }
+        }
 
         private fun randomLoop(): Loop {
+            depth += 1
             val lastVarBefore = variables.size
             val loop = Loop("", randomBooleanExpression(), randomBlock())
             val lastVarAfter = variables.size
@@ -81,11 +91,18 @@ class NeoGPGenerator() {
                 val toRemove = variables.filterIndexed { index, _ -> index >= lastVarBefore }
                 variables.removeAll(toRemove)
             }
+
+            depth -= 1
             return loop
         }
 
-        private fun randomIf(): If =
-            If("", randomBooleanExpression(), randomBlock())
+        private fun randomIf(): If {
+            depth += 1
+
+            return If("", randomBooleanExpression(), randomBlock()).also {
+                depth -= 1
+            }
+        }
 
         private fun randomIn(): In {
             val variable = variables.filter { it.isMutable }.random()
@@ -148,13 +165,19 @@ class NeoGPGenerator() {
             return Const("", Id(newId), expr.first)
         }
 
-        private fun randomLogical() =
-            ExpressionParenthesis(
+        private fun randomLogical(): ExpressionParenthesis {
+            exprDepth += 1
+
+            return ExpressionParenthesis(
                 "",
                 Logical("", randomBooleanExpression(), randomBooleanExpression(), Logical.operands.random())
-            )
+            ).also {
+                exprDepth -= 1
+            }
+        }
 
         private fun randomMathematical(type: VariableType?): ExpressionParenthesis {
+            exprDepth += 1
             val expr = when (type) {
                 null -> Mathematical(
                     "",
@@ -179,25 +202,35 @@ class NeoGPGenerator() {
 
                 else -> throw UnsupportedOperationException("Mathematical cannot consist of boolean values")
             }
+            exprDepth -= 1
 
             return ExpressionParenthesis("", expr)
         }
 
 
-        private fun randomNegation() =
-            ExpressionParenthesis("", Negation("", randomBooleanExpression()))
+        private fun randomNegation(): ExpressionParenthesis {
+            exprDepth += 1
+            return ExpressionParenthesis("", Negation("", randomBooleanExpression())).also {
+                exprDepth -= 1
+            }
+        }
 
-        private fun randomComparison() =
-            ExpressionParenthesis(
+        private fun randomComparison(): ExpressionParenthesis {
+            exprDepth += 1
+            return ExpressionParenthesis(
                 "", Comparison(
                     "",
                     randomNumericExpression().first,
                     randomNumericExpression().first,
                     Comparison.operands.random()
                 )
-            )
+            ).also {
+                exprDepth -= 1
+            }
+        }
 
         private fun randomUnaryMinus(type: VariableType?): ExpressionParenthesis {
+            exprDepth += 1
             val expr = when (type) {
                 null -> UnaryMinus("", randomNumericExpression().first)
                 VariableType.INT -> UnaryMinus("", randomIntExpression())
@@ -205,11 +238,13 @@ class NeoGPGenerator() {
                 else -> throw UnsupportedOperationException("Unary minus operation cannot consist of boolean value")
             }
 
+            exprDepth -= 1
             return ExpressionParenthesis("", expr)
         }
 
 
         private fun randomEquality(): ExpressionParenthesis {
+            exprDepth += 1
             val expr = when (Random.nextInt(3)) {
                 0 -> {
                     Equality("", randomBooleanExpression(), randomBooleanExpression(), Equality.operands.random())
@@ -223,6 +258,7 @@ class NeoGPGenerator() {
                     Equality("", randomFloatExpression(), randomFloatExpression(), Equality.operands.random())
                 }
             }
+            exprDepth -= 1
 
             return ExpressionParenthesis("", expr)
         }
@@ -239,23 +275,30 @@ class NeoGPGenerator() {
         }
 
         private fun randomBooleanExpression(): Expression {
-            val random = Random.nextInt(12)
+            val random = when {
+                exprDepth == NeoProperties.MAX_EXPRESSION_DEPTH - 1 -> Random.nextInt(4, 12)
+                growFullTree -> Random.nextInt(3)
+                else -> Random.nextInt(12)
+            }
 
             return when {
                 random == 0 -> randomLogical()
                 random == 1 -> randomNegation()
                 random == 2 -> randomComparison()
                 random == 3 -> randomEquality()
-                random in listOf(4, 5, 6, 7) && variables.any { it.value != null } -> randomVariable(
-                    VariableType.BOOL
-                )
+                random in listOf(4, 5, 6, 7) && variables.any { it.value != null } ->
+                    randomVariable(VariableType.BOOL)
 
                 else -> randomBooleanPrimary()
             }
         }
 
         private fun randomIntExpression(): Expression {
-            val random = Random.nextInt(6)
+            val random = when {
+                exprDepth == NeoProperties.MAX_EXPRESSION_DEPTH - 1 -> Random.nextInt(2, 6)
+                growFullTree -> Random.nextInt(2)
+                else -> Random.nextInt(6)
+            }
 
             return when {
                 random == 0 -> randomMathematical(VariableType.INT)
@@ -269,7 +312,11 @@ class NeoGPGenerator() {
         }
 
         private fun randomFloatExpression(): Expression {
-            val random = Random.nextInt(6)
+            val random = when {
+                exprDepth == NeoProperties.MAX_EXPRESSION_DEPTH - 1 -> Random.nextInt(2, 6)
+                growFullTree -> Random.nextInt(2)
+                else -> Random.nextInt(6)
+            }
 
             return when {
                 random == 0 -> randomMathematical(VariableType.FLOAT)
