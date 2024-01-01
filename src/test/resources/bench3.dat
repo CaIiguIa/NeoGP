@@ -1,4 +1,4 @@
-population_size=10000, max_gen_count=100, instruction_limit=100, fit_function=fitExact, convert_float_to_int=false, max_float_value=100, max_int_value=1000, best_fitness_threshold=0, max_grow_depth=3, max_full_depth=2, population_generation_method=ramped
+population_size=10000, max_gen_count=25, instruction_limit=100, fit_function=fitExact, crossover_prob=0.5, convert_float_to_int=false, max_float_value=100, max_int_value=1000, best_fitness_threshold=0, max_grow_depth=3, max_full_depth=2, population_generation_method=ramped
 3 5 24 76          ; 3
 123 23 23 11       ; 11
 1 1 1 1            ; 1

@@ -29,7 +29,7 @@ class NeoGPBenchmarks {
 
     @Test
     fun testBench2() {
-        //Sum of Squares (Q 8.5.4) Given integer n, return the sum of squaring each integer in the range [1, n].
+        //Collatz Numbers (P 4.2) Given an integer, find the number of terms in the Collatz (hailstone) sequence starting from that integer.
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/bench2.dat"
 
         TestService.testOutputExact(path)
@@ -46,7 +46,7 @@ class NeoGPBenchmarks {
     fun testBenchRegression() {
         //Symbolic regression.
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/benchReg.dat"
-        printTruthTable(3, path)
+        printTruthTable(4, path)
 
         TestService.testOutputExact(path)
     }

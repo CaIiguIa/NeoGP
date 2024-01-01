@@ -1,9 +1,7 @@
-population_size=1000, max_gen_count=100, instruction_limit=100, fit_function=fitSquaredDistance, crossover_prob=0.7, convert_float_to_int=true, max_float_value=100, max_int_value=100, best_fitness_threshold=0, max_grow_depth=2, max_full_depth=2, population_generation_method=ramped
-1  ; 1
-3  ; 14
-5  ; 55
-7  ; 140
-9  ; 285
-11 ; 506
-13 ; 819
-15 ; 1240
+population_size=10000, max_gen_count=100, instruction_limit=100, fit_function=fitExact, crossover_prob=0.5, convert_float_to_int=true, max_float_value=10, max_int_value=10, best_fitness_threshold=0, max_grow_depth=3, max_full_depth=2, population_generation_method=grow
+1 ; 1
+2 ; 2
+3 ; 8
+4 ; 3
+5 ; 6
+6 ; 9
