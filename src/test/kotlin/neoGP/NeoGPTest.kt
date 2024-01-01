@@ -117,7 +117,6 @@ class NeoGPTest {
     }
 
     @Test
-
     fun test13A() {
         //1.3.A Program powinien odczytać dwie pierwsze liczy z wejścia i zwrócić na wyjściu (jedynie) większą z nich. Na wejściu mogą być tylko całkowite liczby dodatnie w zakresie [0,9]
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/13A.dat"
@@ -127,7 +126,6 @@ class NeoGPTest {
     }
 
     @Test
-
     fun test13B() {
         //1.3.B Program powinien odczytać dwie pierwsze liczy z wejścia i zwrócić na wyjściu (jedynie) większą z nich. Na wejściu mogą być tylko całkowite liczby w zakresie [-9999,9999]
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/13B.dat"
@@ -137,7 +135,6 @@ class NeoGPTest {
     }
 
     @Test
-
     fun test14A() {
         //1.4.A Program powinien odczytać dziesięć pierwszych liczy z wejścia i zwrócić na wyjściu (jedynie) ich średnią arytmetyczną (zaokrągloną do pełnej liczby całkowitej). Na wejściu mogą być tylko całkowite liczby w zakresie [-99,99]
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/14A.dat"

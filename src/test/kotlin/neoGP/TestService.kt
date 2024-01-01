@@ -16,6 +16,11 @@ class TestService {
                 NeoGP.evolve()
                 val outputs = getOutputsFor(NeoProperties.bestIndividual!!, data.params)
 
+                println("\ninput -> (expected output | output)")
+                outputs.forEachIndexed { idx, outs ->
+                    println(data.params[idx].inputs.joinToString() + " -> ( " + data.params[idx].outputs.joinToString() + " | " + outs.joinToString() + " )")
+                }
+
                 assertTrue(contains(outputs, expectedValues), "program does not find the best solution")
             } catch (e: Exception) {
                 println("Program does not run properly, following exception has been thrown:")
@@ -63,6 +68,11 @@ class TestService {
                 NeoProperties.fitnessFunction = data.fitnessFunction
                 NeoGP.evolve()
                 val outputs = getOutputsFor(NeoProperties.bestIndividual!!, data.params)
+
+                println("\ninput -> (expected output | output)")
+                outputs.forEachIndexed { idx, outs ->
+                    println(data.params[idx].inputs.joinToString() + " -> ( " + data.params[idx].outputs.joinToString() + " | " + outs.joinToString() + " )")
+                }
 
                 assertTrue(
                     containsExact(outputs, data.params.map { it.outputs }),

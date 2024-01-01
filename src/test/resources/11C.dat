@@ -1,4 +1,4 @@
-population_size=1000, max_gen_count=100, instruction_limit=100, fit_function=fitSquaredDistance, convert_float_to_int=true, max_float_value=100000, max_int_value=100000, best_fitness_threshold=0, max_grow_depth=3, max_grow_depth=3, population_generation_method=ramped
+population_size=100000, max_gen_count=100, instruction_limit=10, fit_function=fitSquaredDistance, crossover_prob=0.5, convert_float_to_int=true, max_float_value=100000, max_int_value=100000, best_fitness_threshold=0, max_grow_depth=1, max_full_depth=1, population_generation_method=grow
 5 6 6 2 6 7 6 9 ; 31415
 3 4 5 1 5 9 3 8 ; 31415
 4 4 6 4 6 2 1 2 ; 31415

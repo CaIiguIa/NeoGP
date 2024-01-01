@@ -66,6 +66,7 @@ class NeoGP {
             gpParams["max_float_value"]?.toInt()?.let { NeoProperties.MAX_FLOAT_VALUE = it }
             gpParams["max_int_value"]?.toInt()?.let { NeoProperties.MAX_INT_VALUE = it }
             gpParams["best_fitness_threshold"]?.toInt()?.let { NeoProperties.BEST_FITNESS_THRESHOLD = it }
+            gpParams["crossover_prob"]?.toDouble()?.let { NeoProperties.CROSSOVER_PROBABILITY = it }
             gpParams["population_generation_method"]?.let {
                 NeoProperties.POPULATION_GENERATION_METHOD = PopulationGenerationMethod.valueOf(it.uppercase())
             }

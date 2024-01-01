@@ -1,4 +1,4 @@
-population_size=100, max_gen_count=100, instruction_limit=100, fit_function=fitSquaredDistance, convert_float_to_int=true, max_float_value=100, max_int_value=100, best_fitness_threshold=0, max_grow_depth=3, max_grow_depth=3, population_generation_method=ramped
+population_size=10000, max_gen_count=100, instruction_limit=100, crossover_prob=0.5, fit_function=fitSquaredDistance, convert_float_to_int=true, max_float_value=100, max_int_value=100, best_fitness_threshold=0, max_grow_depth=4, max_full_depth=4, population_generation_method=grow
 -69 -49 -41 -22 41 12 56 64 94 -72 ; 1
 -49 0 25 90 23 57 -43 -4 -17 -10 ; 7
 -46 14 41 91 52 50 -53 -29 -19 -56 ; 4
