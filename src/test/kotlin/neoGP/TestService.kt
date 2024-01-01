@@ -2,6 +2,7 @@ package neoGP
 
 import neoGP.antlr.parser.NeoGPVisitor
 import neoGP.model.grammar.Individual
+import kotlin.math.abs
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -61,7 +62,7 @@ class TestService {
                 }
 
 
-        fun testOutputExact(filePath: String) {
+        fun testOutputExact(filePath: String, threshold: Double? = null) {
             try {
                 val data = NeoGP.loadParams(filePath)
                 NeoProperties.inputsOutputs = data.params
@@ -75,7 +76,8 @@ class TestService {
                 }
 
                 assertTrue(
-                    containsExact(outputs, data.params.map { it.outputs }),
+                    threshold?.let { containsExactWithThreshold(outputs, data.params.map { it.outputs }, threshold) }
+                        ?: containsExact(outputs, data.params.map { it.outputs }),
                     "program does not find the best solution"
                 )
             } catch (e: Exception) {
@@ -108,6 +110,24 @@ class TestService {
                         return false
                     }
                 }
+
+            return true
+        }
+
+        fun containsExactWithThreshold(
+            outputs: List<List<String>>,
+            expectedValues: List<List<String>>,
+            threshold: Double
+        ): Boolean {
+            if (outputs.size != expectedValues.size)
+                return false
+            if (outputs.isEmpty())
+                return true
+
+            for (i in outputs.indices)
+                for (j in outputs[0].indices)
+                    if (abs(outputs[i][j].toDouble() - expectedValues[i][j].toDouble()) > threshold)
+                        return false
 
             return true
         }

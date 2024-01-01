@@ -201,10 +201,10 @@ class NeoGP {
 
             var distance = 0.0
             smaller.forEachIndexed { idx, value ->
-
                 distance += abs(value.toDouble() - bigger[idx].toDouble())
             }
-            if (smaller.size != bigger.size) {
+
+            if (smaller.size != bigger.size) { //apply penalty because of different sizes
                 val penalty: Double = bigger.size.toDouble() / smaller.size
                 distance = distance * penalty + NeoProperties.BEST_FITNESS_THRESHOLD
             }

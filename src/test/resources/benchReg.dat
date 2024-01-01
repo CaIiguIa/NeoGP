@@ -1,3 +1,9 @@
-population_size=1000, max_gen_count=100, instruction_limit=1000, fit_function=fitExact, convert_float_to_int=true, max_float_value=1, max_int_value=1, best_fitness_threshold=0, max_grow_depth=2, max_grow_depth=2, population_generation_method=ramped
-0 ; 1
-1 ; 0
+population_size=100000, max_gen_count=100, instruction_limit=100, fit_function=fitExact, crossover_prob=0.7, convert_float_to_int=true, max_float_value=100, max_int_value=100, best_fitness_threshold=0, max_grow_depth=2, max_full_depth=2, population_generation_method=ramped
+0 0 0 ; 1
+0 0 1 ; 1
+0 1 0 ; 1
+0 1 1 ; 0
+1 0 0 ; 1
+1 0 1 ; 0
+1 1 0 ; 0
+1 1 1 ; 1

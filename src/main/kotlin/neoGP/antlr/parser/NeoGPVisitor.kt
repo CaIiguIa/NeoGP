@@ -217,7 +217,7 @@ class NeoGPVisitor(
         val leftExpr = visitExpression(ctx.expression(0)).first()
         val rightExpr = visitExpression(ctx.expression(1)).first()
 
-        if (leftExpr.isInt() || rightExpr.isInt()) {
+        if (leftExpr.isInt() && rightExpr.isInt()) {
             val left = leftExpr.toIntValue()
             val right = rightExpr.toIntValue()
 

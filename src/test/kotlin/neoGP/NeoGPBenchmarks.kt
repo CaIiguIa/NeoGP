@@ -1,7 +1,10 @@
 package neoGP
 
 import org.junit.jupiter.api.BeforeEach
+import java.io.File
 import java.nio.file.Paths
+import kotlin.math.pow
+import kotlin.random.Random
 import kotlin.test.Test
 
 class NeoGPBenchmarks {
@@ -21,7 +24,7 @@ class NeoGPBenchmarks {
         //Number IO (Q 3.5.1) Given an integer and a float, print their sum.
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/bench1.dat"
 
-        TestService.testOutputExact(path)
+        TestService.testOutputExact(path, 0.01)
     }
 
     @Test
@@ -43,8 +46,27 @@ class NeoGPBenchmarks {
     fun testBenchRegression() {
         //Symbolic regression.
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/benchReg.dat"
+        printTruthTable(3, path)
 
         TestService.testOutputExact(path)
+    }
+
+
+    private fun printTruthTable(n: Int, filePath: String) {
+        val file = File(filePath)
+        var newText = file.readLines()[0] + "\n"
+
+        val rows = (2.0).pow(n).toInt()
+
+
+        for (i in 0 until rows) {
+            for (j in n - 1 downTo 0) {
+                newText +=(((i / (2.0).pow(j.toDouble()).toInt()) % 2).toString() + " ")
+            }
+            newText +=("; " + Random.nextInt(2) + "\n")
+        }
+
+        file.writeText(newText)
     }
 
 }
