@@ -1,7 +1,7 @@
 package neoGP.model.grammar
 
 class Block(
-    val statements: MutableList<Statement> = mutableListOf(),
+    var statements: MutableList<Statement> = mutableListOf(),
 ) {
 
     override fun toString(): String =
@@ -20,5 +20,14 @@ class Block(
 
     fun getChildren(): Int =
         statements.sumOf(Statement::getChildren) + 1
+
+    fun childStatements(): List<Statement> =
+        statements + statements.flatMap(Statement::getStatements)
+
+    fun getBlocks(): List<Block> =
+        statements.flatMap(Statement::getBlocks)
+
+    fun getExpressions(): List<Expression> =
+        statements.flatMap(Statement::getExpressions)
 
 }

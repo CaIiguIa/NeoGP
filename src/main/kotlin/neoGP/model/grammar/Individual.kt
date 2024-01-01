@@ -45,6 +45,15 @@ class Individual(
             statements.map(Statement::copy).toMutableList()
         )
 
+    fun randomStatement(): Statement? =
+        statements.flatMap(Statement::getStatements).randomOrNull()
+
+    fun randomBlock(): Block? =
+        statements.flatMap(Statement::getBlocks).randomOrNull()
+
+    fun randomExpression(): Expression? =
+        statements.flatMap(Statement::getExpressions).randomOrNull()
+
 }
 
 class StatsOfIndividual(

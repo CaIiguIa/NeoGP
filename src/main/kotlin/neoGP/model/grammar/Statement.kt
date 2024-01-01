@@ -9,6 +9,9 @@ abstract class Statement(
     abstract fun copy(): Statement
     abstract fun toOneLineString(): String
     abstract fun getChildren(): Int
+    abstract fun getStatements(): List<Statement>
+    abstract fun getBlocks(): List<Block>
+    abstract fun getExpressions(): List<Expression>
 }
 
 class Loop(
@@ -42,6 +45,15 @@ class Loop(
     override fun getChildren(): Int =
         expression.getChildren() + block.getChildren() + 1
 
+    override fun getStatements(): List<Statement> =
+        block.childStatements()
+
+    override fun getBlocks(): List<Block> =
+        listOf(block) + block.getBlocks()
+
+    override fun getExpressions(): List<Expression> =
+        listOf(expression) + block.getExpressions()
+
 }
 
 class If(
@@ -74,6 +86,15 @@ class If(
 
     override fun getChildren(): Int =
         expression.getChildren() + block.getChildren() + 1
+
+    override fun getStatements(): List<Statement> =
+        block.childStatements()
+
+    override fun getBlocks(): List<Block> =
+        listOf(block) + block.getBlocks()
+
+    override fun getExpressions(): List<Expression> =
+        listOf(expression) + block.getExpressions()
 
 }
 
@@ -110,6 +131,15 @@ class IfElse(
     override fun getChildren(): Int =
         expression.getChildren() + block.getChildren() + elseBlock.getChildren() + 1
 
+    override fun getStatements(): List<Statement> =
+        block.childStatements() + elseBlock.childStatements()
+
+    override fun getBlocks(): List<Block> =
+        listOf(block, elseBlock)
+
+    override fun getExpressions(): List<Expression> =
+        block.getExpressions() + elseBlock.getExpressions() + listOf(expression)
+
 }
 
 class In(
@@ -134,6 +164,15 @@ class In(
     override fun getChildren(): Int =
         1
 
+    override fun getStatements(): List<Statement> =
+        listOf()
+
+    override fun getBlocks(): List<Block> =
+        listOf()
+
+    override fun getExpressions(): List<Expression> =
+        listOf()
+
 }
 
 class Print(
@@ -157,6 +196,15 @@ class Print(
 
     override fun getChildren(): Int =
         expression.getChildren() + 1
+
+    override fun getStatements(): List<Statement> =
+        listOf()
+
+    override fun getBlocks(): List<Block> =
+        listOf()
+
+    override fun getExpressions(): List<Expression> =
+        listOf(expression)
 
 }
 
@@ -184,6 +232,15 @@ class Var(
     override fun getChildren(): Int =
         (expression?.getChildren() ?: 0) + 1
 
+    override fun getStatements(): List<Statement> =
+        listOf()
+
+    override fun getBlocks(): List<Block> =
+        listOf()
+
+    override fun getExpressions(): List<Expression> =
+        listOfNotNull(expression)
+
 }
 
 class VarAssign(
@@ -210,6 +267,15 @@ class VarAssign(
     override fun getChildren(): Int =
         expression.getChildren() + 1
 
+    override fun getStatements(): List<Statement> =
+        listOf()
+
+    override fun getBlocks(): List<Block> =
+        listOf()
+
+    override fun getExpressions(): List<Expression> =
+        listOf(expression)
+
 }
 
 class Const(
@@ -235,5 +301,14 @@ class Const(
 
     override fun getChildren(): Int =
         expression.getChildren() + 1
+
+    override fun getStatements(): List<Statement> =
+        listOf()
+
+    override fun getBlocks(): List<Block> =
+        listOf()
+
+    override fun getExpressions(): List<Expression> =
+        listOf(expression)
 
 }

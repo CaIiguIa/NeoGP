@@ -20,7 +20,7 @@ class NeoProperties {
         var MIN_GROW_BLOCK_SIZE = 1         // Min number of instructions in a generated block of code in grow method
         var MAX_GROW_BLOCK_SIZE = 3         // Max number of instructions in a generated block of code in grow method
         var MAX_FULL_BLOCK_SIZE = 3         // Max number of instructions in a generated block of code in full method
-        var MAX_EXPRESSION_DEPTH = 3        // Max number of  expression encapsulation
+        var MAX_EXPRESSION_DEPTH = 2        // Max number of  expression encapsulation
         var POPULATION_SIZE = 1000
         var MAX_INT_VALUE = 10              // Max value of int numbers in generated population
         var MAX_FLOAT_VALUE = 10            // Max value of float numbers in generated population
@@ -32,7 +32,7 @@ class NeoProperties {
 
 
         //Program variables
-        var population = Population.generatePopulation()
+        var population = Population()
         var inputsOutputs: List<NeoGP.Params> = listOf()
         var fitnessFunction: KFunction2<List<String>, List<String>, Int>? = null
         var bestFitness = Int.MAX_VALUE

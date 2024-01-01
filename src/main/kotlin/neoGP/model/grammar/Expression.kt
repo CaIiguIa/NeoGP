@@ -1,16 +1,19 @@
 package neoGP.model.grammar
 
+import kotlin.random.Random
+
 abstract class Expression(
     open val value: String,
 ) {
     abstract override fun toString(): String
     abstract fun copy(): Expression
     abstract fun getChildren(): Int
+    abstract fun setChildExpression(exp: Expression)
 }
 
 class ExpressionParenthesis(
     override val value: String,
-    val expression: Expression,
+    var expression: Expression,
 ) : Expression(value) {
 
     override fun toString(): String =
@@ -25,11 +28,15 @@ class ExpressionParenthesis(
     override fun getChildren(): Int =
         expression.getChildren() + 1
 
+    override fun setChildExpression(exp: Expression) {
+        expression = exp.copy()
+    }
+
 }
 
 class UnaryMinus(
     override val value: String,
-    val expression: Expression,
+    var expression: Expression,
 ) : Expression(value) {
 
     override fun toString(): String =
@@ -44,12 +51,16 @@ class UnaryMinus(
     override fun getChildren(): Int =
         expression.getChildren() + 1
 
+    override fun setChildExpression(exp: Expression) {
+        expression = exp.copy()
+    }
+
 }
 
 class Mathematical(
     override val value: String,
-    val expression1: Expression,
-    val expression2: Expression,
+    var expression1: Expression,
+    var expression2: Expression,
     val operator: Operator
 ) : Expression(value) {
     init {
@@ -75,12 +86,19 @@ class Mathematical(
     override fun getChildren(): Int =
         expression1.getChildren() + expression2.getChildren() + 1
 
+    override fun setChildExpression(exp: Expression) {
+        when (Random.nextInt(2)) {
+            0 -> expression1 = exp.copy()
+            else -> expression2 = exp.copy()
+        }
+    }
+
 }
 
 class Comparison(
     override val value: String,
-    val expression1: Expression,
-    val expression2: Expression,
+    var expression1: Expression,
+    var expression2: Expression,
     val operator: Operator
 ) : Expression(value) {
     init {
@@ -107,11 +125,18 @@ class Comparison(
     override fun getChildren(): Int =
         expression1.getChildren() + expression2.getChildren() + 1
 
+    override fun setChildExpression(exp: Expression) {
+        when (Random.nextInt(2)) {
+            0 -> expression1 = exp.copy()
+            else -> expression2 = exp.copy()
+        }
+    }
+
 }
 
 class Negation(
     override val value: String,
-    val expression: Expression,
+    var expression: Expression,
 ) : Expression(value) {
 
     override fun toString(): String =
@@ -125,12 +150,16 @@ class Negation(
 
     override fun getChildren(): Int =
         expression.getChildren() + 1
+
+    override fun setChildExpression(exp: Expression) {
+        expression = exp.copy()
+    }
 }
 
 class Equality(
     override val value: String,
-    val expression1: Expression,
-    val expression2: Expression,
+    var expression1: Expression,
+    var expression2: Expression,
     val operator: Operator
 ) : Expression(value) {
     init {
@@ -156,12 +185,19 @@ class Equality(
     override fun getChildren(): Int =
         expression1.getChildren() + expression2.getChildren() + 1
 
+    override fun setChildExpression(exp: Expression) {
+        when (Random.nextInt(2)) {
+            0 -> expression1 = exp.copy()
+            else -> expression2 = exp.copy()
+        }
+    }
+
 }
 
 class Logical(
     override val value: String,
-    val expression1: Expression,
-    val expression2: Expression,
+    var expression1: Expression,
+    var expression2: Expression,
     val operator: Operator
 ) : Expression(value) {
     init {
@@ -186,6 +222,13 @@ class Logical(
 
     override fun getChildren(): Int =
         expression1.getChildren() + expression2.getChildren() + 1
+
+    override fun setChildExpression(exp: Expression) {
+        when (Random.nextInt(2)) {
+            0 -> expression1 = exp.copy()
+            else -> expression2 = exp.copy()
+        }
+    }
 
 }
 

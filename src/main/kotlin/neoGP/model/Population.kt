@@ -154,14 +154,41 @@ class Population(
             parent2Children.map(Statement::copy)
         )
 
-        return newInd
+        return crossoverRandomElements(newInd, parent1, parent2)
+    }
+
+    private fun crossoverRandomElements(ind: Individual, parent1: Individual, parent2: Individual): Individual {
+        for (parent in List(5) { listOf(parent1, parent2) }.flatten()) {
+            ind.randomBlock()?.let { block ->
+                parent.randomBlock()?.let { parentBlock ->
+                    block.statements = parentBlock.statements.map(Statement::copy).toMutableList()
+                }
+            }
+
+            ind.randomExpression()?.let { exp ->
+                parent.randomExpression()?.let { parentExp ->
+                    exp.setChildExpression(parentExp)
+                }
+            }
+        }
+
+        return ind
     }
 
     private fun mutation(parent: Individual): Individual {
         val copy = parent.copy()
-        val idxToReplace = Random.nextInt(copy.statements.size)
+
+        var idxToReplace = Random.nextInt(copy.statements.size)
         copy.statements.removeAt(idxToReplace)
         copy.statements.add(idxToReplace, NeoGPGenerator.randomStatement())
+
+        for (i in 1..5) {
+            val block= copy.randomBlock() ?: break
+
+            idxToReplace = Random.nextInt(block.statements.size)
+            block.statements.removeAt(idxToReplace)
+            block.statements.add(idxToReplace, NeoGPGenerator.randomStatement())
+        }
 
         return copy
     }

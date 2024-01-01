@@ -284,9 +284,9 @@ class NeoGPGenerator() {
 
         private fun randomBooleanExpression(): Expression {
             val random = when {
-                exprDepth == NeoProperties.MAX_EXPRESSION_DEPTH - 1 -> Random.nextInt(4, 12)
+                exprDepth == NeoProperties.MAX_EXPRESSION_DEPTH - 1 -> Random.nextInt(4, 6)
                 growFullTree -> Random.nextInt(3)
-                else -> Random.nextInt(12)
+                else -> Random.nextInt(6)
             }
 
             return when {
@@ -294,7 +294,7 @@ class NeoGPGenerator() {
                 random == 1 -> randomNegation()
                 random == 2 -> randomComparison()
                 random == 3 -> randomEquality()
-                random in listOf(4, 5, 6, 7) && variables.any { it.value != null } ->
+                random == 4 && variables.any { it.value != null } ->
                     randomVariable(VariableType.BOOL)
 
                 else -> randomBooleanPrimary()
@@ -303,15 +303,15 @@ class NeoGPGenerator() {
 
         private fun randomIntExpression(): Expression {
             val random = when {
-                exprDepth == NeoProperties.MAX_EXPRESSION_DEPTH - 1 -> Random.nextInt(2, 6)
+                exprDepth == NeoProperties.MAX_EXPRESSION_DEPTH - 1 -> Random.nextInt(2, 4)
                 growFullTree -> Random.nextInt(2)
-                else -> Random.nextInt(6)
+                else -> Random.nextInt(4)
             }
 
             return when {
                 random == 0 -> randomMathematical(VariableType.INT)
                 random == 1 -> randomUnaryMinus(VariableType.INT)
-                random in listOf(2, 3) && variables.any { it.value != null } -> randomVariable(
+                random == 2 && variables.any { it.value != null } -> randomVariable(
                     VariableType.INT
                 )
 
@@ -321,15 +321,15 @@ class NeoGPGenerator() {
 
         private fun randomFloatExpression(): Expression {
             val random = when {
-                exprDepth == NeoProperties.MAX_EXPRESSION_DEPTH - 1 -> Random.nextInt(2, 6)
+                exprDepth == NeoProperties.MAX_EXPRESSION_DEPTH - 1 -> Random.nextInt(2, 4)
                 growFullTree -> Random.nextInt(2)
-                else -> Random.nextInt(6)
+                else -> Random.nextInt(4)
             }
 
             return when {
                 random == 0 -> randomMathematical(VariableType.FLOAT)
                 random == 1 -> randomUnaryMinus(VariableType.FLOAT)
-                random in listOf(2, 3) && variables.any { it.value != null } -> randomVariable(
+                random == 2 && variables.any { it.value != null } -> randomVariable(
                     VariableType.FLOAT
                 )
 

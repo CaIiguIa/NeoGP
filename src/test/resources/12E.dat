@@ -1,4 +1,4 @@
-population_size=1000, max_gen_count=100, time_limit=100, fit_function=fitSquaredDistance, convert_float_to_int=true, max_float_value=1000, max_int_value=1000, best_fitness_threshold=0, max_grow_depth=3, max_grow_depth=3, population_generation_method=ramped
+population_size=1000, max_gen_count=100, instruction_limit=100, fit_function=fitSquaredDistance, convert_float_to_int=true, max_float_value=1000, max_int_value=1000, best_fitness_threshold=0, max_grow_depth=3, max_grow_depth=3, population_generation_method=ramped
 -989 -234 ;  231426
 -171 -587 ;  100377
 -385 -582 ;  224070

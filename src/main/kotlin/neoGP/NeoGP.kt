@@ -3,6 +3,7 @@ package neoGP
 import neoGP.antlr.parser.NeoGPVisitor
 import neoGP.antlr.parser.model.neoGPLexer
 import neoGP.antlr.parser.model.neoGPParser
+import neoGP.model.Population
 import neoGP.model.PopulationGenerationMethod
 import neoGP.model.grammar.StatsOfIndividual
 import neoGP.model.grammar.Individual
@@ -27,7 +28,7 @@ class NeoGP {
     companion object {
         fun loadParams(filePath: String): Data {
             // FILE FORMAT:
-            // population_size=0, max_gen_count=0, max_grow_depth=0, time_limit=0, fit_function=fitExact, ...
+            // population_size=0, max_gen_count=0, max_grow_depth=0, instruction_limit=0, fit_function=fitExact, ...
             // input1 input2 ... inputN ; output1 output2 ... outputM
             // ...
             // input1 input2 ... inputK ; output1 output2 ... outputL
@@ -60,7 +61,7 @@ class NeoGP {
             gpParams["max_gen_count"]?.toInt()?.let { NeoProperties.MAX_GEN = it }
             gpParams["max_grow_depth"]?.toInt()?.let { NeoProperties.MAX_GROW_DEPTH = it }
             gpParams["max_full_depth"]?.toInt()?.let { NeoProperties.MAX_FULL_DEPTH = it }
-            gpParams["time_limit"]?.toInt()?.let { NeoProperties.MAX_INSTRUCTIONS = it }
+            gpParams["instruction_limit"]?.toInt()?.let { NeoProperties.MAX_INSTRUCTIONS = it }
             gpParams["convert_float_to_int"]?.toBoolean()?.let { NeoProperties.CONVERT_FLOAT_TO_INT = it }
             gpParams["max_float_value"]?.toInt()?.let { NeoProperties.MAX_FLOAT_VALUE = it }
             gpParams["max_int_value"]?.toInt()?.let { NeoProperties.MAX_INT_VALUE = it }
@@ -211,6 +212,7 @@ class NeoGP {
         }
 
         fun evolve() {
+            NeoProperties.population = Population.generatePopulation()
             var individual: Int
             var newInd: Individual
 
