@@ -1,9 +1,9 @@
 population_size=5000, max_gen_count=100, instruction_limit=100, fit_function=fitExact, convert_float_to_int=false, max_float_value=100, max_int_value=1000, best_fitness_threshold=0, max_grow_depth=3, max_grow_depth=3, population_generation_method=ramped
-3 5 24 76 ;3
-123 23 23 11 ;11
-1 1 1 1 ;1
--67 0 85 8123 ;-67
--45 -1 -99 -41; -99
-33 -5 57 11; -5
-90 -5 23 -56 ;-56
+3 5 24 76         ; 3
+123 23 23 11      ; 11
+1 1 1 1           ; 1
+-67 0 85 8123     ; -67
+-45 -1 -99 -41    ; -99
+33 -5 57 11       ; -5
+90 -5 23 -56      ; -56
 789 1789 2789 3789; 789
