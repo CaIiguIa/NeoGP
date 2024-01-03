@@ -287,8 +287,15 @@ Best Individual: ${NeoProperties.bestIndividual?.toOneLineString()}
             )
         }
 
-        private fun chooseShorterIndividual(ind1: Individual, ind2: Individual): Individual =
-            listOf(ind1, ind2).minBy(Individual::getChildren)
+        private fun chooseShorterIndividual(ind1: Individual, ind2: Individual): Individual {
+            val len1 = ind1.getChildren()
+            val len2 = ind2.getChildren()
+            return when {
+                len1 == len2 -> listOf(ind1, ind2).minBy { it.toOneLineString().length }
+                len1 < len2 -> ind1
+                else -> ind2
+            }
+        }
 
     }
 }
