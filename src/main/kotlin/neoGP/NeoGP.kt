@@ -241,7 +241,7 @@ class NeoGP {
             var instructions = 0
             NeoProperties.inputsOutputs.forEach {
                 val visitor = NeoGPVisitor(it.inputs)
-                val programOutput = visitor.run(tree)
+                val programOutput = try { visitor.run(tree) } catch (_: Exception) {Pair(listOf(""), 0)}
                 fitness += NeoProperties.fitnessFunction!!(it.outputs, programOutput.first)
                 instructions += programOutput.second
             }
