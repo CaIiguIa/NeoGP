@@ -16,7 +16,7 @@ class Individual(
     fun depth(): Int =
         statements.maxOf(Statement::depth) + 1
 
-    fun fitness(): Int {
+    fun fitness(): Double {
         if (stats.fitness != null)
             return stats.fitness!!
 
@@ -57,7 +57,7 @@ class Individual(
 }
 
 class StatsOfIndividual(
-    var fitness: Int? = null,
+    var fitness: Double? = null,
     var instructions: Int? = null,
     var testCases: Int? = null,
 )

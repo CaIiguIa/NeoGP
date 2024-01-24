@@ -10,9 +10,9 @@ class NeoGPTest {
 //        NeoProperties.population = Population.generatePopulation()
         NeoProperties.inputsOutputs = listOf()
         NeoProperties.fitnessFunction = null
-        NeoProperties.bestFitness = Int.MAX_VALUE
+        NeoProperties.bestFitness = Double.MAX_VALUE
         NeoProperties.bestIndividual = null
-        NeoProperties.BEST_FITNESS_THRESHOLD = 5
+        NeoProperties.BEST_FITNESS_THRESHOLD = 5.0
     }
 
     @Test
@@ -35,7 +35,7 @@ class NeoGPTest {
     fun test11C() {
         //1.1.C Program powinien wygenerować na wyjściu (na dowolnej pozycji w danych wyjściowych) liczbę 31415. Poza liczbą 31415 może też zwrócić inne liczby.
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/11C.dat"
-        NeoProperties.BEST_FITNESS_THRESHOLD = 0
+        NeoProperties.BEST_FITNESS_THRESHOLD = 0.0
         NeoProperties.MAX_INT_VALUE = 100000
         NeoProperties.MAX_FLOAT_VALUE = 100000
 

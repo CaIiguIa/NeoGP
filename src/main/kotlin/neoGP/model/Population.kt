@@ -99,9 +99,9 @@ class Population(
 
     private fun findBest(): Individual {
         var best = individuals.random()
-        var bestFitness = Int.MAX_VALUE
+        var bestFitness = Double.MAX_VALUE
         var competitor: Individual
-        var competitorFitness: Int
+        var competitorFitness: Double
 
         for (i in 1 until NeoProperties.COMPETITOR_NUMBER) {
             competitor = individuals.random()
@@ -118,9 +118,9 @@ class Population(
 
     private fun findWorst(): Individual {
         var worst = individuals.random()
-        var worstFitness = 0
+        var worstFitness = 0.0
         var competitor: Individual
-        var competitorFitness: Int
+        var competitorFitness: Double
 
         for (i in 1 until NeoProperties.COMPETITOR_NUMBER) {
             competitor = individuals.random()

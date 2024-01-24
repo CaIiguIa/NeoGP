@@ -14,9 +14,9 @@ class NeoGPBenchmarks {
 //        NeoProperties.population = Population.generatePopulation()
         NeoProperties.inputsOutputs = listOf()
         NeoProperties.fitnessFunction = null
-        NeoProperties.bestFitness = Int.MAX_VALUE
+        NeoProperties.bestFitness = Double.MAX_VALUE
         NeoProperties.bestIndividual = null
-        NeoProperties.BEST_FITNESS_THRESHOLD = 5
+        NeoProperties.BEST_FITNESS_THRESHOLD = 5.0
     }
 
     @Test
@@ -46,7 +46,7 @@ class NeoGPBenchmarks {
     fun testBenchRegression() {
         //Symbolic regression.
         val path = Paths.get("").toAbsolutePath().toString() + "/src/test/resources/benchReg.dat"
-        printTruthTable(4, path)
+//        printTruthTable(4, path)
 
         TestService.testOutputExact(path)
     }

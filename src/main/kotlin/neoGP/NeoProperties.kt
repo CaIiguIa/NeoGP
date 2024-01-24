@@ -27,15 +27,15 @@ class NeoProperties {
 
         // Fitness function
         var MAX_INSTRUCTIONS = 1000         // Max number of instructions in a Program
-        var BEST_FITNESS_THRESHOLD = 5
+        var BEST_FITNESS_THRESHOLD = 5.0
         var CONVERT_FLOAT_TO_INT = false
 
 
         //Program variables
         var population = Population()
         var inputsOutputs: List<NeoGP.Params> = listOf()
-        var fitnessFunction: KFunction2<List<String>, List<String>, Int>? = null
-        var bestFitness = Int.MAX_VALUE
+        var fitnessFunction: KFunction2<List<String>, List<String>, Double>? = null
+        var bestFitness = Double.MAX_VALUE
         var bestIndividual: Individual? = null
     }
 }
