@@ -93,7 +93,7 @@ class NeoGPGenerator() {
         private fun randomLoop(): Loop {
             depth += 1
             val lastVarBefore = variables.size
-            val loop = Loop("", randomBooleanExpression(), randomBlock())
+            val loop = Loop("", randomBooleanExpression(onlyExpr = true), randomBlock())
             val lastVarAfter = variables.size
             if (lastVarAfter != lastVarBefore) {
                 val toRemove = variables.filterIndexed { index, _ -> index >= lastVarBefore }
@@ -282,10 +282,11 @@ class NeoGPGenerator() {
             else -> Pair(randomFloatExpression(), VariableType.FLOAT)
         }
 
-        private fun randomBooleanExpression(): Expression {
+        private fun randomBooleanExpression(onlyExpr: Boolean = false): Expression {
             val random = when {
                 exprDepth == NeoProperties.MAX_EXPRESSION_DEPTH - 1 -> Random.nextInt(4, 6)
                 growFullTree -> Random.nextInt(3)
+                onlyExpr -> Random.nextInt(4)
                 else -> Random.nextInt(6)
             }
 

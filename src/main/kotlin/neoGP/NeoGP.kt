@@ -280,7 +280,7 @@ class NeoGP {
                 """
 Generation=$gen; 
 Avg Fitness=${averageFitness.toBigDecimal().toPlainString()}; 
-Best Fitness=${NeoProperties.bestFitness}; 
+Best Fitness=${NeoProperties.bestFitness.toBigDecimal().toPlainString()}; 
 Avg Size=${averageInstructions};
 Best Individual: ${NeoProperties.bestIndividual?.toOneLineString()}
 """
