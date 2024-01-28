@@ -29,6 +29,7 @@ class NeoProperties {
         var MAX_INSTRUCTIONS = 1000         // Max number of instructions in a Program
         var BEST_FITNESS_THRESHOLD = 5.0
         var CONVERT_FLOAT_TO_INT = false
+        var FIT_SQUARED_DISTANCE_PENALTY = 100
 
 
         //Program variables
