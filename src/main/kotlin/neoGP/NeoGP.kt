@@ -206,7 +206,7 @@ class NeoGP {
 
             if (smaller.size != bigger.size) { //apply penalty because of different sizes
                 val penalty: Double = bigger.size.toDouble() / smaller.size
-                distance = distance * penalty + NeoProperties.BEST_FITNESS_THRESHOLD
+                distance = (distance + NeoProperties.FIT_SQUARED_DISTANCE_PENALTY) * penalty
             }
 
             return distance * distance
@@ -241,7 +241,11 @@ class NeoGP {
             var instructions = 0
             NeoProperties.inputsOutputs.forEach {
                 val visitor = NeoGPVisitor(it.inputs)
-                val programOutput = try { visitor.run(tree) } catch (_: Exception) {Pair(listOf(), 0)}
+                val programOutput = try {
+                    visitor.run(tree)
+                } catch (_: Exception) {
+                    Pair(listOf(), 0)
+                }
                 fitness += NeoProperties.fitnessFunction!!(it.outputs, programOutput.first)
                 instructions += programOutput.second
             }
@@ -268,7 +272,11 @@ class NeoGP {
                     NeoProperties.bestFitness > individual.fitness() -> NeoProperties.bestIndividual = individual
                     NeoProperties.bestFitness == individual.fitness() ->
                         NeoProperties.bestIndividual =
-                            NeoProperties.bestIndividual?.let { chooseShorterIndividual(it, individual) } ?: individual
+                            if (gen < 0.5 * NeoProperties.MAX_GEN)
+                                NeoProperties.bestIndividual ?: individual
+                            else
+                                NeoProperties.bestIndividual?.let { chooseShorterIndividual(it, individual) }
+                                    ?: individual
                 }
                 NeoProperties.bestFitness = NeoProperties.bestIndividual?.fitness() ?: Double.MAX_VALUE
             }
